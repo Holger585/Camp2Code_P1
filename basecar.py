@@ -5,58 +5,44 @@
 Diese Programm nutzt nur basisklassen.py!
 """
 
-from basisklassen import  *
+from basisklassen import  FrontWheels, BackWheels
 import traceback
+import time
 
-class BaseCar:
+class BaseCar():
     def __init__(self):
-        pass
+        self.frontwheels = FrontWheels()
+        self.backwheels = BackWheels()
+        self._steering_angle = self.frontwheels.turn(90)
 
-
-    
+    #Getter
     @property
     def steering_angle(self):
-        return 
+        return self._steering_angle
+    
+    #Setter
+    @steering_angle.setter
+    def steering_angle(self,angle):
+        if 45 <= angle <= 135:
+            self._steering_angle = angle
+        else:
+            print("kann den Winkel so nicht setzen")
+            print("Setze den Winkel")
+            self._steering_angle = min(max(angle,45),135)
+        self.frontwheels.turn(self._steering_angle)
 
     @property
     def speed(self):
-        return
+        return 
 
     @property
     def direction(self):
         return
 
+car = BaseCar()
 
-
-
-
-class Fahrzeug:
-    def __init__(self, marke, kennzeichen, fahrgestellnummer, baujahr, erstzulassung):
-        self.marke = marke  # Marke des Fahrzeugs
-        self.kennzeichen = kennzeichen  # Kennzeichen des Fahrzeugs
-        self.fahrgestellnummer = fahrgestellnummer  # Fahrgestellnummer
-        self.baujahr = baujahr  # Baujahr des Fahrzeugs
-        self.erstzulassung = erstzulassung  # Datum der Erstzulassung
-        self.fahrtenbuch = []  # Liste der Fahrten
-
-    def __repr__(self):
-        # Repräsentation des Objekts für die Debug-Ausgabe
-        return '<{0}.{1} object at {2}>'.format(self.__module__, type(self).__name__, hex(id(self)))
-
-    def __str__(self):
-        # String-Repräsentation des Fahrzeugs mit Erstzulassung und Baujahr
-        return "EZ: {}, BJ: {}".format(self.erstzulassung, self.baujahr)
-
-    def get_last_journey(self):
-        # Gibt die letzte Fahrt im Fahrtenbuch zurück, falls vorhanden
-        if self.fahrtenbuch:
-            return self.fahrtenbuch[-1]
-        else:
-            return None
-
-try:
-
-    
-except:
-    print('-- FEHLER --')
-    print(traceback.format_exc())
+print(car.steering_angle)
+car.steering_angle = 20
+print(car.steering_angle)
+time.sleep(2)
+car.steering_angle = 120
