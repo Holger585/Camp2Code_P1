@@ -1,15 +1,26 @@
-# doku: markdown
-## tests werden nicht mehr gemacht genug für heute
-
-Link zur Anleitung: https://docs.github.com/de/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
-
-Here is a simple flow chart:
+# Doku
 
 ```mermaid
-
+---
+config:
+  theme: default
+  look: handDrawn
+---
 flowchart TD
-    A["Main"] --> B("Basisklassen") & n1("BaseCarKlasse") & n2("AdvCarKlasse")
-    B --> C("Frontwheel") & n3("Rearwheel") & n4("Sonicsensor")
+    roundedId["Backwheel"] --> B("basisklassen.py")
+    n7["Frontwheel"] --> B
+    n8["Infrared"] --> B
+
+    n5["Ultrasonic"] --> B
+    n10["Main"] --> n9["-BaseCar.py
+    -SonicCar.py
+-xyz.py"]
+    n9 <--> B
+    roundedId@{ shape: rect}
+    n7@{ shape: rect}
+    n8@{ shape: rect}
+    n9@{ shape: rect}
+    n5@{ shape: rect}
 
 ```
 
