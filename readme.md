@@ -11,11 +11,11 @@ graph TD;
     A-->C;
     B-->D;
     C-->D;
-```
+
 
 flowchart TD
     A["Main"] -- Get money --> B("Basisklassen")
     B --> C{"1"} & n3["2"] & n2["3"]
 
-
+```
 
