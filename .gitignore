@@ -171,6 +171,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 *.config.json
+.vscode
 =======
 *config.json
 >>>>>>> 55755baf9564b7c3a8742d2d5e204790fa20b2db
