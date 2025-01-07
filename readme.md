@@ -7,9 +7,22 @@ Here is a simple flow chart:
 
 ```mermaid
 
+---
+config:
+  theme: default
+  look: handDrawn
+---
 flowchart TD
-    A["Main"] --> B("Basisklassen") & n1("BaseCarKlasse") & n2("AdvCarKlasse")
-    B --> C("Frontwheel") & n3("Rearwheel") & n4("Sonicsensor")
-
+    roundedId["Backwheel"] --> B("basisklassen.py")
+    n7["Frontwheel"] --> B
+    n8["Infrared"] --> B
+    rectId["Main"] --> n9["BaseCar"]
+    n5["Ultrasonic"] --> B
+    n9 <--> B
+    roundedId@{ shape: proc}
+    n7@{ shape: rect}
+    n8@{ shape: rect}
+    n9@{ shape: rect}
+    n5@{ shape: rect}
 ```
 
