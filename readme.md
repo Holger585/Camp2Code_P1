@@ -14,7 +14,7 @@ flowchart TD
     n5["Ultrasonic"] --> B
     n10["Main"] --> n9["-BaseCar.py
     -SonicCar.py
-- xyz.py"]
+-xyz.py"]
     n9 <--> B
     roundedId@{ shape: rect}
     n7@{ shape: rect}
