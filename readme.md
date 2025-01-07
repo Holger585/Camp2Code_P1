@@ -1,4 +1,4 @@
-# doku
+# Doku
 
 ```mermaid
 ---
