@@ -8,8 +8,8 @@ Here is a simple flow chart:
 ```mermaid
 
 flowchart TD
-    A["Main"] -- Get money --> B("Basisklassen")
-    B --> C{"1"} & n3["2"] & n2["3"]
+    A["Main"] --> B("Basisklassen") & n1("BaseCarKlasse") & n2("AdvCarKlasse")
+    B --> C("Frontwheel") & n3("Rearwheel") & n4("Sonicsensor")
 
 ```
 
