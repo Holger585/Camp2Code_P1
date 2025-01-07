@@ -6,12 +6,6 @@ Link zur Anleitung: https://docs.github.com/de/get-started/writing-on-github/get
 Here is a simple flow chart:
 
 ```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
-
 
 flowchart TD
     A["Main"] -- Get money --> B("Basisklassen")
