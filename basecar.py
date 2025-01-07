@@ -4,12 +4,11 @@
 """
 Diese Programm nutzt nur basisklassen.py!
 """
-print('Hallo! Das ist ein Test')
-print('RPiCar grüsst durch Wackeln mit den Vorderrädern!')
+
 from basisklassen import  *
 import traceback
 
-n=.3
+
 
 try:
     #Wackeln mit den Vorderrädern als Gruß
