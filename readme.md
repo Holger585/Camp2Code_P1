@@ -18,7 +18,7 @@ flowchart TD
     n8["Infrared"] --> B
     rectId["Main"] --> n9["BaseCar"]
     n5["Ultrasonic"] --> B
-    n9 --> B
+    B --> n9
     roundedId@{ shape: proc}
     n7@{ shape: rect}
     n8@{ shape: rect}
