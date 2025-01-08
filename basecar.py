@@ -5,7 +5,7 @@
 Diese Programm nutzt nur basisklassen.py!
 """
 
-from basisklassen import  FrontWheels, BackWheels
+from basisklassen import FrontWheels, BackWheels
 #import traceback
 import time
 
@@ -65,23 +65,50 @@ class BaseCar():
         return self._direction
     
     def fahrmodus_1(self):
+        self.speed = 0
+        self.steering_angle = 90
         self.speed = 30
-        print('Geschwindigkeit : {}'.format(self.speed))
+        print(f'Geschwindigkeit : {self.speed}')
         time.sleep(3)
         self.speed = 0
         time.sleep(1)
         self.speed = -30
-        print('Geschwindigkeit : {}'.format(self.speed))
+        print(f'Geschwindigkeit : {self.speed}')
         time.sleep(3)
-        self.speed = 0  
-
+        self.speed = 0
+    
+    def fahrmodus_2(self):
+        self.speed = 0
+        self.steering_angle = 90
+        self.speed = 30
+        print(f'Geschwindigkeit : {self.speed}')
+        time.sleep(1)
+        self.sleep = 0
+        self.steering_angle  = 150 # Testen für Winkelbegrenzung
+        print(f'Lenkwinkel : {self.steering_angle}')
+        self.speed = 30
+        print(f'Geschwindigkeit : {self.speed}')
+        time.sleep(8)
+        self.speed=0
+        time.sleep(1)
+        self.speed = -30
+        print(f'Geschwindigkeit : {self.speed}')
+        time.sleep(8)
+        self.speed = 0
+        self.steering_angle = 90
+        print(f'Lenkwinkel : {self.steering_angle}')
+        time.sleep(1)
+        self.speed = -30
+        print(f'Geschwindigkeit : {self.speed}')
+        time.sleep(1)
+        self.speed = 0
 
 
 if __name__ == '__main__':
     car = BaseCar()
 
     # Fahrmodus 1
-    car.fahrmodus_1()
+    car.fahrmodus_2()
 
     # print(car.steering_angle)
     # car.steering_angle = 20
