@@ -76,7 +76,9 @@ if __name__ == '__main__':
     #car.backwheels.forward()
     print('forward speed : {}'.format(car.speed))
 
-    # time.sleep(t)
+    time.sleep(t)
+
+    car.speed = 0
     # car.backwheels.speed = 40
     # print('forward speed : {}'.format(car.speed))
 
