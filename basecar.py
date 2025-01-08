@@ -16,7 +16,7 @@ class BaseCar():
         self._steering_angle = self.frontwheels.turn(90)
         self._speed = 0
 
-    #--Lenkung--#
+    #--Lenkwinkel--#
     #Getter
     @property
     def steering_angle(self):
@@ -46,11 +46,8 @@ class BaseCar():
     #Getter
     @property
     def direction(self):
-        return
+        return 1
     
-    #Setter
-    @direction.setter
-
 car = BaseCar()
 
 print(car.steering_angle)
