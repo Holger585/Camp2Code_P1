@@ -41,19 +41,61 @@ class BaseCar():
     
     #Setter
     @speed.setter
+    def speed(self,speed_value):
+        if speed_value == None:
+            speed_value = self._speed
+        self._speed = min(max(speed_value,-100),100)
+        if self._speed > 0:
+            self.backwheels.forward()
+        elif self._speed < 0:
+            self.backwheels.backward()
+        else: 
+            self.backwheels.stop()
+        self.backwheels.speed = abs(self._speed)
+
 
     #--Einstellung Motor--#
     #Getter
     @property
     def direction(self):
         return 1
-    
-car = BaseCar()
 
-print(car.steering_angle)
-car.steering_angle = 20
-print(car.steering_angle)
-time.sleep(2)
-car.steering_angle = 120
-time.sleep(2)
-car.steering_angle = 90
+if __name__ == '__main__':
+    car = BaseCar()
+
+    print(car.steering_angle)
+    car.steering_angle = 20
+    print(car.steering_angle)
+    time.sleep(2)
+    car.steering_angle = 120
+    time.sleep(2)
+    car.steering_angle = 90
+
+    t= 1
+    car.speed = 30
+    #car.backwheels.forward()
+    print('forward speed : {}'.format(car.speed))
+
+    # time.sleep(t)
+    # car.backwheels.speed = 40
+    # print('forward speed : {}'.format(car.speed))
+
+    # time.sleep(t)
+    # car.backwheels.speed = 20
+    # print('forward speed : {}'.format(car.speed))
+
+    # time.sleep(t)
+    # car.backwheels.stop()
+    # print('stop speed : {}'.format(car.speed))
+    # time.sleep(t * 2)
+    # car.backwheels.speed = 20
+    # print('forward speed : {}'.format(car.speed))
+
+    # time.sleep(t)
+    # car.backwheels.backward()
+    # print('now backward')
+    # print('backward speed : {}'.format(car.speed))
+
+    # time.sleep(t * 4)
+    # car.backwheels.speed = 0
+    # print('stop speed : {}'.format(car.speed))
