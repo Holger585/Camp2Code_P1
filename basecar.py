@@ -6,7 +6,7 @@ Diese Programm nutzt nur basisklassen.py!
 """
 
 from basisklassen import  FrontWheels, BackWheels
-import traceback
+#import traceback
 import time
 
 class BaseCar():
@@ -14,7 +14,9 @@ class BaseCar():
         self.frontwheels = FrontWheels()
         self.backwheels = BackWheels()
         self._steering_angle = self.frontwheels.turn(90)
+        self._speed = 0
 
+    #--Lenkung--#
     #Getter
     @property
     def steering_angle(self):
@@ -31,13 +33,23 @@ class BaseCar():
             self._steering_angle = min(max(angle,45),135)
         self.frontwheels.turn(self._steering_angle)
 
+    #--Geschwindigkeit--#
+    #Getter
     @property
     def speed(self):
-        return 
+        return self._speed
+    
+    #Setter
+    @speed.setter
 
+    #--Einstellung Motor--#
+    #Getter
     @property
     def direction(self):
         return
+    
+    #Setter
+    @direction.setter
 
 car = BaseCar()
 
@@ -46,3 +58,5 @@ car.steering_angle = 20
 print(car.steering_angle)
 time.sleep(2)
 car.steering_angle = 120
+time.sleep(2)
+car.steering_angle = 90
