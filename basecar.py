@@ -63,23 +63,39 @@ class BaseCar():
     @property
     def direction(self):
         return self._direction
+    
+    def fahrmodus_1(self):
+        self.speed = 30
+        print('Geschwindigkeit : {}'.format(self.speed))
+        time.sleep(3)
+        self.speed = 0
+        time.sleep(1)
+        self.speed = -30
+        print('Geschwindigkeit : {}'.format(self.speed))
+        time.sleep(3)
+        self.speed = 0  
+
+
 
 if __name__ == '__main__':
     car = BaseCar()
 
-    print(car.steering_angle)
-    car.steering_angle = 20
-    print(car.steering_angle)
-    time.sleep(2)
-    car.steering_angle = 120
-    time.sleep(2)
-    car.steering_angle = 90
+    # Fahrmodus 1
+    car.fahrmodus_1()
 
-    t= 1
-    car.speed = 30
+    # print(car.steering_angle)
+    # car.steering_angle = 20
+    # print(car.steering_angle)
+    # time.sleep(2)
+    # car.steering_angle = 120
+    # time.sleep(2)
+    # car.steering_angle = 90
+
+    # t= 1
+    # car.speed = 30
     #car.backwheels.forward()
-    print('Geschwindigkeit : {}'.format(car.speed))
-    print('Fahrtrichtung : {}'.format(car.direction))
+    # print('Geschwindigkeit : {}'.format(car.speed))
+    # print('Fahrtrichtung : {}'.format(car.direction))
     # time.sleep(t)
     # car.backwheels.speed = 40
     # print('forward speed : {}'.format(car.speed))
@@ -100,6 +116,6 @@ if __name__ == '__main__':
     # print('now backward')
     # print('backward speed : {}'.format(car.speed))
 
-    time.sleep(t * 4)
-    car.speed = 0
-    print('stop speed : {}'.format(car.speed))
+    # time.sleep(t * 4)
+    # car.speed = 0
+    # print('stop speed : {}'.format(car.speed))
