@@ -80,25 +80,25 @@ class BaseCar():
     def fahrmodus_2(self):
         self.speed = 0
         self.steering_angle = 90
-        self.speed = 100
+        self.speed = 30
         print(f'Geschwindigkeit : {self.speed}')
         time.sleep(1)
         self.sleep = 0
         self.steering_angle  = 150 # Testen für Winkelbegrenzung
         print(f'Lenkwinkel : {self.steering_angle}')
-        self.speed = 100
+        self.speed = 30
         print(f'Geschwindigkeit : {self.speed}')
         time.sleep(8)
         self.speed=0
         time.sleep(1)
-        self.speed = -100
+        self.speed = -30
         print(f'Geschwindigkeit : {self.speed}')
         time.sleep(8)
         self.speed = 0
         self.steering_angle = 90
         print(f'Lenkwinkel : {self.steering_angle}')
         time.sleep(1)
-        self.speed = -100
+        self.speed = -30
         print(f'Geschwindigkeit : {self.speed}')
         time.sleep(1)
         self.speed = 0
