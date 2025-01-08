@@ -15,6 +15,7 @@ class BaseCar():
         self.backwheels = BackWheels()
         self._steering_angle = self.frontwheels.turn(90)
         self._speed = 0
+        self._direction = 0
 
     #--Lenkwinkel--#
     #Getter
@@ -47,18 +48,21 @@ class BaseCar():
         self._speed = min(max(speed_value,-100),100)
         if self._speed > 0:
             self.backwheels.forward()
+            self._direction = 1
         elif self._speed < 0:
             self.backwheels.backward()
+            self._direction = -1
         else: 
             self.backwheels.stop()
+            self._direction = 0
         self.backwheels.speed = abs(self._speed)
 
 
-    #--Einstellung Motor--#
+    #--Einstellung Fahrtrichtung--#
     #Getter
     @property
     def direction(self):
-        return 1
+        return self._direction
 
 if __name__ == '__main__':
     car = BaseCar()
@@ -74,8 +78,8 @@ if __name__ == '__main__':
     t= 1
     car.speed = 30
     #car.backwheels.forward()
-    print('forward speed : {}'.format(car.speed))
-
+    print('Geschwindigkeit : {}'.format(car.speed))
+    print('Fahrtrichtung : {}'.format(car.direction))
     # time.sleep(t)
     # car.backwheels.speed = 40
     # print('forward speed : {}'.format(car.speed))
@@ -96,6 +100,6 @@ if __name__ == '__main__':
     # print('now backward')
     # print('backward speed : {}'.format(car.speed))
 
-    # time.sleep(t * 4)
-    # car.backwheels.speed = 0
-    # print('stop speed : {}'.format(car.speed))
+    time.sleep(t * 4)
+    car.speed = 0
+    print('stop speed : {}'.format(car.speed))
