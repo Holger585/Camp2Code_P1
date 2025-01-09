@@ -103,7 +103,7 @@ class BaseCar:
         Stoppt das Fahrzeug vollständig.
         """
         self.drive(speed=0)
-        print("Fahrzeug wurde angehalten.")
+        #print("Fahrzeug wurde angehalten.")
 
     def set_fahren_und_warten(self, speed, steering_angle, wait_time):
         """

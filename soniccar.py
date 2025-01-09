@@ -17,43 +17,45 @@ class SonicCar(BaseCar):
     def fahrmodus_3(self,min_dist = 8,speed = 50, angle=90):
         
         self.drive(speed,angle)
-        self.loggen(self.get_distance,self._speed,self._steering_angle)
+        self.loggen(self.get_distance,self._speed,self._steering_angle,(time.time() - start_time))
         while True:
             distance = self.get_distance
             if 0 < distance < min_dist:
                 self.stop()
-                self.loggen(self.get_distance,self._speed,self._steering_angle)
+                self.loggen(self.get_distance,self._speed,self._steering_angle,time.time() - start_time)
                 break
             time.sleep(0.2)
         self.stop()
     
     
     def fahrmodus_4(self, speed = 30, lenken = 135):
-        start_time=time.time
-        while time.time()-start_time < 60: # Schleife endet nach 60 Sekunden
-            self.fahrmodus_3(angle= random.randint(45, 135))
+        #start_time = time.time()
+        while time.time() - start_time < 30: # Schleife endet nach 30 Sekunden
+            print("---")
+            self.fahrmodus_3(speed = speed, angle= random.randint(45, 135))
             self.drive(0,lenken)
-            self.loggen(self.get_distance,self._speed,self._steering_angle)
+            self.loggen(self.get_distance,self._speed,self._steering_angle,(time.time() - start_time))
             self.drive(-speed)
-            time.sleep(1)
+            time.sleep(2)
+            self.loggen(self.get_distance,self._speed,self._steering_angle,time.time() - start_time)
             self.stop()
-            self.loggen(self.get_distance,self._speed,self._steering_angle)
+            self.loggen(self.get_distance,self._speed,self._steering_angle,time.time() - start_time)
         self.stop()
+        print("Fahrmodus 4 beendet")
     
-    def loggen(self, distance, speed, steering_angle):
+    def loggen(self, distance, speed, steering_angle, time):
             log.append({
-            "distance": distance,
-            "speed": speed,
-            "steering_angle": steering_angle
+            "Abstand": distance,
+            "Geschwindigkeit": speed,
+            "Lenkwinkel": steering_angle,
+            "Laufzeit": time
             })
-            print(f"Gemessene Entfernung: {distance} cm, Geschwindigkeit: {speed}, Lenkwinkel: {steering_angle}")
+            print(f"Gemessene Entfernung: {distance} cm, Geschwindigkeit: {speed}, Lenkwinkel: {steering_angle}, Laufzeit: {time:.1f}")
 
-
-
-
-                
+       
 if __name__ == "__main__":
     car = SonicCar() 
     log = []
+    start_time = time.time()
     car.fahrmodus_4()
-    print(car.get_distance)
+    #print(car.get_distance)
