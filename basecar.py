@@ -39,17 +39,7 @@ class BaseCar:
 
     @speed.setter
     def speed(self, speed_value):
-        self._speed = max(-100, min(100, speed_value or self._speed))
-        if self._speed > 0:
-            self.backwheels.forward()
-            self._direction = 1
-        elif self._speed < 0:
-            self.backwheels.backward()
-            self._direction = -1
-        else:
-            self.backwheels.stop()
-            self._direction = 0
-        self.backwheels.speed = abs(self._speed)
+        self._speed = max(-100, min(100, speed_value))
 
     @property
     def direction(self):
@@ -58,12 +48,27 @@ class BaseCar:
     def drive(self, speed=None, steering_angle=None):
         if speed is not None:
             self.speed = speed
+            if self._speed > 0:
+                self.backwheels.forward()
+                self._direction = 1
+            elif self._speed < 0:
+                self.backwheels.backward()
+                self._direction = -1
+            else:
+                self.backwheels.stop()
+                self._direction = 0
+            self.backwheels.speed = abs(self._speed)
         if steering_angle is not None:
             self.steering_angle = steering_angle
 
+    def stop(self):
+        self.backwheels.stop()
+        self._direction = 0
+        self.backwheels.speed = 0
+
     def set_fahren_und_warten(self, speed, steering_angle, wait_time):
         self.drive(speed=speed, steering_angle=steering_angle)
-        print(f"Geschwindigkeit: {speed}, Lenkwinkel: {steering_angle}")
+        print(f"Geschwindigkeit: {self._speed}, Lenkwinkel: {self._steering_angle}")
         time.sleep(wait_time)
 
     def fahrmodus_1(self):
@@ -72,7 +77,7 @@ class BaseCar:
         self.set_fahren_und_warten(30, 90, 5)
         self.set_fahren_und_warten(0, 90, 1)
         self.set_fahren_und_warten(-30, 90, 5)
-        self.set_fahren_und_warten(0, 90, 0)
+        self.stop()
 
     def fahrmodus_2(self):
         speedvorgabe = 30
@@ -111,9 +116,9 @@ class BaseCar:
         self.set_fahren_und_warten(-speedvorgabe, 90, 1)
         print("08-Fertig!")
 
-        self.set_fahren_und_warten(0, 90, 0)
+        self.set_fahren_und_warten(0, 90, 1)  # Sicherstellen, dass das Fahrzeug anhält
 
 if __name__ == "__main__":
     car = BaseCar()
     car.fahrmodus_1()
-    car.fahrmodus_2()
+    #car.fahrmodus_2()
