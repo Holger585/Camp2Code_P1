@@ -30,3 +30,5 @@ MANIFEST
 fahrmodus_log.csv
 .vscode
 *settings.json
+test.py
+*test.py
