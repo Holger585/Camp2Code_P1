@@ -14,7 +14,7 @@ class SonicCar(BaseCar):
         self._distance = self.ultrasonic.distance()
         return self._distance
 
-    def fahrmodus_3(self,min_dist = 8,speed = 50, angle=90):
+    def fahrmodus_3(self,min_dist = 12,speed = 50, angle=90):
         
         self.drive(speed,angle)
         self.loggen(self.get_distance,self._speed,self._steering_angle,(time.time() - start_time))
@@ -26,7 +26,6 @@ class SonicCar(BaseCar):
                 break
             time.sleep(0.2)
         self.stop()
-    
     
     def fahrmodus_4(self, speed = 30, lenken = 135):
         #start_time = time.time()
@@ -45,12 +44,13 @@ class SonicCar(BaseCar):
     
     def loggen(self, distance, speed, steering_angle, time):
             log.append({
-            "Abstand": distance,
+            "Zeit": time,
             "Geschwindigkeit": speed,
+            "Fahrtrichtung" : self.direction,
             "Lenkwinkel": steering_angle,
-            "Laufzeit": time
+            "Abstand": distance
             })
-            print(f"Gemessene Entfernung: {distance} cm, Geschwindigkeit: {speed}, Lenkwinkel: {steering_angle}, Laufzeit: {time:.1f}")
+            print(f"Zeit: {time:.1f}, Geschwindigkeit: {speed}, Fahrtrichtung: {self.direction}, Lenkwinkel: {steering_angle}, Abstand: {distance} cm,")
 
        
 if __name__ == "__main__":
