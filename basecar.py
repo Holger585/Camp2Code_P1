@@ -47,6 +47,7 @@ class BaseCar():
             self._steering_angle = min(max(angle,45),135)
         self.frontwheels.turn(self._steering_angle)
 
+
     #--Geschwindigkeit--#
     #Getter
     @property
@@ -55,21 +56,20 @@ class BaseCar():
     
     #Setter
     @speed.setter
-    def speed(self,speed_value):
-        if speed_value == None:
-            speed_value = self._speed
-        self._speed = min(max(speed_value,-100),100)
+    def speed(self, speed_value):
+        if speed_value is None:
+            speed_value = self._speed  # Behalte den aktuellen Wert, falls kein neuer Wert gesetzt wird
+        self._speed = min(max(speed_value, -100), 100)  # Begrenzung auf den Bereich -100 bis 100
         if self._speed > 0:
-            self.backwheels.forward()
+            self.backwheels.forward()  # Fahrtrichtung: vorwärts
             self._direction = 1
         elif self._speed < 0:
-            self.backwheels.backward()
+            self.backwheels.backward()  # Fahrtrichtung: rückwärts
             self._direction = -1
-        else: 
-            self.backwheels.stop()
+        else:
+            self.backwheels.stop()  # Fahrzeug stoppt
             self._direction = 0
-        self.backwheels.speed = abs(self._speed)
-
+        self.backwheels.speed = abs(self._speed)  # Geschwindigkeit an die Hinterräder weitergeben
 
     #--Einstellung Fahrtrichtung--#
     #Getter
@@ -77,115 +77,111 @@ class BaseCar():
     def direction(self):
         return self._direction
     
+    #Drive Methode
+    def drive(self, speed=None, steering_angle=None):
+        if speed is not None:
+            self.speed = speed
+        if steering_angle is not None:
+            self.steering_angle = steering_angle
+    
     def fahrmodus_1(self):
-        self.speed = 0
-        self.steering_angle = 80
-        time.sleep(.1)
-        self.steering_angle = 90
-        self.speed = 30
-        print(f'Geschwindigkeit : {self.speed}')
-        time.sleep(3)
-        self.speed = 0
-        time.sleep(1)
-        self.speed = -30
-        print(f'Geschwindigkeit : {self.speed}')
-        time.sleep(3)
-        self.speed = 0
+
+        def set_fahren_und_warten(speed, steering_angle, wait_time):
+            #Funktion, um Geschwindigkeit und Lenkwinkel zu setzen und eine Pause einzulegen.
+            self.drive(speed=speed, steering_angle=steering_angle)
+            print(f'Geschwindigkeit : {speed}, Lenkwinkel : {steering_angle}')
+            time.sleep(wait_time)
+
+        # Initialisierung
+        set_fahren_und_warten(0, 80, 0.1)
+        set_fahren_und_warten(0, 90, 0)
+
+        # Vorwärtsfahrt
+        set_fahren_und_warten(30, 90, 5)
+
+        # Zwischenstopp
+        set_fahren_und_warten(0, 90, 1)
+
+        # Rückwärtsfahrt
+        set_fahren_und_warten(-30, 90, 5)
+
+        # Endstopp
+        set_fahren_und_warten(0, 90, 0)
     
     def fahrmodus_2(self):
-        speedvorgabe = 30
-        lenkwinkelvorgabe = 120
+        def set_fahren_und_warten(speed, steering_angle, wait_time):
+            #Funktion, um Geschwindigkeit und Lenkwinkel zu setzen und eine Pause einzulegen.
+            self.drive(speed=speed, steering_angle=steering_angle)
+            print(f'Geschwindigkeit : {speed}, Lenkwinkel : {steering_angle}')
+            time.sleep(wait_time)
 
+        speedvorgabe = 30
+        lenkwinkelvorgabe = 135
+
+        # Initialisierung
         print('01-Initialisierung')
-        self.speed = 0
-        print(f'01-Geschwindigkeit : {self.speed}')
-        self.steering_angle = 80
-        time.sleep(.1)        
-        self.steering_angle = 90 
-        print(f'01-Lenkwinkel : {self.steering_angle}')
-        time.sleep(.1)
+        set_fahren_und_warten(0, 80, 0.1)
+        set_fahren_und_warten(0, 90, 0.1)
         print('01-Initialisierung beendet')
 
         print('-----')
 
+        # Vorwärtsfahrt für 1 Sekunde
         print('02-1 Sekunde vorwärts')
-        self.speed = speedvorgabe
-        print(f'02-Geschwindigkeit : {self.speed}')
-        self.steering_angle = 90 
-        print(f'02-Lenkwinkel : {self.steering_angle}')        
-        time.sleep(1)
+        set_fahren_und_warten(speedvorgabe, 90, 1)
         print('02-Fertig!')
 
         print('-----')
 
+        # Anhalten und Einschlagen
         print('03-Anhalten und einschlagen')
-        self.speed = 0
-        print(f'03-Geschwindigkeit : {self.speed}')
-        self.steering_angle  = lenkwinkelvorgabe 
-        print(f'03-Lenkwinkel : {self.steering_angle}')
-        time.sleep(0.1)
+        set_fahren_und_warten(0, lenkwinkelvorgabe, 0.1)
         print('03-Angehalten')
 
         print('-----')
 
+        # Vorwärts rechts herum fahren
         print('04-8 Sekunden vorwärts rechtsrum fahren')
-        self.speed = speedvorgabe
-        print(f'04-Geschwindigkeit : {self.speed}')
-        self.steering_angle  = lenkwinkelvorgabe 
-        print(f'04-Lenkwinkel : {self.steering_angle}')        
-        time.sleep(8)
+        set_fahren_und_warten(speedvorgabe, lenkwinkelvorgabe, 8)
         print('04-Fertig!')
 
         print('-----')
 
+        # Anhalten
         print('05-Anhalten')
-        self.speed = 0
-        print(f'05-Geschwindigkeit : {self.speed}')
-        self.steering_angle  = lenkwinkelvorgabe  
-        print(f'05-Lenkwinkel : {self.steering_angle}')
-        time.sleep(0.1)
+        set_fahren_und_warten(0, lenkwinkelvorgabe, 0.1)
         print('05-Angehalten')
 
         print('-----')
 
+        # Rückwärtsfahrt rechts herum
         print('06-8 Sekunden rückwärts fahren')
-        self.speed = -(speedvorgabe)
-        print(f'06-Geschwindigkeit : {self.speed}')
-        self.steering_angle  = lenkwinkelvorgabe 
-        print(f'06-Lenkwinkel : {self.steering_angle}')        
-        time.sleep(8)
+        set_fahren_und_warten(-speedvorgabe, lenkwinkelvorgabe, 8)
         print('06-Fertig!')
 
         print('-----')
 
+        # Gerade stellen
         print('07-Anhalten und gerade stellen')
-        self.speed = 0
-        print(f'07-Geschwindigkeit : {self.speed}')
-        self.steering_angle  = 90 
-        print(f'07-Lenkwinkel : {self.steering_angle}')
-        time.sleep(0.1)
+        set_fahren_und_warten(0, 90, 0.1)
         print('07-Angehalten')
 
         print('-----')
 
+        # Rückwärtsfahrt für 1 Sekunde
         print('08-1 Sekunde rückwärts')
-        self.speed = -(speedvorgabe)
-        print(f'08-Geschwindigkeit : {self.speed}')
-        self.steering_angle = 80
-        time.sleep(.1)        
-        self.steering_angle = 90 
-        print(f'08-Lenkwinkel : {self.steering_angle}')        
-        time.sleep(1)
+        set_fahren_und_warten(-speedvorgabe, 90, 1)
         print('08-Fertig!')
 
-        self.speed = 0
+        # Endstopp
+        set_fahren_und_warten(0, 90, 0)
 
 
 if __name__ == '__main__':
     car = BaseCar()
 
     # Fahrmodus 1
-    car.fahrmodus_2()
+    car.fahrmodus_1()
 
     # print(car.steering_angle)
     # car.steering_angle = 20
