@@ -7,15 +7,28 @@ Diese Programm nutzt nur basisklassen.py!
 
 from basisklassen import FrontWheels, BackWheels
 #import traceback
+import json
 import time
 
 class BaseCar():
     def __init__(self):
-        self.frontwheels = FrontWheels()
-        self.backwheels = BackWheels()
+        try:
+            with open("config.json", "r") as f:
+                self.data = json.load(f)
+                self.turning_offset = self.data["turning_offset"]
+                self.forward_A = self.data["forward_A"]
+                self.forward_B = self.data["forward_B"]
+                print("Daten in config.json:")
+                print(" - Turning Offset: ", self.turning_offset)
+                print(" - Forward A: ", self.forward_A)
+                print(" - Forward B: ", self.forward_B)
+        except:
+            print("Keine geeignete Datei config.json gefunden!")
+        self.frontwheels = FrontWheels(turning_offset=self.turning_offset)
+        self.backwheels = BackWheels(self.forward_A, self.forward_B)
         self._steering_angle = self.frontwheels.turn(90)
         self._speed = 0
-        self._direction = 0
+        self._direction = 0       
 
     #--Lenkwinkel--#
     #Getter
@@ -66,6 +79,8 @@ class BaseCar():
     
     def fahrmodus_1(self):
         self.speed = 0
+        self.steering_angle = 80
+        time.sleep(.1)
         self.steering_angle = 90
         self.speed = 30
         print(f'Geschwindigkeit : {self.speed}')
@@ -78,29 +93,91 @@ class BaseCar():
         self.speed = 0
     
     def fahrmodus_2(self):
+        speedvorgabe = 30
+        lenkwinkelvorgabe = 120
+
+        print('01-Initialisierung')
         self.speed = 0
-        self.steering_angle = 90
-        self.speed = 30
-        print(f'Geschwindigkeit : {self.speed}')
+        print(f'01-Geschwindigkeit : {self.speed}')
+        self.steering_angle = 80
+        time.sleep(.1)        
+        self.steering_angle = 90 
+        print(f'01-Lenkwinkel : {self.steering_angle}')
+        time.sleep(.1)
+        print('01-Initialisierung beendet')
+
+        print('-----')
+
+        print('02-1 Sekunde vorwärts')
+        self.speed = speedvorgabe
+        print(f'02-Geschwindigkeit : {self.speed}')
+        self.steering_angle = 90 
+        print(f'02-Lenkwinkel : {self.steering_angle}')        
         time.sleep(1)
-        self.sleep = 0
-        self.steering_angle  = 150 # Testen für Winkelbegrenzung
-        print(f'Lenkwinkel : {self.steering_angle}')
-        self.speed = 30
-        print(f'Geschwindigkeit : {self.speed}')
-        time.sleep(8)
-        self.speed=0
-        time.sleep(1)
-        self.speed = -30
-        print(f'Geschwindigkeit : {self.speed}')
-        time.sleep(8)
+        print('02-Fertig!')
+
+        print('-----')
+
+        print('03-Anhalten und einschlagen')
         self.speed = 0
-        self.steering_angle = 90
-        print(f'Lenkwinkel : {self.steering_angle}')
+        print(f'03-Geschwindigkeit : {self.speed}')
+        self.steering_angle  = lenkwinkelvorgabe 
+        print(f'03-Lenkwinkel : {self.steering_angle}')
+        time.sleep(0.1)
+        print('03-Angehalten')
+
+        print('-----')
+
+        print('04-8 Sekunden vorwärts rechtsrum fahren')
+        self.speed = speedvorgabe
+        print(f'04-Geschwindigkeit : {self.speed}')
+        self.steering_angle  = lenkwinkelvorgabe 
+        print(f'04-Lenkwinkel : {self.steering_angle}')        
+        time.sleep(8)
+        print('04-Fertig!')
+
+        print('-----')
+
+        print('05-Anhalten')
+        self.speed = 0
+        print(f'05-Geschwindigkeit : {self.speed}')
+        self.steering_angle  = lenkwinkelvorgabe  
+        print(f'05-Lenkwinkel : {self.steering_angle}')
+        time.sleep(0.1)
+        print('05-Angehalten')
+
+        print('-----')
+
+        print('06-8 Sekunden rückwärts fahren')
+        self.speed = -(speedvorgabe)
+        print(f'06-Geschwindigkeit : {self.speed}')
+        self.steering_angle  = lenkwinkelvorgabe 
+        print(f'06-Lenkwinkel : {self.steering_angle}')        
+        time.sleep(8)
+        print('06-Fertig!')
+
+        print('-----')
+
+        print('07-Anhalten und gerade stellen')
+        self.speed = 0
+        print(f'07-Geschwindigkeit : {self.speed}')
+        self.steering_angle  = 90 
+        print(f'07-Lenkwinkel : {self.steering_angle}')
+        time.sleep(0.1)
+        print('07-Angehalten')
+
+        print('-----')
+
+        print('08-1 Sekunde rückwärts')
+        self.speed = -(speedvorgabe)
+        print(f'08-Geschwindigkeit : {self.speed}')
+        self.steering_angle = 80
+        time.sleep(.1)        
+        self.steering_angle = 90 
+        print(f'08-Lenkwinkel : {self.steering_angle}')        
         time.sleep(1)
-        self.speed = -30
-        print(f'Geschwindigkeit : {self.speed}')
-        time.sleep(1)
+        print('08-Fertig!')
+
         self.speed = 0
 
 
