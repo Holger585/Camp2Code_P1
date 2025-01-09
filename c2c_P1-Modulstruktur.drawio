@@ -1,0 +1,40 @@
+<mxfile host="65bd71144e">
+    <diagram id="LUHFGmalnMKrPT2asOJR" name="Page-1">
+        <mxGraphModel dx="893" dy="692" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="9" value="&amp;nbsp; &amp;nbsp;basisklassen.py" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="37" y="550" width="790" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="FrontWheels" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="317" y="570" width="160" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="BackWheels" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="147" y="570" width="160" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="UlltraSonic" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="487" y="570" width="160" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="Infrared" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="657" y="570" width="160" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="&amp;nbsp; &amp;nbsp;basecar.py" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="37" y="400" width="790" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="BaseCar" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="147" y="420" width="160" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="&amp;nbsp; &amp;nbsp;soniccar.py" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="37" y="250" width="790" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="SonicCar" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="657" y="270" width="160" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="&amp;nbsp; &amp;nbsp;main.py" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="37" y="90" width="790" height="130" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
