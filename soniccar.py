@@ -3,6 +3,7 @@ from basisklassen import Ultrasonic
 import time
 import random
 import csv
+import os
 
 class SonicCar(BaseCar):
     """
@@ -49,7 +50,7 @@ class SonicCar(BaseCar):
             time.sleep(0.2)
         self.stop()
 
-    def fahrmodus_4(self, speed=30, lenken=135):
+    def fahrmodus_4(self, speed=50, lenken=135):
         """
         Fahrmodus 4: Erkundungstour mit zufälligem Lenkwinkel und Rückwärtsfahrt bei Hindernissen.
 
@@ -81,7 +82,7 @@ class SonicCar(BaseCar):
             time (float): Zeit seit Start in Sekunden.
         """
         log.append({
-            "Zeit": time,
+            "Zeit": round(time, 1),
             "Geschwindigkeit": speed,
             "Fahrtrichtung": self.direction,
             "Lenkwinkel": steering_angle,
@@ -97,11 +98,18 @@ if __name__ == "__main__":
     car.fahrmodus_4()  # Fahrmodus 4 starten
 
     # Schreiben der Log-Daten in eine CSV-Datei
-    with open("fahrmodus_log.csv", mode="w", newline="") as csv_file:
+    file_name = "fahrmodus_log.csv"
+    file_exists = os.path.isfile(file_name)  # Prüfen, ob die Datei existiert
+
+    with open(file_name, mode="a", newline="") as csv_file:
         fieldnames = ["Zeit", "Geschwindigkeit", "Fahrtrichtung", "Lenkwinkel", "Abstand"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
-        writer.writeheader()  # Kopfzeile schreiben
+        # Schreibe die Kopfzeile, falls die Datei neu erstellt wurde
+        if not file_exists:
+            writer.writeheader()
+
         writer.writerows(log)  # Log-Daten in die Datei schreiben
 
-    print("Log-Daten wurden in 'fahrmodus_log.csv' gespeichert.")
+    print(f"Log-Daten wurden in '{file_name}' gespeichert.")
+
