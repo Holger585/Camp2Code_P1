@@ -27,5 +27,8 @@ share/python-wheels/
 MANIFEST
 
 *config.json
+fahrmodus_log.csv
 .vscode
 *settings.json
+test.py
+*test.py
