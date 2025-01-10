@@ -1,6 +1,16 @@
 import dash
 from dash import dcc, html
 import dash_bootstrap_components as dbc
+import json
+
+#Konfiguration einlesen
+try:
+    with open("config.json", "r") as f:
+        data = json.load(f)
+        ip_host = data.get("ip_host", "0.0.0.0")  # Fallback zu "0.0.0.0"
+except FileNotFoundError:
+    print("Fehler: config.json nicht gefunden. Standardwerte werden verwendet.")
+    ip_host = "0.0.0.0"
 
 # Erstelle eine Dash-App
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -90,4 +100,4 @@ app.layout = html.Div(
 
 # Starte die App
 if __name__ == "__main__":
-    app.run_server(debug=True, host="0.0.0.0", port=8051)
+    app.run_server(debug=True, host=ip_host, port=8051)

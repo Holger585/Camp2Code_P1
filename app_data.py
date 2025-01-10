@@ -1,7 +1,14 @@
 import pandas as pd
 
 # CSV-Datei einlesen
-df = pd.read_csv('path_to_your_file.csv')
+df = pd.read_csv('fahrmodus_log.csv')
+df['Geschwindigkeit'] = abs(df['Geschwindigkeit'])
+df['Fahrstrecke'] = df['Geschwindigkeit'] * df['Zeit'].diff().fillna(0)
 
-# Die ersten 5 Zeilen anzeigen (optional)
-print(df.head())
+print(f"Fahrzeit : {df['Zeit'].max()} s")
+print(f"Geschwindigkeit min.: {df['Geschwindigkeit'].min()} km/h")
+print(f"Geschwindigkeit max.: {df['Geschwindigkeit'].max()} km/h")
+print(f"Geschwindigkeit mean: {df['Geschwindigkeit'].mean()} km/h")
+print(f"Fahrstrecke gesamt: {df['Fahrstrecke'].sum()} km")
+print(df)
+
