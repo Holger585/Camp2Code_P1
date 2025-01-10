@@ -58,6 +58,7 @@ class SonicCar(BaseCar):
             speed (int): Geschwindigkeit des Fahrzeugs.
             lenken (int): Lenkwinkel für Richtungsänderungen.
         """
+        self.loggen(self.get_distance, self._speed, self._steering_angle, 0)
         while time.time() - start_time < 30:  # Schleife endet nach 30 Sekunden
             print("---")
             self.fahrmodus_3(speed=speed, angle=random.randint(45, 135))
