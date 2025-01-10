@@ -1,7 +1,9 @@
 import pandas as pd
 
 # CSV-Datei einlesen
-df = pd.read_csv('path_to_your_file.csv')
+df = pd.read_csv('fahrmodus_log.csv')
 
-# Die ersten 5 Zeilen anzeigen (optional)
-print(df.head())
+print(f"Fahrzeit : {df['Zeit'].max()} s")
+print(f"Geschwindigkeit min.: {df['Geschwindigkeit'].min()} km/h")
+print(f"Geschwindigkeit max.: {df['Geschwindigkeit'].max()} km/h")
+print(f"Geschwindigkeit mean: {df['Geschwindigkeit'].mean()} km/h")
