@@ -23,3 +23,11 @@ flowchart TD
     n5@{ shape: rect}
 
 ```
+
+
+# Anpassung igiignore
+git rm -r --cached .
+git add .
+git commit -m "Refreshed cache"
+
+-> Neustart VSCode
