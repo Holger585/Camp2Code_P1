@@ -25,7 +25,7 @@ flowchart TD
 ```
 
 
-## Anpassung gitignore
+## Aktualisierung Cache gitignore
 1. git rm -r --cached .
 2. git add .
 3. git commit -m "Refreshed cache"
