@@ -33,10 +33,10 @@ app.layout = dbc.Container(
         dbc.Row(
             [
                 dbc.Col(html.H2(f"Geschwindigkeit min: {result_df['Vmin'].iloc[0]} km/h", id="Vmin"), width={"size": 6, "offset": 3}),
-                dbc.Col(html.H2("Geschwindigkeit max", id="Vmax"), width={"size": 6, "offset": 3}),
-                dbc.Col(html.H2("Geschwindigkeit mean", id="Vmean"), width={"size": 6, "offset": 3}),
-                dbc.Col(html.H2("Fahrstrecke", id="Fahrstrecke"), width={"size": 6, "offset": 3}),
-                dbc.Col(html.H2("Fahrzeit", id="Fahrzeit"), width={"size": 6, "offset": 3})
+                dbc.Col(html.H2(f"Geschwindigkeit max: {result_df['Vmax'].iloc[0]} km/h", id="Vmax"), width={"size": 6, "offset": 3}),
+                dbc.Col(html.H2(f"Geschwindigkeit mean: {result_df['Vmean'].iloc[0]} km/h", id="Vmean"), width={"size": 6, "offset": 3}),
+                dbc.Col(html.H2(f"Fahrstrecke: {result_df['Strecke'].iloc[0]:.1f} mm", id="Fahrstrecke"), width={"size": 6, "offset": 3}),
+                dbc.Col(html.H2(f"Fahrzeit: {result_df['Fahrzeit'].iloc[0]} s", id="Fahrzeit"), width={"size": 6, "offset": 3})
             ],                                         
             className="mb-4",
         ),        
