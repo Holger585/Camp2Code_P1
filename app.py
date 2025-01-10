@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.express as px
 from soniccar import SonicCar
 import json
+from app_data import result_df
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -29,6 +30,16 @@ app.layout = dbc.Container(
             dbc.Col(html.H1("Hallo Dash Welt Projektphase 1", id="my-header"), width={"size": 6, "offset": 3}),
             className="mb-4",
         ),
+        dbc.Row(
+            [
+                dbc.Col(html.H2(f"Geschwindigkeit min: {result_df['Vmin'].iloc[0]} km/h", id="Vmin"), width={"size": 6, "offset": 3}),
+                dbc.Col(html.H2("Geschwindigkeit max", id="Vmax"), width={"size": 6, "offset": 3}),
+                dbc.Col(html.H2("Geschwindigkeit mean", id="Vmean"), width={"size": 6, "offset": 3}),
+                dbc.Col(html.H2("Fahrstrecke", id="Fahrstrecke"), width={"size": 6, "offset": 3}),
+                dbc.Col(html.H2("Fahrzeit", id="Fahrzeit"), width={"size": 6, "offset": 3})
+            ],                                         
+            className="mb-4",
+        ),        
         dbc.Row(
             [
                 dbc.Col(
@@ -72,6 +83,13 @@ app.layout = dbc.Container(
 def change_header(selected_value):
     return f"Meine Auswahl war: {selected_value}"
 
+# @app.callback(Output("Vmin", "children"), Input("my-dd", "value"))
+# def change_vmin(selected_id):
+#     vmin_value = result_df[result_df['ID'] == selected_id]['Vmin'].iloc[0]
+#     print(vmin_value)
+#     return f"Vmin: {vmin_value}"
+    
+
 
 @app.callback(
     Output("my-header", "children", allow_duplicate=True),
@@ -102,3 +120,4 @@ def stop_car(n_clicks):
 
 if __name__ == "__main__":
     app.run_server(debug=True, host=ip_host, port=8051)
+    print(result_df)

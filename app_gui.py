@@ -2,6 +2,7 @@ import dash
 from dash import dcc, html
 import dash_bootstrap_components as dbc
 import json
+from app_data import result_df
 
 #Konfiguration einlesen
 try:
