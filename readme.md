@@ -25,7 +25,7 @@ flowchart TD
 ```
 
 
-## Anpassung igiignore
+## Anpassung gitignore
 git rm -r --cached .
 git add .
 git commit -m "Refreshed cache"
