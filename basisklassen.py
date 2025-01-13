@@ -211,7 +211,7 @@ class Infrared(object):
         line = self.get_average(100)
         print('measured line:', line)
         self._references = (np.array(line) + np.array(background)) / 2
-        print('Reference:', self._references)
+        print('Reference:', self._references) 
 
     def test(self) -> None:
         """Tests the connection to the infrared module. Prints 10 measurements in 5 seconds.

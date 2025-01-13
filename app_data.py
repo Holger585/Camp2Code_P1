@@ -32,7 +32,7 @@ for i in range(len(df)):
             current_distance += df['Geschwindigkeit'].iloc[i-1] * time_diff
     else:
         current_distance = 0
-    fahrstrecke.append(abs(current_distance))
+    fahrstrecke.append(current_distance)
 
 df['Fahrstrecke'] = fahrstrecke
 
@@ -47,8 +47,8 @@ for i in range(len(df)):
             'Fahrzeit': [df[df['FahrtID'] == fahrt_id_result]['Zeit'].sum()],
             'Vmin': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].min()],
             'Vmax': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].max()],
-            'Vmean': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].mean()],
-            'Fahrstrecke': [df[df['FahrtID'] == fahrt_id_result]['Fahrstrecke'].sum()]
+            'Vmean': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].abs().mean()],
+            'Fahrstrecke': [df[df['FahrtID'] == fahrt_id_result]['Fahrstrecke'].abs().sum()]
         })])
 
 if __name__ == "__main__":
