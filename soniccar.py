@@ -83,7 +83,7 @@ class SonicCar(BaseCar):
             time (float): Zeit seit Start in Sekunden.
         """
         log.append({
-            "Zeit": round(time, 1),
+            "Zeit": round(time, 3),
             "Geschwindigkeit": speed,
             "Fahrtrichtung": self.direction,
             "Lenkwinkel": steering_angle,
