@@ -6,7 +6,8 @@ from soniccar import SonicCar
 import json
 from app_data import result_df
 
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = Dash(__name__, external_stylesheets=[dbc.themes.LUMEN])
+# app = Dash(__name__, external_stylesheets=[dbc.themes.CYBORG])
 
 auto = SonicCar()
 
@@ -32,13 +33,54 @@ app.layout = dbc.Container(
         ),
         dbc.Row(
             [
-                dbc.Col(html.H2(f"Geschwindigkeit min: {result_df['Vmin'].iloc[0]} km/h", id="Vmin"), width={"size": 6, "offset": 3}),
-                dbc.Col(html.H2(f"Geschwindigkeit max: {result_df['Vmax'].iloc[0]} km/h", id="Vmax"), width={"size": 6, "offset": 3}),
-                dbc.Col(html.H2(f"Geschwindigkeit mean: {result_df['Vmean'].iloc[0]} km/h", id="Vmean"), width={"size": 6, "offset": 3}),
-                dbc.Col(html.H2(f"Fahrstrecke: {result_df['Strecke'].iloc[0]:.1f} mm", id="Fahrstrecke"), width={"size": 6, "offset": 3}),
-                dbc.Col(html.H2(f"Fahrzeit: {result_df['Fahrzeit'].iloc[0]} s", id="Fahrzeit"), width={"size": 6, "offset": 3})
+            dbc.Card(                
+                dbc.CardBody(
+                    children=[
+                        html.P("Geschwindigkeit min:"),
+                        html.P(f"{result_df['Vmin'].iloc[0]:.1f} km/h", id="Vmin"),
+                    ]
+                ),
+                style={'width': '14rem', 'margin': '15px'}
+                ),
+            dbc.Card(                                
+                dbc.CardBody(
+                    children=[
+                        html.P("Geschwindigkeit max:"),
+                        html.P(f"{result_df['Vmax'].iloc[0]:.1f} km/h", id="Vmax"),
+                    ]
+                ),
+                style={'width': '14rem', 'margin': '15px', 'padding' : '0px'}
+                ),  
+            dbc.Card(                                
+                dbc.CardBody(
+                    children=[
+                        html.P("Geschwindigkeit mean:"),
+                        html.P(f"{result_df['Vmean'].iloc[0]:.1f} km/h", id="Vmean"),
+                    ]
+                ),
+                style={'width': '14rem', 'margin': '15px'}
+                ),  
+            dbc.Card(                                
+                dbc.CardBody(
+                    children=[
+                        html.P("Fahrstrecke:"),
+                        html.P(f"{result_df['Strecke'].iloc[0]:.1f} mm", id="Fahrstrecke"),
+                    ]
+                ),
+                style={'width': '14rem', 'margin': '15px'}
+                ),     
+            dbc.Card(                                
+                dbc.CardBody(
+                    children=[
+                        html.P("Fahrzeit:"),
+                        html.P(f"{result_df['Fahrzeit'].iloc[0]:.1f} s", id="Fahrzeit"),
+                    ]
+                ),
+                style={'width': '14rem', 'margin': '15px'}
+                )                                                                    
+
             ],                                         
-            className="mb-4",
+            # className="mb-4",
         ),        
         dbc.Row(
             [
