@@ -16,7 +16,7 @@ except FileNotFoundError:
     ip_host = "0.0.0.0"
 
 # Dash-App erstellen
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = Dash(__name__, external_stylesheets=[dbc.themes.CYBORG])
 
 #Setzt Variable am Anfang auf 1
 f_id = 1
