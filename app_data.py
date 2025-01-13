@@ -10,7 +10,7 @@ df['Diff_Zeit'] = df['Zeit'].diff().shift(-1).fillna(0)
 # Erkennung der Fahrten basierend auf der Spalte Zeit: Von 0 bis 0 = 1 Fahrt.
 # Schreibt die Fahrten als ID in eine neue Spalte des df
 fahrt_ids = []
-current_fahrt_id = 1
+current_fahrt_id = 0
 for i in range(len(df)):
     if df['Zeit'].iloc[i] == 0:
         # Erhöht die fart_id um 1, wenn eine neue 0 bei Zeit gefunden wird.
