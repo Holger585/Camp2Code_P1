@@ -48,7 +48,7 @@ for i in range(len(df)):
             'Vmin': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].min()],
             'Vmax': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].max()],
             'Vmean': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].abs().mean()],
-            'Fahrstrecke': [df[df['FahrtID'] == fahrt_id_result]['Fahrstrecke'].sum()]
+            'Fahrstrecke': [df[df['FahrtID'] == fahrt_id_result]['Fahrstrecke'].abs().sum()]
         })])
 
 if __name__ == "__main__":
