@@ -140,7 +140,17 @@ def update_diagrams(selected_fahrt):
             title=f"Geschwindigkeit über Zeit (Fahrt {selected_fahrt})",
             xaxis_title="Zeit (s)",
             yaxis_title="Geschwindigkeit (km/h)",
-            height=400
+            height=400,
+            shapes=[  # Hinzufügen der roten Linie
+                dict(
+                    type="line",
+                    x0=filtered_df['Zeit'].min(),
+                    x1=filtered_df['Zeit'].max(),
+                    y0=0,
+                    y1=0,
+                    line=dict(color="black", width=2),
+                )
+            ]
         )
     )
 
@@ -157,7 +167,17 @@ def update_diagrams(selected_fahrt):
             title=f"Fahrstrecke über Zeit (Fahrt {selected_fahrt})",
             xaxis_title="Zeit (s)",
             yaxis_title="Fahrstrecke (km)",
-            height=400
+            height=400,
+            shapes=[  # Hinzufügen der roten Linie
+                dict(
+                    type="line",
+                    x0=filtered_df['Zeit'].min(),
+                    x1=filtered_df['Zeit'].max(),
+                    y0=0,
+                    y1=0,
+                    line=dict(color="black", width=2),
+                )
+            ]
         )
     )
 
