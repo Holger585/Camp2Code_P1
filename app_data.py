@@ -2,7 +2,7 @@ import pandas as pd
 
 # CSV-Datei einlesen
 df = pd.read_csv('fahrmodus_log.csv')
-df['Geschwindigkeit'] = abs(df['Geschwindigkeit'])
+#df['Geschwindigkeit'] = abs(df['Geschwindigkeit'])
 df['Diff_Zeit'] = df['Zeit'].diff().shift(-1).fillna(0)
 
 
