@@ -7,4 +7,8 @@ import csv
 import os
 
 class SensorCar():
-    pass
+    def __init__(self):
+        """
+        Initialisiert das Fahrzeug und den Ultraschallsensor.
+        """
+        super().__init__()
