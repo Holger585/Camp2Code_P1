@@ -6,6 +6,9 @@ import json
 from dash.dependencies import Output, Input
 from app_data import *
 from sensorcar import *
+import numpy as np
+
+car = SensorCar()
 
 # Konfigurationslogik
 try:
@@ -84,15 +87,15 @@ app.layout = dbc.Container([
                     ]
                 ),
                 style={'width': '14rem', 'margin': '15px'}
-                ) ,     
+                ),     
             dbc.Card(   
                 dbc.CardBody(
                     children=[
-                        html.Button('Kalibrierung!', id='btCali', n_clicks=0),
+                        dbc.Button('Kalibrierung!', id='btCali', n_clicks=0),
                         html.Div(id='output-container-button')
-                    ] ,
-                style={'width': '14rem', 'margin': '15px'}
-                ) ,                                            
+                    ] 
+                ),
+                style={'width': '14rem', 'margin': '15px'}                                            
                 )                                                                    
 
             ],                                          
@@ -114,16 +117,26 @@ app.layout = dbc.Container([
 
 # Callback zur Aktualisierung der Diagramme basierend auf der Fahrtauswahl
 @app.callback(
-    Output('output-container-button', 'children'),
+    Output('btCali', 'children'),
+    Output('btCali', 'color'),
     [Input('btCali', 'n_clicks')]
 )
 def update_output(n_clicks):
-    if n_clicks > 0:
-        car = SensorCar()
-        car.frontwheels.turn(90)
-        car.ir_cali()
-        return f'Startnr. {n_clicks}!'
-    return 'Alles klar für die Kalibrierung'
+    if n_clicks >= 1:
+        if n_clicks % 3 == 1:
+            car.frontwheels.turn(90)
+            return f'Fahrzeug bitte auf den Hintergrund stellen. {n_clicks % 3}', 'secondary'
+        elif n_clicks % 3 == 2:
+            car.background = car.infrared.get_average(100)
+            print('measured background:', car.background)
+            return f'Fahrzeug bitte auf die Linie stellen. {n_clicks % 3}', 'warning'
+        elif n_clicks % 3 == 0:
+            line = car.infrared.get_average(100)
+            print('measured line:', line)
+            car.infrared._references = (np.array(line) + np.array(car.background)) / 2
+            print('Reference:', car.infrared._references)
+            return f'Kalibrierung abgeschlossen. {n_clicks % 3}', 'info'
+    return f'Klicke für Kalibrierung {n_clicks}', 'primary'
 
 @app.callback(
     [
@@ -207,4 +220,5 @@ def update_diagrams(selected_fahrt):
 
 if __name__ == "__main__":
     app.run_server(debug=True, host=ip_host, port=8053)
-    print(df)
+    
+    # print(df)
