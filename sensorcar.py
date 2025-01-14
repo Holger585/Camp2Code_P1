@@ -71,7 +71,8 @@ class SensorCar(SonicCar):
         # Terminal-Einstellungen für ESC-Abbruch vorbereiten
         old_settings = termios.tcgetattr(sys.stdin)
         tty.setcbreak(sys.stdin.fileno())
-        self.drive(speed, angle)        
+        self.drive(speed, angle)
+        time.sleep(0.2)        
         try:
             while True:
                 # 1) Zeitlimit prüfen (120 Sekunden)
@@ -89,47 +90,58 @@ class SensorCar(SonicCar):
                 ir_value = self.infrared.read_digital() 
                 print(ir_value)
                 # Fahrzeug stoppen                
-                # if ir_value == [1,1,1,1,1] or ir_value == [1,1,1,1,0] or ir_value == [0,1,1,1,1]:
                 if ir_value == [1,1,1,1,1]:
                     self.stop()
                     self.frontwheels.turn(90)   
                     break          
                 # Links lenken Stufe 4
                 elif ir_value[0] and ir_value[1] == False:
-                    self.drive(int(speed*0.5),55)
+                    angle = 55
+                    self.drive(int(speed*0.5),angle)
                 # Rechts lenken Stufe 4
                 elif ir_value[3] == False and ir_value[4]:
-                    self.drive(int(speed*0.5),125) 
+                    angle = 125
+                    self.drive(int(speed*0.5),angle) 
                 # Links lenken Stufe 3
                 elif ir_value[0] and ir_value[1]:
-                    self.drive(int(speed*0.7),70) 
+                    angle = 70
+                    self.drive(int(speed*0.7),angle) 
                 # Rechts lenken Stufe 3
                 elif ir_value[3] and ir_value[4]:
-                    self.drive(int(speed*0.7),110)  
+                    angle = 110
+                    self.drive(int(speed*0.7),angle)  
                 # Links lenken Stufe 2
                 elif ir_value[0] == False and ir_value[1]:
-                    self.drive(int(speed*0.8),80) 
+                    angle = 80
+                    self.drive(int(speed*0.8),angle) 
                 # Rechts lenken Stufe 2
                 elif ir_value[3] and ir_value[4] == False:
-                    self.drive(int(speed*0.8),100) 
+                    angle = 100
+                    self.drive(int(speed*0.8),angle) 
                 # Links lenken Stufe 1
                 elif ir_value[1] and ir_value[2]:
-                    self.drive(int(speed*0.9),85)
+                    angle = 85
+                    self.drive(speed,angle)
                 # Rechts lenken Stufe 1
                 elif ir_value[2] and ir_value[3]:
-                    self.drive(int(speed*0.9),95)
+                    angle = 95
+                    self.drive(speed,angle)
                 # Geradeaus fahren
                 elif ir_value[2]:
-                    self.drive(speed,90) 
+                    angle = 90
+                    self.drive(speed,angle) 
                 # Linie nicht erkannt
                 elif ir_value == [0,0,0,0,0]:  
                     # Aktivierung Fahrmodus 6
-                    if modus == 6 and cnt > 3:
+                    # Counter cnt zur Verzögerung der Korrekturfahrt
+                    if modus == 6 and cnt > 5:
                         angle = 180 - angle
-                        self.drive(-30,angle)  
+                        self.drive(-30,angle)
+                        print(angle)  
                         cnt = 0  
                     else:
-                        cnt = cnt + 1                                                                
+                        cnt = cnt + 1
+                    time.sleep(0.1)                                                                
                 
         finally:
             # Terminal-Einstellungen wiederherstellen und Auto stoppen
@@ -137,12 +149,6 @@ class SensorCar(SonicCar):
             self.stop()
             print("Fahrmodus beendet.")
             
-
-
-
-
-
-
 if __name__ == "__main__":
     car = SensorCar()
     car.frontwheels.turn(90)
@@ -152,4 +158,3 @@ if __name__ == "__main__":
     print(car.infrared._references)
     print(car.infrared.read_digital())
     car.fahrmodus_5(75,90,6)
-
