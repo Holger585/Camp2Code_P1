@@ -55,14 +55,23 @@ class SensorCar(SonicCar):
         print(self.infrared._references)
 
 
-    def fahrmodus_5(self):
+    def fahrmodus_5(self, speed = 30, angle = 90):
+
+        input('Bitte das Fahrzeug auf die Linie stellen.')
+        while True:
+            if self.infrared.read_digital != [0,0,1,0,0]:
+                print(self.infrared.read_digital)
+                input('Fahrzeug steht nicht auf der Linie. Bitte mittig positionieren.')
+            else:
+                print('Linie erkannt. Fahrmodus 5 wird gestartet.')
+                break
+
         start_time = time.time()
         
         # Terminal-Einstellungen für ESC-Abbruch vorbereiten
         old_settings = termios.tcgetattr(sys.stdin)
         tty.setcbreak(sys.stdin.fileno())
-        
-        input('Bitte das Fahrzeug auf die Linie stellen.')
+        self.drive(speed, angle)        
         try:
             while True:
                 # 1) Zeitlimit prüfen (120 Sekunden)
@@ -77,7 +86,37 @@ class SensorCar(SonicCar):
                         print("Abbruch durch ESC-Taste.")
                         break
 
-            input('Fahrzeug steht nicht auf der Linie. Bitte positionieren.')
+                ir_value = self.infrared.read_digital 
+                # Geradeaus fahren
+                if ir_value == [0,0,1,0,0] | [0,1,1,1,0]:
+                    self.frontwheels.turn(90)
+                # Rechts lenken Stufe 1
+                elif ir_value[2] == 1 & ir_value[3] == 1:
+                    self.frontwheels.turn(95)
+                # Rechts lenken Stufe 2
+                elif ir_value[3] == 1:
+                    self.frontwheels.turn(100)                    
+                # Rechts lenken Stufe 3
+                elif ir_value[3] == 1 & ir_value[4] == 1:
+                    self.frontwheels.turn(110)  
+                # Rechts lenken Stufe 4
+                elif ir_value[4] == 1:
+                    self.frontwheels.turn(125) 
+                # Links lenken Stufe 1
+                elif ir_value[2] == 1 & ir_value[3] == 1:
+                    self.frontwheels.turn(85)
+                # Links lenken Stufe 2
+                elif ir_value[3] == 1:
+                    self.frontwheels.turn(80)                    
+                # Links lenken Stufe 3
+                elif ir_value[3] == 1 & ir_value[4] == 1:
+                    self.frontwheels.turn(70)  
+                # Links lenken Stufe 4
+                elif ir_value[4] == 1:
+                    self.frontwheels.turn(55)                                           
+                time.sleep(0.5)
+
+                
         finally:
             # Terminal-Einstellungen wiederherstellen und Auto stoppen
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
@@ -98,5 +137,3 @@ if __name__ == "__main__":
     # car.ir_cali()
     print(car.infrared._references)
     print(car.infrared.read_digital())
-    input('Bitte das Fahrzeug auf die Linie stellen.')
-
