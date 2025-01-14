@@ -66,7 +66,7 @@ class BaseCar:
             speed_value (int): Die gewünschte Geschwindigkeit (-100 bis 100 ausgenommen -30 bis 30).
         """
         self._speed = max(-100, min(100, speed_value))
-        if speed_value > -30 and speed_value < 30:
+        if -30 < speed_value < 30:
             if speed_value == 0:
                 pass
             elif speed_value < 0:
