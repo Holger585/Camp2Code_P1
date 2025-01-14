@@ -54,28 +54,35 @@ class SensorCar(SonicCar):
 
         print(self.infrared._references)
 
-    start_time = time.time()
-        
-    # Terminal-Einstellungen für ESC-Abbruch vorbereiten
-    old_settings = termios.tcgetattr(sys.stdin)
-    tty.setcbreak(sys.stdin.fileno())
 
     def fahrmodus_5(self):
+        start_time = time.time()
+        
+        # Terminal-Einstellungen für ESC-Abbruch vorbereiten
+        old_settings = termios.tcgetattr(sys.stdin)
+        tty.setcbreak(sys.stdin.fileno())
+        
         input('Bitte das Fahrzeug auf die Linie stellen.')
-        while True:
-            # 1) Zeitlimit prüfen (120 Sekunden)
-            if time.time() - start_time > 120:
-                print("Zeitlimit (120s) erreicht. Fahrmodus beenden.")
-                break
-
-            # 2) ESC-Abfrage: ohne Blockieren
-            if select.select([sys.stdin], [], [], 0)[0]:
-                key = sys.stdin.read(1)
-                if ord(key) == 27:  # ESC-Taste
-                    print("Abbruch durch ESC-Taste.")
+        try:
+            while True:
+                # 1) Zeitlimit prüfen (120 Sekunden)
+                if time.time() - start_time > 120:
+                    print("Zeitlimit (120s) erreicht. Fahrmodus beenden.")
                     break
 
+                # 2) ESC-Abfrage: ohne Blockieren
+                if select.select([sys.stdin], [], [], 0)[0]:
+                    key = sys.stdin.read(1)
+                    if ord(key) == 27:  # ESC-Taste
+                        print("Abbruch durch ESC-Taste.")
+                        break
+
             input('Fahrzeug steht nicht auf der Linie. Bitte positionieren.')
+        finally:
+            # Terminal-Einstellungen wiederherstellen und Auto stoppen
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+            self.stop()
+            print("Fahrmodus beendet.")
             
 
 
