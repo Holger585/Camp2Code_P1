@@ -63,9 +63,18 @@ class BaseCar:
         Setzt die Geschwindigkeit und begrenzt sie auf zulässige Werte.
 
         Args:
-            speed_value (int): Die gewünschte Geschwindigkeit (-100 bis 100).
+            speed_value (int): Die gewünschte Geschwindigkeit (-100 bis 100 ausgenommen -30 bis 30).
         """
         self._speed = max(-100, min(100, speed_value))
+        if speed_value > -30 and speed_value < 30:
+            if speed_value == 0:
+                pass
+            elif speed_value < 0:
+                self._speed = -30
+                print(f"Geschwindigkeit angepasst: {speed_value} -> {self._speed} km/h")
+            else:
+                self._speed = 30        
+                print(f"Geschwindigkeit angepasst: {speed_value} -> {self._speed} km/h")
 
     @property
     def direction(self):

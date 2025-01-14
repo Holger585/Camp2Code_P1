@@ -101,33 +101,33 @@ class SensorCar(SonicCar):
                 # Links lenken Stufe 4
                 elif ir_value[0] and ir_value[1] == False:
                     angle = 55
-                    speed_value = speed * 0.3
-                    self.drive(int(speed_value),angle)
+                    speed_value = int(speed * 0.5)
+                    self.drive(speed_value,angle)
                 # Rechts lenken Stufe 4
                 elif ir_value[3] == False and ir_value[4]:
                     angle = 125
-                    speed_value = speed * 0.3
-                    self.drive(int(speed_value),angle) 
+                    speed_value = int(speed * 0.5)
+                    self.drive(speed_value,angle) 
                 # Links lenken Stufe 3
                 elif ir_value[0] and ir_value[1]:
                     angle = 70
-                    speed_value = speed * 0.5
-                    self.drive(int(speed_value),angle) 
+                    speed_value = int(speed * 0.7)
+                    self.drive(speed_value,angle) 
                 # Rechts lenken Stufe 3
                 elif ir_value[3] and ir_value[4]:
                     angle = 110
-                    speed_value = speed * 0.5
-                    self.drive(int(speed_value),angle)  
+                    speed_value = int(speed * 0.7)
+                    self.drive(speed_value,angle)  
                 # Links lenken Stufe 2
                 elif ir_value[0] == False and ir_value[1]:
                     angle = 80
-                    speed_value = speed * 0.8
-                    self.drive(int(speed_value),angle) 
+                    speed_value = int(speed * 0.85)
+                    self.drive(speed_value,angle) 
                 # Rechts lenken Stufe 2
                 elif ir_value[3] and ir_value[4] == False:
                     angle = 100
-                    speed_value = speed * 0.8
-                    self.drive(int(speed_value),angle) 
+                    speed_value = int(speed * 0.85)
+                    self.drive(speed_value,angle) 
                 # Links lenken Stufe 1
                 elif ir_value[1] and ir_value[2]:
                     angle = 85
@@ -147,7 +147,7 @@ class SensorCar(SonicCar):
                 elif ir_value == [0,0,0,0,0]:  
                     # Aktivierung Fahrmodus 6
                     # Counter cnt zur Verzögerung der Korrekturfahrt
-                    if modus == 6 and cnt > 10:
+                    if modus == 6 and cnt > int(speed/15):
                         angle = 180 - angle
                         speed_value = -30
                         self.drive(speed_value,angle) 
@@ -196,7 +196,7 @@ if __name__ == "__main__":
     log = []  # Liste zum Speichern der Log-Daten
     start_time = time.time()  # Startzeitpunkt speichern  
     car.loggen(car.get_distance, car._speed, car._steering_angle, 0, car.infrared.read_digital())  
-    car.fahrmodus_5(100,90,6)
+    car.fahrmodus_5(75,90,6)
 
     # Schreiben der Log-Daten in eine CSV-Datei
     file_name = "fahrmodus6_log.csv"

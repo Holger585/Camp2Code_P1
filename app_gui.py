@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import json
 from dash.dependencies import Output, Input
 from app_data import *
+from sensorcar import *
 
 # Konfigurationslogik
 try:
@@ -83,6 +84,15 @@ app.layout = dbc.Container([
                     ]
                 ),
                 style={'width': '14rem', 'margin': '15px'}
+                ) ,     
+            dbc.Card(   
+                dbc.CardBody(
+                    children=[
+                        html.Button('Kalibrierung!', id='btCali', n_clicks=0),
+                        html.Div(id='output-container-button')
+                    ] ,
+                style={'width': '14rem', 'margin': '15px'}
+                ) ,                                            
                 )                                                                    
 
             ],                                          
@@ -103,6 +113,18 @@ app.layout = dbc.Container([
 ], fluid=True)
 
 # Callback zur Aktualisierung der Diagramme basierend auf der Fahrtauswahl
+@app.callback(
+    Output('output-container-button', 'children'),
+    [Input('btCali', 'n_clicks')]
+)
+def update_output(n_clicks):
+    if n_clicks > 0:
+        car = SensorCar()
+        car.frontwheels.turn(90)
+        car.ir_cali()
+        return f'Startnr. {n_clicks}!'
+    return 'Alles klar für die Kalibrierung'
+
 @app.callback(
     [
         Output('geschwindigkeit-zeit', 'figure'),
