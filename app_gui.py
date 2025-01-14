@@ -92,10 +92,10 @@ app.layout = dbc.Container([
                 dbc.CardBody(
                     children=[
                         dbc.Button('Kalibrierung!', id='btCali', n_clicks=0),
-                        html.Div(id='output-container-button')
+                        html.Div(id='cali_value')
                     ] 
                 ),
-                style={'width': '14rem', 'margin': '15px'}                                            
+                style={'width': '24rem', 'margin': '15px'}                                            
                 )                                                                    
 
             ],                                          
@@ -119,24 +119,26 @@ app.layout = dbc.Container([
 @app.callback(
     Output('btCali', 'children'),
     Output('btCali', 'color'),
+    Output('cali_value', 'children'),
     [Input('btCali', 'n_clicks')]
 )
 def update_output(n_clicks):
     if n_clicks >= 1:
         if n_clicks % 3 == 1:
             car.frontwheels.turn(90)
-            return f'Fahrzeug bitte auf den Hintergrund stellen. {n_clicks % 3}', 'secondary'
+            return f'Fahrzeug auf Hintergrund stellen.', 'warning' , ''
         elif n_clicks % 3 == 2:
             car.background = car.infrared.get_average(100)
             print('measured background:', car.background)
-            return f'Fahrzeug bitte auf die Linie stellen. {n_clicks % 3}', 'warning'
+            return f'Fahrzeug auf Linie stellen.', 'warning' , f'Hintergrund: {car.background}'
         elif n_clicks % 3 == 0:
             line = car.infrared.get_average(100)
             print('measured line:', line)
             car.infrared._references = (np.array(line) + np.array(car.background)) / 2
             print('Reference:', car.infrared._references)
-            return f'Kalibrierung abgeschlossen. {n_clicks % 3}', 'info'
-    return f'Klicke für Kalibrierung {n_clicks}', 'primary'
+            car.save_reference(car.infrared._references)
+            return f'Neukalibrierung starten', 'primary' , f'Hintergrund: {car.background} Vordergrund: {line} Schwellwert: {car.infrared._references}'
+    return f'Kalibrierung starten', 'primary' , ''
 
 @app.callback(
     [

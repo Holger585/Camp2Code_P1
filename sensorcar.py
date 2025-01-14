@@ -35,9 +35,8 @@ class SensorCar(SonicCar):
     def get_infrared(self):
         self._ir_value = self.infrared.read_digital()
         return self._ir_value
-
-    def ir_cali(self):
-        self.infrared.cali_references()    
+    
+    def save_reference(self, reference):
         try:
             #config.json öffnen
             with open("config.json", "r") as f:
@@ -45,7 +44,7 @@ class SensorCar(SonicCar):
 
             #config.json mit neuem Datensatz schreiben
             with open("config.json", "w") as f:
-                self.data["ir_init"] = list(self.infrared._references)
+                self.data["ir_init"] = list(reference)
                 json.dump(self.data, f, indent=4)
 
         except FileNotFoundError as e:
@@ -53,8 +52,11 @@ class SensorCar(SonicCar):
             self.data["ir_init"] = list(self.infrared._references)
         except Exception as e:
             print(e)
-            self.data["ir_init"] = list(self.infrared._references)
+            self.data["ir_init"] = list(self.infrared._references)   
 
+    def ir_cali(self):
+        self.infrared.cali_references() 
+        self.save_reference(self.infrared._references)   
         print(self.infrared._references)
 
 
