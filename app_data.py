@@ -1,7 +1,7 @@
 import pandas as pd
 
 # CSV-Datei einlesen
-df = pd.read_csv('fahrmodus_log.csv')
+df = pd.read_csv('fahrmodus6_log.csv')
 #df['Geschwindigkeit'] = abs(df['Geschwindigkeit'])
 df['Diff_Zeit'] = df['Zeit'].diff().shift(-1).fillna(0)
 
@@ -29,7 +29,7 @@ for i in range(len(df)):
             current_distance = 0
         else:
             time_diff = df['Zeit'].iloc[i] - df['Zeit'].iloc[i-1]
-            current_distance += df['Geschwindigkeit'].iloc[i-1] * time_diff
+            current_distance += abs(df['Geschwindigkeit'].iloc[i-1]) * time_diff
     else:
         current_distance = 0
     fahrstrecke.append(current_distance)
@@ -44,11 +44,11 @@ for i in range(len(df)):
         fahrt_id_result = df['FahrtID'].iloc[i]
         result_df= pd.concat([result_df,pd.DataFrame({
             'FahrtID': fahrt_id_result,
-            'Fahrzeit': [df[df['FahrtID'] == fahrt_id_result]['Zeit'].sum()],
+            'Fahrzeit': [df[df['FahrtID'] == fahrt_id_result]['Zeit'].max()],
             'Vmin': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].min()],
             'Vmax': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].max()],
             'Vmean': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].abs().mean()],
-            'Fahrstrecke': [df[df['FahrtID'] == fahrt_id_result]['Fahrstrecke'].abs().sum()]
+            'Fahrstrecke': [df[df['FahrtID'] == fahrt_id_result]['Fahrstrecke'].max()]
         })])
 
 if __name__ == "__main__":

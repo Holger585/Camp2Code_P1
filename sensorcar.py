@@ -6,6 +6,9 @@ import tty
 import termios
 import time
 import json
+import os
+import random
+import csv
 
 class SensorCar(SonicCar):
     def __init__(self):
@@ -66,13 +69,14 @@ class SensorCar(SonicCar):
         #         print('Linie erkannt. Fahrmodus 5 wird gestartet.')
         #         break
         cnt = 0
-        start_time = time.time()
-        
+        speed_value = speed
+        start_time = time.time()  
         # Terminal-Einstellungen für ESC-Abbruch vorbereiten
         old_settings = termios.tcgetattr(sys.stdin)
         tty.setcbreak(sys.stdin.fileno())
-        self.drive(speed, angle)
-        time.sleep(0.2)        
+        self.drive(speed_value, angle)
+        time.sleep(0.2)   
+
         try:
             while True:
                 # 1) Zeitlimit prüfen (120 Sekunden)
@@ -97,57 +101,88 @@ class SensorCar(SonicCar):
                 # Links lenken Stufe 4
                 elif ir_value[0] and ir_value[1] == False:
                     angle = 55
-                    self.drive(int(speed*0.5),angle)
+                    speed_value = speed * 0.3
+                    self.drive(int(speed_value),angle)
                 # Rechts lenken Stufe 4
                 elif ir_value[3] == False and ir_value[4]:
                     angle = 125
-                    self.drive(int(speed*0.5),angle) 
+                    speed_value = speed * 0.3
+                    self.drive(int(speed_value),angle) 
                 # Links lenken Stufe 3
                 elif ir_value[0] and ir_value[1]:
                     angle = 70
-                    self.drive(int(speed*0.7),angle) 
+                    speed_value = speed * 0.5
+                    self.drive(int(speed_value),angle) 
                 # Rechts lenken Stufe 3
                 elif ir_value[3] and ir_value[4]:
                     angle = 110
-                    self.drive(int(speed*0.7),angle)  
+                    speed_value = speed * 0.5
+                    self.drive(int(speed_value),angle)  
                 # Links lenken Stufe 2
                 elif ir_value[0] == False and ir_value[1]:
                     angle = 80
-                    self.drive(int(speed*0.8),angle) 
+                    speed_value = speed * 0.8
+                    self.drive(int(speed_value),angle) 
                 # Rechts lenken Stufe 2
                 elif ir_value[3] and ir_value[4] == False:
                     angle = 100
-                    self.drive(int(speed*0.8),angle) 
+                    speed_value = speed * 0.8
+                    self.drive(int(speed_value),angle) 
                 # Links lenken Stufe 1
                 elif ir_value[1] and ir_value[2]:
                     angle = 85
-                    self.drive(speed,angle)
+                    speed_value = speed
+                    self.drive(speed_value,angle)
                 # Rechts lenken Stufe 1
                 elif ir_value[2] and ir_value[3]:
                     angle = 95
-                    self.drive(speed,angle)
+                    speed_value = speed
+                    self.drive(speed_value,angle)
                 # Geradeaus fahren
                 elif ir_value[2]:
                     angle = 90
-                    self.drive(speed,angle) 
+                    speed_value = speed
+                    self.drive(speed_value,angle) 
                 # Linie nicht erkannt
                 elif ir_value == [0,0,0,0,0]:  
                     # Aktivierung Fahrmodus 6
                     # Counter cnt zur Verzögerung der Korrekturfahrt
-                    if modus == 6 and cnt > 5:
+                    if modus == 6 and cnt > 10:
                         angle = 180 - angle
-                        self.drive(-30,angle)
-                        print(angle)  
+                        speed_value = -30
+                        self.drive(speed_value,angle) 
                         cnt = 0  
                     else:
                         cnt = cnt + 1
-                    time.sleep(0.1)                                                                
+                    time.sleep(0.1)  
+                self.loggen(self.get_distance, speed_value, angle, time.time() - start_time, ir_value)                                                               
                 
         finally:
             # Terminal-Einstellungen wiederherstellen und Auto stoppen
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
             self.stop()
             print("Fahrmodus beendet.")
+
+    def loggen(self, distance, speed, steering_angle, time, ir_value):
+        """
+        Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.
+
+        Args:
+            distance (int): Gemessener Abstand.
+            speed (int): Geschwindigkeit des Fahrzeugs.
+            steering_angle (int): Aktueller Lenkwinkel.
+            time (float): Zeit seit Start in Sekunden.
+            ir_status (list): Status der IR-LED´s
+        """
+        log.append({
+            "Zeit": round(time, 3),
+            "Geschwindigkeit": speed,
+            "Fahrtrichtung": self.direction,
+            "Lenkwinkel": steering_angle,
+            "Abstand": distance,
+            "IR_Status": ir_value
+        })
+        print(f"Zeit: {time:.1f}, Geschwindigkeit: {speed}, Fahrtrichtung: {self.direction}, Lenkwinkel: {steering_angle}, Abstand: {distance} cm, IR_Status: {ir_value}")            
             
 if __name__ == "__main__":
     car = SensorCar()
@@ -155,6 +190,26 @@ if __name__ == "__main__":
     # print(car._ir_init)
     # print(car.get_infrared)
     # car.ir_cali()
-    print(car.infrared._references)
-    print(car.infrared.read_digital())
-    car.fahrmodus_5(75,90,6)
+    # print(car.infrared._references)
+    # print(car.infrared.read_digital())
+
+    log = []  # Liste zum Speichern der Log-Daten
+    start_time = time.time()  # Startzeitpunkt speichern  
+    car.loggen(car.get_distance, car._speed, car._steering_angle, 0, car.infrared.read_digital())  
+    car.fahrmodus_5(100,90,6)
+
+    # Schreiben der Log-Daten in eine CSV-Datei
+    file_name = "fahrmodus6_log.csv"
+    file_exists = os.path.isfile(file_name)  # Prüfen, ob die Datei existiert
+
+    with open(file_name, mode="a", newline="") as csv_file:
+        fieldnames = ["Zeit", "Geschwindigkeit", "Fahrtrichtung", "Lenkwinkel", "Abstand", "IR_Status"]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+
+        # Schreibe die Kopfzeile, falls die Datei neu erstellt wurde
+        if not file_exists:
+            writer.writeheader()
+
+        writer.writerows(log)  # Log-Daten in die Datei schreiben
+
+    print(f"Log-Daten wurden in '{file_name}' gespeichert.")    
