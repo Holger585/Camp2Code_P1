@@ -17,11 +17,12 @@ class SensorCar(SonicCar):
         try:
             with open("config.json", "r") as f:
                 self.data = json.load(f)
-                self._ir_init = self.data.get("ir_init", 0)
+                # self._ir_init = self.data.get("ir_init", 0)
+                self.infrared._references = self.data.get("ir_init", 0)
 
         except FileNotFoundError as e:
             print(f"Fehler: config.json nicht gefunden. Standardwerte werden verwendet. {e}")
-            self._ir_init = [300,300,300,300,300]
+            self.infrared._references = [300,300,300,300,300]
             # self.ir_cali()   
         except Exception as e:
             print(e)
@@ -52,6 +53,16 @@ class SensorCar(SonicCar):
 
         print(self.infrared._references)
 
+    def fahrmodus_5(self):
+        input('Bitte das Fahrzeug auf die Linie stellen.')
+        while True:
+            
+            input('Fahrzeug steht nicht auf der Linie. Bitte positionieren.')
+            
+
+
+
+
 
 
 if __name__ == "__main__":
@@ -59,5 +70,8 @@ if __name__ == "__main__":
     car.frontwheels.turn(90)
     # print(car._ir_init)
     # print(car.get_infrared)
-    car.ir_cali()
+    # car.ir_cali()
+    print(car.infrared._references)
+    print(car.infrared.read_digital())
+    input('Bitte das Fahrzeug auf die Linie stellen.')
 
