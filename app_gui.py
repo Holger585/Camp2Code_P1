@@ -41,36 +41,58 @@ output_button_disable = [
 
 # App-Layout
 app.layout = dbc.Container([
-    dbc.Row(dbc.Col(html.H1("Fahrmodus-Dashboard", className="text-center"), width=12)),
-        dbc.Row(
-            [   
-            dbc.Card(   
+    # Titel
+    dbc.Row(
+        dbc.Col(html.H1("Fahrmodus-Dashboard", className="text-center"), width=12),
+        justify="center",  # Zentrieren der Zeile
+        align="center",    # Vertikal zentrieren
+        className="mb-4"
+    ),
+    
+    # Hauptcard mit ButtonGroup und Buttons
+    dbc.Row(
+        dbc.Col(
+            dbc.Card(
                 dbc.CardBody(
                     children=[
                         dbc.ButtonGroup(
                             [
                                 dbc.Button("Fahrmodus 1", id='btFM1'), 
+                                dbc.Popover("Vorwärts- und Rückwärtsfahrt", target="btFM1", body=True, trigger="hover", placement="top"),
                                 dbc.Button("Fahrmodus 2", id='btFM2'), 
+                                dbc.Popover("Kreisfahrt mit max. Lenkwinkel", target="btFM2", body=True, trigger="hover", placement="top"),
                                 dbc.Button("Fahrmodus 3", id='btFM3'), 
+                                dbc.Popover("Vorwärts fahren bis Hindernis", target="btFM3", body=True, trigger="hover", placement="top"),
                                 dbc.Button("Fahrmodus 4", id='btFM4'), 
+                                dbc.Popover("Erkundungstour", target="btFM4", body=True, trigger="hover", placement="top"),
                                 dbc.Button("Fahrmodus 5", id='btFM5'), 
+                                dbc.Popover("Linienverfolgung", target="btFM5", body=True, trigger="hover", placement="top"),
                                 dbc.Button("Fahrmodus 6", id='btFM6'), 
+                                dbc.Popover("Erweiterte Linienverfolgung", target="btFM6", body=True, trigger="hover", placement="top"),
                                 dbc.Button("Fahrmodus 7", id='btFM7'), 
+                                dbc.Popover("Erweiterte Linienverfolgung mit Hinderniserkennung", target="btFM7", body=True, trigger="hover", placement="top"),
                             ],
                             size="lg",
                             className="me-1",
                         ),
                         dbc.Button("STOPP", id='btStopp', color='danger', style={'margin':'15px'}, size="lg"),
-                        dbc.Button('Kalibrierung!', id='btCali', n_clicks=0, size="lg"),
+                        dbc.Popover("Stoppen der aktuellen Fahrt", target="btStopp", body=True, trigger="hover", placement="top"),
+                        dbc.Button('Kalibrierung!', id='btCali', n_clicks=0, style={'margin':'15px'}, size="lg"),
+                        dbc.Popover("Kalibrierung der IR-Sensoren", target="btCali", body=True, trigger="hover", placement="top"),
                         html.Div(id='cali_value')
                     ]
                 ),
-                style={'display': 'flex', 'width': '100%', 'margin-left': 'auto', 'margin-right': 'auto','margin': '15px'}                                            
-                )                                                                                    
-            ],                                          
-                className="mb-4", align='center'      
+                style={'display': 'flex', 'justify-content': 'center', 'align-items': 'center', 'width': '100%', 'margin-left': 'auto', 'margin-right': 'auto'}
+            ),
+            width=10,
+        ),
+        justify="center",  # Zentrieren der Row
+        align="center",    # Vertikal zentrieren
+        className="mb-4"
     ),
-    dbc.Row([
+    
+    # Dropdown
+    dbc.Row(
         dbc.Col([
             html.H4("Fahrtauswahl:"),
             dcc.Dropdown(
@@ -78,84 +100,96 @@ app.layout = dbc.Container([
                 options=[{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()],
                 value=data.df['FahrtID'].unique()[0],  # Standardauswahl
                 clearable=False,
-                className="mb-4"
+                className="mb-2",
             ),
-        ], width=12),
-    ], className="mb-4"),
-
-        dbc.Row(
-            [
-            dbc.Card(                
-                dbc.CardBody(
-                    children=[
-                        html.P("Geschwindigkeit min:"),
-                        html.P(f"{data.result_df['Vmin'].iloc[0]:.1f} km/h", id="Vmin"),
-                    ]
+        ], width=10),  # Breite auf 10 gesetzt
+        justify="center",  # Horizontale Zentrierung
+        align="center",    # Vertikale Zentrierung
+        className="mb-2"
+    ),
+    
+    # Geschwindigkeits- und Streckenkarten mit einer Row-Breite von 10
+    dbc.Row(
+        [
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody(
+                        children=[html.P("Geschwindigkeit min:"), html.P(f"{data.result_df['Vmin'].iloc[0]:.1f} km/h", id="Vmin")],
+                    ),
+                    style={ 'margin-right': '5px','margin-left': '0px'}
                 ),
-                style={'width': '14rem', 'margin': '15px'}
+                width=2  # Jede Karte nimmt 2 von 12 Spalten ein
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody(
+                        children=[html.P("Geschwindigkeit max:"), html.P(f"{data.result_df['Vmax'].iloc[0]:.1f} km/h", id="Vmax")],
+                    ),
+                    style={'margin': '5px'}
                 ),
-            dbc.Card(                                
-                dbc.CardBody(
-                    children=[
-                        html.P("Geschwindigkeit max:"),
-                        html.P(f"{data.result_df['Vmax'].iloc[0]:.1f} km/h", id="Vmax"),
-                    ]
+                width=2
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody(
+                        children=[html.P("Geschwindigkeit mean:"), html.P(f"{data.result_df['Vmean'].iloc[0]:.1f} km/h", id="Vmean")],
+                    ),
+                    style={'margin': '5px'}
                 ),
-                style={'width': '14rem', 'margin': '15px', 'padding' : '0px'}
-                ),  
-            dbc.Card(                                
-                dbc.CardBody(
-                    children=[
-                        html.P("Geschwindigkeit mean:"),
-                        html.P(f"{data.result_df['Vmean'].iloc[0]:.1f} km/h", id="Vmean"),
-                    ]
+                width=2
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody(
+                        children=[html.P("Fahrstrecke:"), html.P(f"{data.result_df['Fahrstrecke'].iloc[0]:.1f} mm", id="Fahrstrecke")],
+                    ),
+                    style={'margin': '5px'}
                 ),
-                style={'width': '14rem', 'margin': '15px'}
-                ),  
-            dbc.Card(                                
-                dbc.CardBody(
-                    children=[
-                        html.P("Fahrstrecke:"),
-                        html.P(f"{data.result_df['Fahrstrecke'].iloc[0]:.1f} mm", id="Fahrstrecke"),
-                    ]
+                width=2
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody(
+                        children=[html.P("Fahrzeit:"), html.P(f"{data.result_df['Fahrzeit'].iloc[0]:.1f} s", id="Fahrzeit")],
+                    ),
+                    style={'margin': '5px'}
                 ),
-                style={'width': '14rem', 'margin': '15px'}
-                ),     
-            dbc.Card(                                
-                dbc.CardBody(
-                    children=[
-                        html.P("Fahrzeit:"),
-                        html.P(f"{data.result_df['Fahrzeit'].iloc[0]:.1f} s", id="Fahrzeit"),
-                    ]
+                width=2
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody(
+                        children=[html.P("Fahrmodus:"), html.P(f"{data.result_df['Fahrmodus'].iloc[0]:.1f} s", id="Fahrmodus")],
+                    ),
+                    style={'margin-left': '5px', 'margin-right': '0px'}
                 ),
-                style={'width': '14rem', 'margin': '15px'}
-                ),     
-            dbc.Card(                                
-                dbc.CardBody(
-                    children=[
-                        html.P("Fahrmodus:"),
-                        html.P(f"{data.result_df['Fahrmodus'].iloc[0]:.1f} s", id="Fahrmodus"),
-                    ]
-                ),
-                style={'width': '14rem', 'margin': '15px'}
-                )                                                                 
-
-            ],                                          
-                className="mb-4"       
+                width=2
+            ),
+        ],
+        justify="center",  # Zentriert die Karten horizontal
+        align="center",    # Zentriert die Karten vertikal
+        className="mb-4",  # Optional: Abstand nach unten
+        style={'width': '83.33%', 'margin-left': 'auto', 'margin-right': 'auto'}  # Setzt die Breite der Row auf 10/12 der Gesamtbreite
     ),
 
-    dbc.Row([
-        dbc.Col([
-            dcc.Graph(id='geschwindigkeit-zeit'),
-        ], width=12),
-    ], className="mb-4"),
 
-    dbc.Row([
-        dbc.Col([
-            dcc.Graph(id='fahrstrecke-zeit'),
-        ], width=12),
-    ]),
+    
+    # Graphen
+    dbc.Row(
+        dbc.Col(dcc.Graph(id='geschwindigkeit-zeit'), width=10),  # Breite auf 10 gesetzt
+        justify="center",  # Horizontale Zentrierung
+        align="center",    # Vertikale Zentrierung
+        className="mb-4"
+    ),
+    dbc.Row(
+        dbc.Col(dcc.Graph(id='fahrstrecke-zeit'), width=10),  # Breite auf 10 gesetzt
+        justify="center",  # Horizontale Zentrierung
+        align="center",    # Vertikale Zentrierung
+        className="mb-4"
+    ),
 ], fluid=True)
+
+
 
 # Callback zur Aktualisierung der Diagramme basierend auf der Fahrtauswahl
 # Button Fahrmodus 1

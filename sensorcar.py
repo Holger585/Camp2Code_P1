@@ -9,8 +9,6 @@ import json
 import os
 import random
 import csv
-from app_data import read_data
-
 class SensorCar(SonicCar):
     def __init__(self):
         """
