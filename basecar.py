@@ -14,10 +14,10 @@ class BaseCar:
         """
         try:
             with open("config.json", "r") as f:
-                self.data = json.load(f)
-                self.turning_offset = self.data.get("turning_offset", 0)
-                self.forward_A = self.data.get("forward_A", 1)
-                self.forward_B = self.data.get("forward_B", 1)
+                self.configdata = json.load(f)
+                self.turning_offset = self.configdata.get("turning_offset", 0)
+                self.forward_A = self.configdata.get("forward_A", 1)
+                self.forward_B = self.configdata.get("forward_B", 1)
         except FileNotFoundError:
             print("Fehler: config.json nicht gefunden. Standardwerte werden verwendet.")
             self.turning_offset = 0
@@ -30,6 +30,7 @@ class BaseCar:
         self._speed = 0  # Initialgeschwindigkeit
         self._direction = 0  # Stillstand
         self._log = [] #Log erstellen
+        self.ismanually_stopped = False #Externe Stoppfunktion
 
     @property
     def steering_angle(self):
@@ -115,7 +116,7 @@ class BaseCar:
         self.drive(speed=0)
         #print("Fahrzeug wurde angehalten.")
 
-    def loggen(self, time = 0, speed = 0, direction = 0, steering_angle = 0, distance = 0,  ir_value = [0,0,0,0,0], f_modus = 0):
+    def loggen(self, time = 0.0, speed = 0, direction = 0, steering_angle = 0, distance = 0,  ir_value = [0,0,0,0,0], f_modus = 0):
         """
         Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.
 
@@ -148,24 +149,36 @@ class BaseCar:
             steering_angle (int): Der Lenkwinkel.
             wait_time (float): Die Wartezeit in Sekunden.
         """
-        self.drive(speed=speed, steering_angle=steering_angle)
+        #self.drive(speed=speed, steering_angle=steering_angle)
+        # self.loggen(time.time() - start_time, speed, self._direction, steering_angle, 0, [0,0,0,0,0], f_modus) 
+        # print(f"Geschwindigkeit: {self._speed}, Lenkwinkel: {self._steering_angle}")
+        #time.sleep(wait_time)
+
+        run_time = time.time()
+        while not self.ismanually_stopped:
+            self.drive(speed=speed, steering_angle=steering_angle)
+            current_time = time.time()
+            if current_time - run_time > wait_time:
+                #self.stop()
+                break
+        if self.ismanually_stopped:
+            self.stop()
         self.loggen(time.time() - start_time, speed, self._direction, steering_angle, 0, [0,0,0,0,0], f_modus) 
         print(f"Geschwindigkeit: {self._speed}, Lenkwinkel: {self._steering_angle}")
-        time.sleep(wait_time)
+
 
     def fahrmodus_1(self, speed=50):
         """
         Führt eine vordefinierte Abfolge von Bewegungen aus.
         """
         start_time = time.time()  
-        # Erster Eintrag im Log auf Null setzen
-        self.loggen(speed=speed, f_modus=1)          
-        #self.loggen(0, speed, 0, 90, 0, [0,0,0,0,0], 1)      
-        self.set_fahren_und_warten(0, 80, 0.1, start_time, 1)
+        # Erster Eintrag im Log auf Null setzen         
+        self.loggen(0.0, speed, 0, 90, 0, [0,0,0,0,0], 1)      
+        self.set_fahren_und_warten(0, 80, 0, start_time, 1)
         self.set_fahren_und_warten(0, 90, 0, start_time, 1)
-        self.set_fahren_und_warten(speed, 90, 5, start_time, 1)
+        self.set_fahren_und_warten(speed, 90, 2, start_time, 1)
         self.set_fahren_und_warten(0, 90, 1, start_time, 1)
-        self.set_fahren_und_warten(-speed, 90, 5, start_time, 1)
+        self.set_fahren_und_warten(-speed, 90, 2, start_time, 1)
         self.stop()
 
     def fahrmodus_2(self, speed):

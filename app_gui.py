@@ -4,17 +4,20 @@ import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import json
 from dash.dependencies import Output, Input
-from app_data import *
+from app_data import Data
 from sensorcar import *
 import numpy as np
 
 car = SensorCar()
+data = Data()
+# print(data.df)
+# print(data.result_df)
 
 # Konfigurationslogik
 try:
     with open("config.json", "r") as f:
-        data = json.load(f)
-        ip_host = data.get("ip_host", "0.0.0.0")  # Fallback zu "0.0.0.0"
+        configdata = json.load(f)
+        ip_host = configdata.get("ip_host", "0.0.0.0")  # Fallback zu "0.0.0.0"
 except FileNotFoundError:
     print("Fehler: config.json nicht gefunden. Standardwerte werden verwendet.")
     ip_host = "0.0.0.0"
@@ -24,6 +27,18 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.CYBORG])
 
 #Setzt Variable am Anfang auf 1
 f_id = 1
+
+output_button_disable = [    
+    Output('btFM1', 'disabled', allow_duplicate=True),        
+    Output('btFM2', 'disabled', allow_duplicate=True),
+    Output('btFM3', 'disabled', allow_duplicate=True),
+    Output('btFM4', 'disabled', allow_duplicate=True),
+    Output('btFM5', 'disabled', allow_duplicate=True),
+    Output('btFM6', 'disabled', allow_duplicate=True),
+    Output('btFM7', 'disabled', allow_duplicate=True),
+  
+    ]
+
 # App-Layout
 app.layout = dbc.Container([
     dbc.Row(dbc.Col(html.H1("Fahrmodus-Dashboard", className="text-center"), width=12)),
@@ -60,8 +75,8 @@ app.layout = dbc.Container([
             html.H4("Fahrtauswahl:"),
             dcc.Dropdown(
                 id='fahrt-dropdown',
-                options=[{'label': f"Fahrt {fahrt_id}, Fahrmodus: {result_df[result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in df['FahrtID'].unique()],
-                value=df['FahrtID'].unique()[0],  # Standardauswahl
+                options=[{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()],
+                value=data.df['FahrtID'].unique()[0],  # Standardauswahl
                 clearable=False,
                 className="mb-4"
             ),
@@ -74,7 +89,7 @@ app.layout = dbc.Container([
                 dbc.CardBody(
                     children=[
                         html.P("Geschwindigkeit min:"),
-                        html.P(f"{result_df['Vmin'].iloc[0]:.1f} km/h", id="Vmin"),
+                        html.P(f"{data.result_df['Vmin'].iloc[0]:.1f} km/h", id="Vmin"),
                     ]
                 ),
                 style={'width': '14rem', 'margin': '15px'}
@@ -83,7 +98,7 @@ app.layout = dbc.Container([
                 dbc.CardBody(
                     children=[
                         html.P("Geschwindigkeit max:"),
-                        html.P(f"{result_df['Vmax'].iloc[0]:.1f} km/h", id="Vmax"),
+                        html.P(f"{data.result_df['Vmax'].iloc[0]:.1f} km/h", id="Vmax"),
                     ]
                 ),
                 style={'width': '14rem', 'margin': '15px', 'padding' : '0px'}
@@ -92,7 +107,7 @@ app.layout = dbc.Container([
                 dbc.CardBody(
                     children=[
                         html.P("Geschwindigkeit mean:"),
-                        html.P(f"{result_df['Vmean'].iloc[0]:.1f} km/h", id="Vmean"),
+                        html.P(f"{data.result_df['Vmean'].iloc[0]:.1f} km/h", id="Vmean"),
                     ]
                 ),
                 style={'width': '14rem', 'margin': '15px'}
@@ -101,7 +116,7 @@ app.layout = dbc.Container([
                 dbc.CardBody(
                     children=[
                         html.P("Fahrstrecke:"),
-                        html.P(f"{result_df['Fahrstrecke'].iloc[0]:.1f} mm", id="Fahrstrecke"),
+                        html.P(f"{data.result_df['Fahrstrecke'].iloc[0]:.1f} mm", id="Fahrstrecke"),
                     ]
                 ),
                 style={'width': '14rem', 'margin': '15px'}
@@ -110,7 +125,7 @@ app.layout = dbc.Container([
                 dbc.CardBody(
                     children=[
                         html.P("Fahrzeit:"),
-                        html.P(f"{result_df['Fahrzeit'].iloc[0]:.1f} s", id="Fahrzeit"),
+                        html.P(f"{data.result_df['Fahrzeit'].iloc[0]:.1f} s", id="Fahrzeit"),
                     ]
                 ),
                 style={'width': '14rem', 'margin': '15px'}
@@ -119,7 +134,7 @@ app.layout = dbc.Container([
                 dbc.CardBody(
                     children=[
                         html.P("Fahrmodus:"),
-                        html.P(f"{result_df['Fahrmodus'].iloc[0]:.1f} s", id="Fahrmodus"),
+                        html.P(f"{data.result_df['Fahrmodus'].iloc[0]:.1f} s", id="Fahrmodus"),
                     ]
                 ),
                 style={'width': '14rem', 'margin': '15px'}
@@ -145,30 +160,32 @@ app.layout = dbc.Container([
 # Callback zur Aktualisierung der Diagramme basierend auf der Fahrtauswahl
 # Button Fahrmodus 1
 @app.callback(
-    Output('btFM1', 'disabled', allow_duplicate=True),        
-    Output('btFM2', 'disabled', allow_duplicate=True),
-    Output('btFM3', 'disabled', allow_duplicate=True),
-    Output('btFM4', 'disabled', allow_duplicate=True),
-    Output('btFM5', 'disabled', allow_duplicate=True),
-    Output('btFM6', 'disabled', allow_duplicate=True),
-    Output('btFM7', 'disabled', allow_duplicate=True),
-    Output('btFM1', 'color'),
+    output_button_disable,
+    Output('btFM1', 'color', allow_duplicate=True),
     Input('btFM1', 'n_clicks'), 
     prevent_initial_call=True
 )
 def update_output(n_clicks):
-    car.fahrmodus(1)
     return True, True, True, True, True, True, True, 'warning'
+
+# Button Fahrmodus 1 Farbänderung
+@app.callback(
+    output_button_disable,        
+    Output('fahrt-dropdown', 'options', allow_duplicate=True), 
+    Output('fahrt-dropdown', 'value', allow_duplicate=True),     
+    Output('btFM1', 'color', allow_duplicate=True),
+    Input('btFM1', 'color'), 
+    prevent_initial_call=True
+)
+def update_output(color):
+    if color == 'warning':
+        car.fahrmodus(1)
+        data.read_data()  
+    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
 # Button Fahrmodus 2
 @app.callback(
-    Output('btFM1', 'disabled', allow_duplicate=True),        
-    Output('btFM2', 'disabled', allow_duplicate=True),
-    Output('btFM3', 'disabled', allow_duplicate=True),
-    Output('btFM4', 'disabled', allow_duplicate=True),
-    Output('btFM5', 'disabled', allow_duplicate=True),
-    Output('btFM6', 'disabled', allow_duplicate=True),
-    Output('btFM7', 'disabled', allow_duplicate=True),
+    output_button_disable, 
     Output('btFM2', 'color'),
     Input('btFM2', 'n_clicks'), 
     prevent_initial_call=True
@@ -176,15 +193,24 @@ def update_output(n_clicks):
 def update_output(n_clicks):
     return True, True, True, True, True, True, True, 'warning'
 
+# Button Fahrmodus 2 Farbänderung
+@app.callback(
+    output_button_disable, 
+    Output('fahrt-dropdown', 'options', allow_duplicate=True), 
+    Output('fahrt-dropdown', 'value', allow_duplicate=True),            
+    Output('btFM2', 'color', allow_duplicate=True),
+    Input('btFM2', 'color'), 
+    prevent_initial_call=True
+)
+def update_output(color):
+    if color == 'warning':
+        car.fahrmodus(2)
+        data.read_data()  
+    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
+
 # Button Fahrmodus 3
 @app.callback(
-    Output('btFM1', 'disabled', allow_duplicate=True),        
-    Output('btFM2', 'disabled', allow_duplicate=True),
-    Output('btFM3', 'disabled', allow_duplicate=True),
-    Output('btFM4', 'disabled', allow_duplicate=True),
-    Output('btFM5', 'disabled', allow_duplicate=True),
-    Output('btFM6', 'disabled', allow_duplicate=True),
-    Output('btFM7', 'disabled', allow_duplicate=True),
+    output_button_disable, 
     Output('btFM3', 'color'),
     Input('btFM3', 'n_clicks'), 
     prevent_initial_call=True
@@ -192,15 +218,24 @@ def update_output(n_clicks):
 def update_output(n_clicks):
     return True, True, True, True, True, True, True, 'warning'
 
+# Button Fahrmodus 3 Farbänderung
+@app.callback(
+    output_button_disable,        
+    Output('fahrt-dropdown', 'options', allow_duplicate=True), 
+    Output('fahrt-dropdown', 'value', allow_duplicate=True),     
+    Output('btFM3', 'color', allow_duplicate=True),
+    Input('btFM3', 'color'), 
+    prevent_initial_call=True
+)
+def update_output(color):
+    if color == 'warning':
+        car.fahrmodus(3)
+        data.read_data()  
+    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
+
 # Button Fahrmodus 4
 @app.callback(
-    Output('btFM1', 'disabled', allow_duplicate=True),        
-    Output('btFM2', 'disabled', allow_duplicate=True),
-    Output('btFM3', 'disabled', allow_duplicate=True),
-    Output('btFM4', 'disabled', allow_duplicate=True),
-    Output('btFM5', 'disabled', allow_duplicate=True),
-    Output('btFM6', 'disabled', allow_duplicate=True),
-    Output('btFM7', 'disabled', allow_duplicate=True),
+    output_button_disable, 
     Output('btFM4', 'color'),
     Input('btFM4', 'n_clicks'), 
     prevent_initial_call=True
@@ -208,15 +243,25 @@ def update_output(n_clicks):
 def update_output(n_clicks):
     return True, True, True, True, True, True, True, 'warning'
 
+# Button Fahrmodus 4 Farbänderung
+@app.callback(
+    output_button_disable, 
+    Output('fahrt-dropdown', 'options', allow_duplicate=True), 
+    Output('fahrt-dropdown', 'value', allow_duplicate=True),            
+    Output('btFM4', 'color', allow_duplicate=True),
+    Input('btFM4', 'color'), 
+    prevent_initial_call=True
+)
+def update_output(color):
+    if color == 'warning':
+        car.fahrmodus(4)
+        data.read_data()  
+    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
+
+
 # Button Fahrmodus 5
 @app.callback(
-    Output('btFM1', 'disabled', allow_duplicate=True),        
-    Output('btFM2', 'disabled', allow_duplicate=True),
-    Output('btFM3', 'disabled', allow_duplicate=True),
-    Output('btFM4', 'disabled', allow_duplicate=True),
-    Output('btFM5', 'disabled', allow_duplicate=True),
-    Output('btFM6', 'disabled', allow_duplicate=True),
-    Output('btFM7', 'disabled', allow_duplicate=True),
+    output_button_disable, 
     Output('btFM5', 'color'),
     Input('btFM5', 'n_clicks'), 
     prevent_initial_call=True
@@ -224,15 +269,24 @@ def update_output(n_clicks):
 def update_output(n_clicks):
     return True, True, True, True, True, True, True, 'warning'
 
+# Button Fahrmodus 5 Farbänderung
+@app.callback(
+    output_button_disable,  
+    Output('fahrt-dropdown', 'options', allow_duplicate=True), 
+    Output('fahrt-dropdown', 'value', allow_duplicate=True),           
+    Output('btFM5', 'color', allow_duplicate=True),
+    Input('btFM5', 'color'), 
+    prevent_initial_call=True
+)
+def update_output(color):
+    if color == 'warning':
+        car.fahrmodus(5)
+        data.read_data()  
+    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
+
 # Button Fahrmodus 6
 @app.callback(
-    Output('btFM1', 'disabled', allow_duplicate=True),        
-    Output('btFM2', 'disabled', allow_duplicate=True),
-    Output('btFM3', 'disabled', allow_duplicate=True),
-    Output('btFM4', 'disabled', allow_duplicate=True),
-    Output('btFM5', 'disabled', allow_duplicate=True),
-    Output('btFM6', 'disabled', allow_duplicate=True),
-    Output('btFM7', 'disabled', allow_duplicate=True),
+    output_button_disable, 
     Output('btFM6', 'color'),
     Input('btFM6', 'n_clicks'), 
     prevent_initial_call=True
@@ -240,21 +294,45 @@ def update_output(n_clicks):
 def update_output(n_clicks):
     return True, True, True, True, True, True, True, 'warning'
 
+# Button Fahrmodus 6 Farbänderung
+@app.callback(
+    output_button_disable,   
+    Output('fahrt-dropdown', 'options', allow_duplicate=True), 
+    Output('fahrt-dropdown', 'value', allow_duplicate=True),          
+    Output('btFM6', 'color', allow_duplicate=True),
+    Input('btFM6', 'color'), 
+    prevent_initial_call=True
+)
+def update_output(color):
+    if color == 'warning':
+        car.fahrmodus(6)
+        data.read_data()  
+    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
+
 # Button Fahrmodus 7
 @app.callback(
-    Output('btFM1', 'disabled', allow_duplicate=True),        
-    Output('btFM2', 'disabled', allow_duplicate=True),
-    Output('btFM3', 'disabled', allow_duplicate=True),
-    Output('btFM4', 'disabled', allow_duplicate=True),
-    Output('btFM5', 'disabled', allow_duplicate=True),
-    Output('btFM6', 'disabled', allow_duplicate=True),
-    Output('btFM7', 'disabled', allow_duplicate=True),
+    output_button_disable, 
     Output('btFM7', 'color'),
     Input('btFM7', 'n_clicks'), 
     prevent_initial_call=True
 )
 def update_output(n_clicks):
     return True, True, True, True, True, True, True, 'warning'
+
+# Button Fahrmodus 7 Farbänderung
+@app.callback(
+    output_button_disable,   
+    Output('fahrt-dropdown', 'options', allow_duplicate=True), 
+    Output('fahrt-dropdown', 'value', allow_duplicate=True),          
+    Output('btFM7', 'color', allow_duplicate=True),
+    Input('btFM7', 'color'), 
+    prevent_initial_call=True
+)
+def update_output(color):
+    if color == 'warning':
+        car.fahrmodus(7)
+        data.read_data()  
+    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
 # Stopp-Button
 @app.callback(
@@ -276,7 +354,7 @@ def update_output(n_clicks):
     prevent_initial_call=True
 )
 def update_output(n_clicks):
-    car.stop()
+    car.ismanually_stopped = True
     return False, 'primary', False, 'primary',False, 'primary',False, 'primary',False, 'primary',False, 'primary', False, 'primary'
 
 @app.callback(
@@ -319,14 +397,14 @@ def update_output(n_clicks):
     ]
 )
 def update_diagrams(selected_fahrt):
-    filtered_df = df[df['FahrtID'] == selected_fahrt]
+    filtered_df = data.df[data.df['FahrtID'] == selected_fahrt]
 
-    vmax_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Vmax'].iloc[0]:.1f} km/h"
-    vmin_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Vmin'].iloc[0]:.1f} km/h"
-    vmean_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Vmean'].iloc[0]:.1f} km/h"
-    fahrzeit_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Fahrzeit'].iloc[0]:.1f} s"
-    fahrstrecke_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Fahrstrecke'].iloc[0]:.1f} mm"
-    fahrmodus_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Fahrmodus'].iloc[0]}"
+    vmax_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmax'].iloc[0]:.1f} km/h"
+    vmin_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmin'].iloc[0]:.1f} km/h"
+    vmean_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmean'].iloc[0]:.1f} km/h"
+    fahrzeit_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Fahrzeit'].iloc[0]:.1f} s"
+    fahrstrecke_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Fahrstrecke'].iloc[0]:.1f} mm"
+    fahrmodus_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Fahrmodus'].iloc[0]}"
     
     geschwindigkeit_fig = go.Figure(
         data=[

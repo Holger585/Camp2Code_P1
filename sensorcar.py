@@ -9,6 +9,7 @@ import json
 import os
 import random
 import csv
+from app_data import read_data
 
 class SensorCar(SonicCar):
     def __init__(self):
@@ -176,22 +177,7 @@ class SensorCar(SonicCar):
             self.stop()
             print("Fahrmodus beendet.")
 
-        # Schreiben der Log-Daten in eine CSV-Datei
-        
-            file_name = f"fahrmodus_log.csv"
-            file_exists = os.path.isfile(file_name)  # Prüfen, ob die Datei existiert
-
-            with open(file_name, mode="a", newline="") as csv_file:
-                fieldnames = ["Zeit", "Geschwindigkeit", "Fahrtrichtung", "Lenkwinkel", "Abstand", "IR_Status", "Fahrmodus"]
-                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-
-                # Schreibe die Kopfzeile, falls die Datei neu erstellt wurde
-                if not file_exists:
-                    writer.writeheader()
-
-                writer.writerows(self._log)  # Log-Daten in die Datei schreiben
-
-            print(f"Log-Daten wurden in '{file_name}' gespeichert.")     
+    
 
     def fahrmodus(self, fmodus = 1, speed = 50, angle = 90,  mindist = 12):
         if fmodus == 1:
@@ -203,8 +189,33 @@ class SensorCar(SonicCar):
         elif fmodus == 4:
             self.fahrmodus_4(speed=speed)
         elif fmodus >= 5:
-            self.fahrmodus_5_6_7(speed, angle, fmodus)                                  
-        # TODO Rückgabewert an Gui das Fahrmanöver abgeschlossen
+            self.fahrmodus_5_6_7(speed, angle, fmodus)
+
+        # Schreiben der Log-Daten in eine CSV-Datei
+        file_name = f"fahrmodus_log.csv"
+        file_exists = os.path.isfile(file_name)  # Prüfen, ob die Datei existiert
+
+        with open(file_name, mode="a", newline="") as csv_file:
+            fieldnames = ["Zeit", "Geschwindigkeit", "Fahrtrichtung", "Lenkwinkel", "Abstand", "IR_Status", "Fahrmodus"]
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+
+            # Schreibe die Kopfzeile, falls die Datei neu erstellt wurde
+            if not file_exists:
+                writer.writeheader()
+
+            writer.writerows(self._log)  # Log-Daten in die Datei schreiben
+
+        print(f"Log-Daten wurden in '{file_name}' gespeichert.") 
+
+        # result_df, df = read_data()
+        # #add_data aufrufen zur Aktualisierung der Daten
+        # try:
+        #     subprocess.run(["python3", "app_data.py"], check=True)         
+        #     print("app_data.py wurde erfolgreich ausgeführt.")     
+        # except subprocess.CalledProcessError as e:         
+        #     print(f"Fehler bei der Ausführung von app_data.py: {e}")
+
+
 
 if __name__ == "__main__":
     car = SensorCar()

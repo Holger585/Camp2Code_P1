@@ -72,25 +72,6 @@ class SonicCar(BaseCar):
         self.stop()
         print("Fahrmodus 4 beendet")
 
-    def loggen(self, distance, speed, steering_angle, time):
-        """
-        Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.
-
-        Args:
-            distance (int): Gemessener Abstand.
-            speed (int): Geschwindigkeit des Fahrzeugs.
-            steering_angle (int): Aktueller Lenkwinkel.
-            time (float): Zeit seit Start in Sekunden.
-        """
-        log.append({
-            "Zeit": round(time, 3),
-            "Geschwindigkeit": speed,
-            "Fahrtrichtung": self.direction,
-            "Lenkwinkel": steering_angle,
-            "Abstand": distance
-        })
-        print(f"Zeit: {time:.1f}, Geschwindigkeit: {speed}, Fahrtrichtung: {self.direction}, Lenkwinkel: {steering_angle}, Abstand: {distance} cm")
-
 if __name__ == "__main__":
     car = SonicCar()
     log = []  # Liste zum Speichern der Log-Daten
