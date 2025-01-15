@@ -227,6 +227,6 @@ if __name__ == "__main__":
     # print(car.infrared.read_digital())
 
    
-    car.fahrmodus_5_6_7(75,90,5)
+    car.fahrmodus_5_6_7(75,90,6)
 
    

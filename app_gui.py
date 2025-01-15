@@ -193,7 +193,7 @@ def update_diagrams(selected_fahrt):
     vmean_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Vmean'].iloc[0]:.1f} km/h"
     fahrzeit_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Fahrzeit'].iloc[0]:.1f} s"
     fahrstrecke_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Fahrstrecke'].iloc[0]:.1f} mm"
-    fahrmodus_value = f"{result_df[result_df['Fahrmodus'] == selected_fahrt]['Fahrmodus'].iloc[0]}"
+    fahrmodus_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Fahrmodus'].iloc[0]}"
     
     geschwindigkeit_fig = go.Figure(
         data=[
