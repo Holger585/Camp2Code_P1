@@ -36,6 +36,7 @@ class SensorCar(SonicCar):
         self._ir_value = self.infrared.read_digital()
         return self._ir_value
     
+    # Speichermethode der Kalibrierwerte
     def save_reference(self, reference):
         try:
             #config.json öffnen
