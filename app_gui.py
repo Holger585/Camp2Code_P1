@@ -99,9 +99,30 @@ app.layout = dbc.Container([
                 )                                                                    
 
             ],                                          
-                className="mb-4"
+                className="mb-4"       
     ),
-
+        dbc.Row(
+            [   
+            dbc.Card(   
+                dbc.CardBody(
+                    dbc.ButtonGroup(
+                        [dbc.Button("Fahrmodus 1", id='btFM1'), 
+                         dbc.Button("Fahrmodus 2", id='btFM2'), 
+                         dbc.Button("Fahrmodus 3", id='btFM3'), 
+                         dbc.Button("Fahrmodus 4", id='btFM4'), 
+                         dbc.Button("Fahrmodus 5", id='btFM5'), 
+                         dbc.Button("Fahrmodus 6", id='btFM6'), 
+                         dbc.Button("Fahrmodus 7", id='btFM7'), 
+                         dbc.Button("STOPP", id='btStopp')],
+                        size="lg",
+                        className="me-1",
+                    ),
+                ),
+                style={'width': '90%', 'margin-left': 'auto', 'margin-right': 'auto','margin': '15px'}                                            
+                )                                                                    
+            ],                                          
+                className="mb-4"       
+    ),
     dbc.Row([
         dbc.Col([
             dcc.Graph(id='geschwindigkeit-zeit'),
