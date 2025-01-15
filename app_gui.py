@@ -88,6 +88,15 @@ app.layout = dbc.Container([
                 ),
                 style={'width': '14rem', 'margin': '15px'}
                 ),     
+            dbc.Card(                                
+                dbc.CardBody(
+                    children=[
+                        html.P("Fahrmodus:"),
+                        html.P(f"{result_df['Fahrmodus'].iloc[0]:.1f} s", id="Fahrmodus"),
+                    ]
+                ),
+                style={'width': '14rem', 'margin': '15px'}
+                ),                   
             dbc.Card(   
                 dbc.CardBody(
                     children=[
@@ -169,7 +178,8 @@ def update_output(n_clicks):
         Output('Vmax', 'children'),
         Output('Vmean', 'children'),
         Output('Fahrzeit', 'children'),
-        Output('Fahrstrecke', 'children')
+        Output('Fahrstrecke', 'children'),
+        Output('Fahrmodus', 'children')
     ],
     [
         Input('fahrt-dropdown', 'value')
@@ -183,6 +193,7 @@ def update_diagrams(selected_fahrt):
     vmean_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Vmean'].iloc[0]:.1f} km/h"
     fahrzeit_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Fahrzeit'].iloc[0]:.1f} s"
     fahrstrecke_value = f"{result_df[result_df['FahrtID'] == selected_fahrt]['Fahrstrecke'].iloc[0]:.1f} mm"
+    fahrmodus_value = f"{result_df[result_df['Fahrmodus'] == selected_fahrt]['Fahrmodus'].iloc[0]}"
     
     geschwindigkeit_fig = go.Figure(
         data=[
@@ -239,7 +250,7 @@ def update_diagrams(selected_fahrt):
         )
     )
 
-    return geschwindigkeit_fig, fahrstrecke_fig, vmin_value, vmax_value, vmean_value, fahrzeit_value, fahrstrecke_value
+    return geschwindigkeit_fig, fahrstrecke_fig, vmin_value, vmax_value, vmean_value, fahrzeit_value, fahrstrecke_value, fahrmodus_value
 
 if __name__ == "__main__":
     app.run_server(debug=True, host=ip_host, port=8053)
