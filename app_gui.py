@@ -27,7 +27,34 @@ f_id = 1
 # App-Layout
 app.layout = dbc.Container([
     dbc.Row(dbc.Col(html.H1("Fahrmodus-Dashboard", className="text-center"), width=12)),
-
+        dbc.Row(
+            [   
+            dbc.Card(   
+                dbc.CardBody(
+                    children=[
+                        dbc.ButtonGroup(
+                            [
+                                dbc.Button("Fahrmodus 1", id='btFM1'), 
+                                dbc.Button("Fahrmodus 2", id='btFM2'), 
+                                dbc.Button("Fahrmodus 3", id='btFM3'), 
+                                dbc.Button("Fahrmodus 4", id='btFM4'), 
+                                dbc.Button("Fahrmodus 5", id='btFM5'), 
+                                dbc.Button("Fahrmodus 6", id='btFM6'), 
+                                dbc.Button("Fahrmodus 7", id='btFM7'), 
+                            ],
+                            size="lg",
+                            className="me-1",
+                        ),
+                        dbc.Button("STOPP", id='btStopp', color='danger', style={'margin':'15px'}, size="lg"),
+                        dbc.Button('Kalibrierung!', id='btCali', n_clicks=0, size="lg"),
+                        html.Div(id='cali_value')
+                    ]
+                ),
+                style={'display': 'flex', 'width': '100%', 'margin-left': 'auto', 'margin-right': 'auto','margin': '15px'}                                            
+                )                                                                                    
+            ],                                          
+                className="mb-4", align='center'      
+    ),
     dbc.Row([
         dbc.Col([
             html.H4("Fahrtauswahl:"),
@@ -96,42 +123,12 @@ app.layout = dbc.Container([
                     ]
                 ),
                 style={'width': '14rem', 'margin': '15px'}
-                ),                   
-            dbc.Card(   
-                dbc.CardBody(
-                    children=[
-                        dbc.Button('Kalibrierung!', id='btCali', n_clicks=0),
-                        html.Div(id='cali_value')
-                    ] 
-                ),
-                style={'width': '24rem', 'margin': '15px'}                                            
-                )                                                                    
+                )                                                                 
 
             ],                                          
                 className="mb-4"       
     ),
-        dbc.Row(
-            [   
-            dbc.Card(   
-                dbc.CardBody(
-                    dbc.ButtonGroup(
-                        [dbc.Button("Fahrmodus 1", id='btFM1'), 
-                         dbc.Button("Fahrmodus 2", id='btFM2'), 
-                         dbc.Button("Fahrmodus 3", id='btFM3'), 
-                         dbc.Button("Fahrmodus 4", id='btFM4'), 
-                         dbc.Button("Fahrmodus 5", id='btFM5'), 
-                         dbc.Button("Fahrmodus 6", id='btFM6'), 
-                         dbc.Button("Fahrmodus 7", id='btFM7'), 
-                         dbc.Button("STOPP", id='btStopp')],
-                        size="lg",
-                        className="me-1",
-                    ),
-                ),
-                style={'width': '90%', 'margin-left': 'auto', 'margin-right': 'auto','margin': '15px'}                                            
-                )                                                                    
-            ],                                          
-                className="mb-4"       
-    ),
+
     dbc.Row([
         dbc.Col([
             dcc.Graph(id='geschwindigkeit-zeit'),
@@ -146,6 +143,142 @@ app.layout = dbc.Container([
 ], fluid=True)
 
 # Callback zur Aktualisierung der Diagramme basierend auf der Fahrtauswahl
+# Button Fahrmodus 1
+@app.callback(
+    Output('btFM1', 'disabled', allow_duplicate=True),        
+    Output('btFM2', 'disabled', allow_duplicate=True),
+    Output('btFM3', 'disabled', allow_duplicate=True),
+    Output('btFM4', 'disabled', allow_duplicate=True),
+    Output('btFM5', 'disabled', allow_duplicate=True),
+    Output('btFM6', 'disabled', allow_duplicate=True),
+    Output('btFM7', 'disabled', allow_duplicate=True),
+    Output('btFM1', 'color'),
+    Input('btFM1', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks):
+    car.fahrmodus_1()
+    return True, True, True, True, True, True, True, 'warning'
+
+# Button Fahrmodus 2
+@app.callback(
+    Output('btFM1', 'disabled', allow_duplicate=True),        
+    Output('btFM2', 'disabled', allow_duplicate=True),
+    Output('btFM3', 'disabled', allow_duplicate=True),
+    Output('btFM4', 'disabled', allow_duplicate=True),
+    Output('btFM5', 'disabled', allow_duplicate=True),
+    Output('btFM6', 'disabled', allow_duplicate=True),
+    Output('btFM7', 'disabled', allow_duplicate=True),
+    Output('btFM2', 'color'),
+    Input('btFM2', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks):
+    return True, True, True, True, True, True, True, 'warning'
+
+# Button Fahrmodus 3
+@app.callback(
+    Output('btFM1', 'disabled', allow_duplicate=True),        
+    Output('btFM2', 'disabled', allow_duplicate=True),
+    Output('btFM3', 'disabled', allow_duplicate=True),
+    Output('btFM4', 'disabled', allow_duplicate=True),
+    Output('btFM5', 'disabled', allow_duplicate=True),
+    Output('btFM6', 'disabled', allow_duplicate=True),
+    Output('btFM7', 'disabled', allow_duplicate=True),
+    Output('btFM3', 'color'),
+    Input('btFM3', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks):
+    return True, True, True, True, True, True, True, 'warning'
+
+# Button Fahrmodus 4
+@app.callback(
+    Output('btFM1', 'disabled', allow_duplicate=True),        
+    Output('btFM2', 'disabled', allow_duplicate=True),
+    Output('btFM3', 'disabled', allow_duplicate=True),
+    Output('btFM4', 'disabled', allow_duplicate=True),
+    Output('btFM5', 'disabled', allow_duplicate=True),
+    Output('btFM6', 'disabled', allow_duplicate=True),
+    Output('btFM7', 'disabled', allow_duplicate=True),
+    Output('btFM4', 'color'),
+    Input('btFM4', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks):
+    return True, True, True, True, True, True, True, 'warning'
+
+# Button Fahrmodus 5
+@app.callback(
+    Output('btFM1', 'disabled', allow_duplicate=True),        
+    Output('btFM2', 'disabled', allow_duplicate=True),
+    Output('btFM3', 'disabled', allow_duplicate=True),
+    Output('btFM4', 'disabled', allow_duplicate=True),
+    Output('btFM5', 'disabled', allow_duplicate=True),
+    Output('btFM6', 'disabled', allow_duplicate=True),
+    Output('btFM7', 'disabled', allow_duplicate=True),
+    Output('btFM5', 'color'),
+    Input('btFM5', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks):
+    return True, True, True, True, True, True, True, 'warning'
+
+# Button Fahrmodus 6
+@app.callback(
+    Output('btFM1', 'disabled', allow_duplicate=True),        
+    Output('btFM2', 'disabled', allow_duplicate=True),
+    Output('btFM3', 'disabled', allow_duplicate=True),
+    Output('btFM4', 'disabled', allow_duplicate=True),
+    Output('btFM5', 'disabled', allow_duplicate=True),
+    Output('btFM6', 'disabled', allow_duplicate=True),
+    Output('btFM7', 'disabled', allow_duplicate=True),
+    Output('btFM6', 'color'),
+    Input('btFM6', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks):
+    return True, True, True, True, True, True, True, 'warning'
+
+# Button Fahrmodus 7
+@app.callback(
+    Output('btFM1', 'disabled', allow_duplicate=True),        
+    Output('btFM2', 'disabled', allow_duplicate=True),
+    Output('btFM3', 'disabled', allow_duplicate=True),
+    Output('btFM4', 'disabled', allow_duplicate=True),
+    Output('btFM5', 'disabled', allow_duplicate=True),
+    Output('btFM6', 'disabled', allow_duplicate=True),
+    Output('btFM7', 'disabled', allow_duplicate=True),
+    Output('btFM7', 'color'),
+    Input('btFM7', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks):
+    return True, True, True, True, True, True, True, 'warning'
+
+# Stopp-Button
+@app.callback(
+    Output('btFM1', 'disabled', allow_duplicate=True),
+    Output('btFM1', 'color', allow_duplicate=True),         
+    Output('btFM2', 'disabled', allow_duplicate=True),
+    Output('btFM2', 'color', allow_duplicate=True),
+    Output('btFM3', 'disabled', allow_duplicate=True),
+    Output('btFM3', 'color', allow_duplicate=True),
+    Output('btFM4', 'disabled', allow_duplicate=True),
+    Output('btFM4', 'color', allow_duplicate=True),
+    Output('btFM5', 'disabled', allow_duplicate=True),
+    Output('btFM5', 'color', allow_duplicate=True),
+    Output('btFM6', 'disabled', allow_duplicate=True),
+    Output('btFM6', 'color', allow_duplicate=True),
+    Output('btFM7', 'disabled', allow_duplicate=True),
+    Output('btFM7', 'color', allow_duplicate=True),
+    Input('btStopp', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks):
+    car.stop()
+    return False, 'primary', False, 'primary',False, 'primary',False, 'primary',False, 'primary',False, 'primary', False, 'primary'
+
 @app.callback(
     Output('btCali', 'children'),
     Output('btCali', 'color'),
@@ -206,10 +339,12 @@ def update_diagrams(selected_fahrt):
             )
         ],
         layout=go.Layout(
-            title=f"Geschwindigkeit über Zeit (Fahrt {selected_fahrt})",
-            xaxis_title="Zeit (s)",
-            yaxis_title="Geschwindigkeit (km/h)",
+            title={"text": f"Fahrstrecke über Zeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
+            xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
+            yaxis={"title": {"text": "Geschwindigkeit (km/h)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
             height=400,
+            paper_bgcolor="rgba(40,40,40,1)",
+            plot_bgcolor="rgba(40,40,40,1)",            
             shapes=[  # Hinzufügen der roten Linie
                 dict(
                     type="line",
@@ -217,7 +352,7 @@ def update_diagrams(selected_fahrt):
                     x1=filtered_df['Zeit'].max(),
                     y0=0,
                     y1=0,
-                    line=dict(color="black", width=2),
+                    line=dict(color="red", width=2),
                 )
             ]
         )
@@ -233,20 +368,22 @@ def update_diagrams(selected_fahrt):
             )
         ],
         layout=go.Layout(
-            title=f"Fahrstrecke über Zeit (Fahrt {selected_fahrt})",
-            xaxis_title="Zeit (s)",
-            yaxis_title="Fahrstrecke (km)",
+            title={"text": f"Fahrstrecke über Zeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
+            xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
+            yaxis={"title": {"text": "Fahrstrecke (km)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},            
             height=400,
-            shapes=[  # Hinzufügen der roten Linie
-                dict(
-                    type="line",
-                    x0=filtered_df['Zeit'].min(),
-                    x1=filtered_df['Zeit'].max(),
-                    y0=0,
-                    y1=0,
-                    line=dict(color="black", width=2),
-                )
-            ]
+            paper_bgcolor="rgba(40,40,40,1)",
+            plot_bgcolor="rgba(40,40,40,1)",
+            # shapes=[  # Hinzufügen der roten Linie
+            #     dict(
+            #         type="line",
+            #         x0=filtered_df['Zeit'].min(),
+            #         x1=filtered_df['Zeit'].max(),
+            #         y0=0,
+            #         y1=0,
+            #         line=dict(color="red", width=2),
+            #     )
+            # ]
         )
     )
 

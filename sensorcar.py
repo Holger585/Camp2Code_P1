@@ -89,7 +89,7 @@ class SensorCar(SonicCar):
         old_settings = termios.tcgetattr(sys.stdin)
         tty.setcbreak(sys.stdin.fileno())
         self.drive(speed_value, angle)
-        time.sleep(0.1)   
+        time.sleep(0.2)   
 
         try:
             while True:
@@ -227,6 +227,6 @@ if __name__ == "__main__":
     # print(car.infrared.read_digital())
 
    
-    car.fahrmodus_5_6_7(75,90,5)
+    car.fahrmodus_5_6_7(75,90,6)
 
    
