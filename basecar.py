@@ -29,6 +29,7 @@ class BaseCar:
         self._steering_angle = 90  # Standardwinkel in der Mitte
         self._speed = 0  # Initialgeschwindigkeit
         self._direction = 0  # Stillstand
+        self._log = [] #Log erstellen
 
     @property
     def steering_angle(self):
@@ -114,7 +115,31 @@ class BaseCar:
         self.drive(speed=0)
         #print("Fahrzeug wurde angehalten.")
 
-    def set_fahren_und_warten(self, speed, steering_angle, wait_time):
+    def loggen(self, time = 0, speed = 0, direction = 0, steering_angle = 0, distance = 0,  ir_value = [0,0,0,0,0], f_modus = 0):
+        """
+        Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.
+
+        Args:
+            time (float): Zeit seit Start in Sekunden.
+            speed (int): Geschwindigkeit des Fahrzeugs.
+            direction (int): Fahrtrichtung
+            steering_angle (int): Aktueller Lenkwinkel.
+            distance (int): Gemessener Abstand.
+            ir_value (list): Status der IR-LED´s
+            f_modus (int): Fahrmodusauswahl 
+        """
+        self._log.append({
+            "Zeit": round(time, 3),
+            "Geschwindigkeit": speed,
+            "Fahrtrichtung": direction,
+            "Lenkwinkel": steering_angle,
+            "Abstand": distance,
+            "IR_Status": ir_value,
+            "Fahrmodus": f_modus
+        })
+        print(f"Zeit: {time:.1f}, Geschwindigkeit: {speed}, Fahrtrichtung: {direction}, Lenkwinkel: {steering_angle}, Abstand: {distance} cm, IR_Status: {ir_value}, Fahrmodus: {f_modus}")            
+
+    def set_fahren_und_warten(self, speed, steering_angle, wait_time, start_time, f_modus):
         """
         Bewegt das Fahrzeug mit gegebener Geschwindigkeit und Lenkwinkel und wartet anschließend.
 
@@ -124,64 +149,72 @@ class BaseCar:
             wait_time (float): Die Wartezeit in Sekunden.
         """
         self.drive(speed=speed, steering_angle=steering_angle)
+        self.loggen(time.time() - start_time, speed, self._direction, steering_angle, 0, [0,0,0,0,0], f_modus) 
         print(f"Geschwindigkeit: {self._speed}, Lenkwinkel: {self._steering_angle}")
         time.sleep(wait_time)
 
-    def fahrmodus_1(self):
+    def fahrmodus_1(self, speed=50):
         """
         Führt eine vordefinierte Abfolge von Bewegungen aus.
         """
-        self.set_fahren_und_warten(0, 80, 0.1)
-        self.set_fahren_und_warten(0, 90, 0)
-        self.set_fahren_und_warten(30, 90, 5)
-        self.set_fahren_und_warten(0, 90, 1)
-        self.set_fahren_und_warten(-30, 90, 5)
+        start_time = time.time()  
+        # Erster Eintrag im Log auf Null setzen
+        self.loggen(speed=speed, f_modus=1)          
+        #self.loggen(0, speed, 0, 90, 0, [0,0,0,0,0], 1)      
+        self.set_fahren_und_warten(0, 80, 0.1, start_time, 1)
+        self.set_fahren_und_warten(0, 90, 0, start_time, 1)
+        self.set_fahren_und_warten(speed, 90, 5, start_time, 1)
+        self.set_fahren_und_warten(0, 90, 1, start_time, 1)
+        self.set_fahren_und_warten(-speed, 90, 5, start_time, 1)
         self.stop()
 
-    def fahrmodus_2(self):
+    def fahrmodus_2(self, speed):
         """
         Führt eine komplexere vordefinierte Abfolge von Bewegungen aus.
-        """
-        speedvorgabe = 30
+        """        
         lenkwinkelvorgabe = 135
 
+        start_time = time.time()  
+        # Erster Eintrag im Log auf Null setzen
+        self.loggen(0, speed, 0, 90, 0, [0,0,0,0,0], 2)         
+
         print("01-Initialisierung")
-        self.set_fahren_und_warten(0, 80, 0.1)
-        self.set_fahren_und_warten(0, 90, 0.1)
+        self.set_fahren_und_warten(0, 80, 0.1, start_time, 2)
+        self.set_fahren_und_warten(0, 90, 0.1, start_time, 2)
         print("01-Initialisierung beendet")
 
         print("02-1 Sekunde vorwärts")
-        self.set_fahren_und_warten(speedvorgabe, 90, 1)
+        self.set_fahren_und_warten(speed, 90, 1, start_time, 2)
         print("02-Fertig!")
 
         print("03-Anhalten und einschlagen")
-        self.set_fahren_und_warten(0, lenkwinkelvorgabe, 0.1)
+        self.set_fahren_und_warten(0, lenkwinkelvorgabe, 0.1, start_time, 2)
         print("03-Angehalten")
 
         print("04-8 Sekunden vorwärts rechtsrum fahren")
-        self.set_fahren_und_warten(speedvorgabe, lenkwinkelvorgabe, 8)
+        self.set_fahren_und_warten(speed, lenkwinkelvorgabe, 8, start_time, 2)
         print("04-Fertig!")
 
         print("05-Anhalten")
-        self.set_fahren_und_warten(0, lenkwinkelvorgabe, 0.1)
+        self.set_fahren_und_warten(0, lenkwinkelvorgabe, 0.1, start_time, 2)
         print("05-Angehalten")
 
         print("06-8 Sekunden rückwärts fahren")
-        self.set_fahren_und_warten(-speedvorgabe, lenkwinkelvorgabe, 8)
+        self.set_fahren_und_warten(-speed, lenkwinkelvorgabe, 8, start_time, 2)
         print("06-Fertig!")
 
         print("07-Anhalten und gerade stellen")
-        self.set_fahren_und_warten(0, 90, 0.1)
+        self.set_fahren_und_warten(0, 90, 0.1, start_time, 2)
         print("07-Angehalten")
 
         print("08-1 Sekunde rückwärts")
-        self.set_fahren_und_warten(-speedvorgabe, 90, 1)
+        self.set_fahren_und_warten(-speed, 90, 1, start_time, 2)
         print("08-Fertig!")
 
-        self.set_fahren_und_warten(0, 90, 1)  # Sicherstellen, dass das Fahrzeug anhält
+        self.set_fahren_und_warten(0, 90, 1, start_time, 2)  # Sicherstellen, dass das Fahrzeug anhält
 
 if __name__ == "__main__":
     car = BaseCar()
     #help(BaseCar)
-    car.fahrmodus_1()
+    car.fahrmodus_1(50)
     #car.fahrmodus_2()

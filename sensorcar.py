@@ -66,7 +66,6 @@ class SensorCar(SonicCar):
         self.save_reference(self.infrared._references)   
         print(self.infrared._references)
 
-
     def fahrmodus_5_6_7(self, speed = 30, angle = 90, modus = 5):
         ir_value = self.get_infrared
         # input('Bitte das Fahrzeug auf die Linie stellen.')
@@ -194,29 +193,19 @@ class SensorCar(SonicCar):
 
             print(f"Log-Daten wurden in '{file_name}' gespeichert.")     
 
+    def fahrmodus(self, fmodus = 1, speed = 50, angle = 90,  mindist = 12):
+        if fmodus == 1:
+            self.fahrmodus_1(speed)
+        elif fmodus == 2:
+            self.fahrmodus_2(speed)
+        elif fmodus == 3:
+            self.fahrmodus_3(mindist, speed, angle)
+        elif fmodus == 4:
+            self.fahrmodus_4(speed=speed)
+        elif fmodus >= 5:
+            self.fahrmodus_5_6_7(speed, angle, fmodus)                                  
+        # TODO Rückgabewert an Gui das Fahrmanöver abgeschlossen
 
-    def loggen(self, distance, speed, steering_angle, time, ir_value, f_modus):
-        """
-        Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.
-
-        Args:
-            distance (int): Gemessener Abstand.
-            speed (int): Geschwindigkeit des Fahrzeugs.
-            steering_angle (int): Aktueller Lenkwinkel.
-            time (float): Zeit seit Start in Sekunden.
-            ir_status (list): Status der IR-LED´s
-        """
-        self._log.append({
-            "Zeit": round(time, 3),
-            "Geschwindigkeit": speed,
-            "Fahrtrichtung": self.direction,
-            "Lenkwinkel": steering_angle,
-            "Abstand": distance,
-            "IR_Status": ir_value,
-            "Fahrmodus": f_modus
-        })
-        print(f"Zeit: {time:.1f}, Geschwindigkeit: {speed}, Fahrtrichtung: {self.direction}, Lenkwinkel: {steering_angle}, Abstand: {distance} cm, IR_Status: {ir_value}")            
-            
 if __name__ == "__main__":
     car = SensorCar()
     car.frontwheels.turn(90)
@@ -226,7 +215,7 @@ if __name__ == "__main__":
     # print(car.infrared._references)
     # print(car.infrared.read_digital())
 
-   
-    car.fahrmodus_5_6_7(75,90,6)
+    car.fahrmodus(1)
+    #car.fahrmodus_5_6_7(75,90,6)
 
    

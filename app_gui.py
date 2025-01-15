@@ -157,7 +157,7 @@ app.layout = dbc.Container([
     prevent_initial_call=True
 )
 def update_output(n_clicks):
-    car.fahrmodus_1()
+    car.fahrmodus(1)
     return True, True, True, True, True, True, True, 'warning'
 
 # Button Fahrmodus 2
