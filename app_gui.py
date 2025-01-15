@@ -105,7 +105,7 @@ app.layout = dbc.Container([
         ], width=10),  # Breite auf 10 gesetzt
         justify="center",  # Horizontale Zentrierung
         align="center",    # Vertikale Zentrierung
-        className="mb-2"
+        className="mb-3"
     ),
     
     # Geschwindigkeits- und Streckenkarten mit einer Row-Breite von 10
@@ -116,7 +116,7 @@ app.layout = dbc.Container([
                     dbc.CardBody(
                         children=[html.P("Geschwindigkeit min:"), html.P(f"{data.result_df['Vmin'].iloc[0]:.1f} km/h", id="Vmin")],
                     ),
-                    style={ 'margin-right': '5px','margin-left': '0px'}
+                    style={ 'margin': '0px'}
                 ),
                 width=2  # Jede Karte nimmt 2 von 12 Spalten ein
             ),
@@ -125,7 +125,7 @@ app.layout = dbc.Container([
                     dbc.CardBody(
                         children=[html.P("Geschwindigkeit max:"), html.P(f"{data.result_df['Vmax'].iloc[0]:.1f} km/h", id="Vmax")],
                     ),
-                    style={'margin': '5px'}
+                    style={'margin': '0px'}
                 ),
                 width=2
             ),
@@ -134,7 +134,7 @@ app.layout = dbc.Container([
                     dbc.CardBody(
                         children=[html.P("Geschwindigkeit mean:"), html.P(f"{data.result_df['Vmean'].iloc[0]:.1f} km/h", id="Vmean")],
                     ),
-                    style={'margin': '5px'}
+                    style={'margin': '0px'}
                 ),
                 width=2
             ),
@@ -143,7 +143,7 @@ app.layout = dbc.Container([
                     dbc.CardBody(
                         children=[html.P("Fahrstrecke:"), html.P(f"{data.result_df['Fahrstrecke'].iloc[0]:.1f} mm", id="Fahrstrecke")],
                     ),
-                    style={'margin': '5px'}
+                    style={'margin': '0px'}
                 ),
                 width=2
             ),
@@ -152,7 +152,7 @@ app.layout = dbc.Container([
                     dbc.CardBody(
                         children=[html.P("Fahrzeit:"), html.P(f"{data.result_df['Fahrzeit'].iloc[0]:.1f} s", id="Fahrzeit")],
                     ),
-                    style={'margin': '5px'}
+                    style={'margin': '0px'}
                 ),
                 width=2
             ),
@@ -161,7 +161,7 @@ app.layout = dbc.Container([
                     dbc.CardBody(
                         children=[html.P("Fahrmodus:"), html.P(f"{data.result_df['Fahrmodus'].iloc[0]:.1f} s", id="Fahrmodus")],
                     ),
-                    style={'margin-left': '5px', 'margin-right': '0px'}
+                    style={'margin': '0px'}
                 ),
                 width=2
             ),
@@ -169,7 +169,7 @@ app.layout = dbc.Container([
         justify="center",  # Zentriert die Karten horizontal
         align="center",    # Zentriert die Karten vertikal
         className="mb-4",  # Optional: Abstand nach unten
-        style={'width': '83.33%', 'margin-left': 'auto', 'margin-right': 'auto'}  # Setzt die Breite der Row auf 10/12 der Gesamtbreite
+        style={'width': '84.4%', 'margin-left': 'auto', 'margin-right': 'auto'}  # Setzt die Breite der Row auf 10/12 der Gesamtbreite
     ),
 
 
