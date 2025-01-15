@@ -60,7 +60,7 @@ app.layout = dbc.Container([
             html.H4("Fahrtauswahl:"),
             dcc.Dropdown(
                 id='fahrt-dropdown',
-                options=[{'label': f'Fahrt {fahrt_id}', 'value': fahrt_id} for fahrt_id in df['FahrtID'].unique()],
+                options=[{'label': f"Fahrt {fahrt_id}, Fahrmodus: {result_df[result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in df['FahrtID'].unique()],
                 value=df['FahrtID'].unique()[0],  # Standardauswahl
                 clearable=False,
                 className="mb-4"
