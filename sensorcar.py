@@ -16,6 +16,8 @@ class SensorCar(SonicCar):
         Initialisiert das Fahrzeug .
         """
         super().__init__()
+        self._moduswahl = 5
+        self._log = []  # Liste zum Speichern der Log-Daten
         self.infrared = Infrared()
         self._ir_value = [0,0,0,0,0]
         try:
@@ -35,7 +37,11 @@ class SensorCar(SonicCar):
     def get_infrared(self):
         self._ir_value = self.infrared.read_digital()
         return self._ir_value
-    
+
+    @property
+    def get_moduswahl(self):
+        return self._moduswahl
+
     # Speichermethode der Kalibrierwerte
     def save_reference(self, reference):
         try:
@@ -61,8 +67,8 @@ class SensorCar(SonicCar):
         print(self.infrared._references)
 
 
-    def fahrmodus_5(self, speed = 30, angle = 90, modus = 5):
-        # ir_value = self.get_infrared
+    def fahrmodus_5_6_7(self, speed = 30, angle = 90, modus = 5):
+        ir_value = self.get_infrared
         # input('Bitte das Fahrzeug auf die Linie stellen.')
         # while True:
         #     if ir_value[2] == False:
@@ -71,9 +77,14 @@ class SensorCar(SonicCar):
         #     else:
         #         print('Linie erkannt. Fahrmodus 5 wird gestartet.')
         #         break
+
+
+        self._moduswahl = modus
         cnt = 0
         speed_value = speed
         start_time = time.time()  
+        # Erster Eintrag im Log auf Null setzen
+        self.loggen(self.get_distance, speed_value, angle, 0, ir_value, self._moduswahl)  
         # Terminal-Einstellungen für ESC-Abbruch vorbereiten
         old_settings = termios.tcgetattr(sys.stdin)
         tty.setcbreak(sys.stdin.fileno())
@@ -150,7 +161,7 @@ class SensorCar(SonicCar):
                 elif ir_value == [0,0,0,0,0]:  
                     # Aktivierung Fahrmodus 6
                     # Counter cnt zur Verzögerung der Korrekturfahrt
-                    if modus == 6 and cnt > int(speed/15):
+                    if modus >= 6 and cnt > int(speed/15):
                         angle = 180 - angle
                         speed_value = -30
                         self.drive(speed_value,angle) 
@@ -158,7 +169,7 @@ class SensorCar(SonicCar):
                     else:
                         cnt = cnt + 1
                     time.sleep(0.1)  
-                self.loggen(self.get_distance, speed_value, angle, time.time() - start_time, ir_value)                                                               
+                self.loggen(self.get_distance, speed_value, angle, time.time() - start_time, ir_value, self._moduswahl)                                                               
                 
         finally:
             # Terminal-Einstellungen wiederherstellen und Auto stoppen
@@ -166,7 +177,25 @@ class SensorCar(SonicCar):
             self.stop()
             print("Fahrmodus beendet.")
 
-    def loggen(self, distance, speed, steering_angle, time, ir_value):
+        # Schreiben der Log-Daten in eine CSV-Datei
+        
+            file_name = f"fahrmodus_log.csv"
+            file_exists = os.path.isfile(file_name)  # Prüfen, ob die Datei existiert
+
+            with open(file_name, mode="a", newline="") as csv_file:
+                fieldnames = ["Zeit", "Geschwindigkeit", "Fahrtrichtung", "Lenkwinkel", "Abstand", "IR_Status", "Fahrmodus"]
+                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+
+                # Schreibe die Kopfzeile, falls die Datei neu erstellt wurde
+                if not file_exists:
+                    writer.writeheader()
+
+                writer.writerows(self._log)  # Log-Daten in die Datei schreiben
+
+            print(f"Log-Daten wurden in '{file_name}' gespeichert.")     
+
+
+    def loggen(self, distance, speed, steering_angle, time, ir_value, f_modus):
         """
         Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.
 
@@ -177,13 +206,14 @@ class SensorCar(SonicCar):
             time (float): Zeit seit Start in Sekunden.
             ir_status (list): Status der IR-LED´s
         """
-        log.append({
+        self._log.append({
             "Zeit": round(time, 3),
             "Geschwindigkeit": speed,
             "Fahrtrichtung": self.direction,
             "Lenkwinkel": steering_angle,
             "Abstand": distance,
-            "IR_Status": ir_value
+            "IR_Status": ir_value,
+            "Fahrmodus": f_modus
         })
         print(f"Zeit: {time:.1f}, Geschwindigkeit: {speed}, Fahrtrichtung: {self.direction}, Lenkwinkel: {steering_angle}, Abstand: {distance} cm, IR_Status: {ir_value}")            
             
@@ -196,23 +226,7 @@ if __name__ == "__main__":
     # print(car.infrared._references)
     # print(car.infrared.read_digital())
 
-    log = []  # Liste zum Speichern der Log-Daten
-    start_time = time.time()  # Startzeitpunkt speichern  
-    car.loggen(car.get_distance, car._speed, car._steering_angle, 0, car.infrared.read_digital())  
-    car.fahrmodus_5(75,90,6)
+   
+    car.fahrmodus_5_6_7(75,90,5)
 
-    # Schreiben der Log-Daten in eine CSV-Datei
-    file_name = "fahrmodus6_log.csv"
-    file_exists = os.path.isfile(file_name)  # Prüfen, ob die Datei existiert
-
-    with open(file_name, mode="a", newline="") as csv_file:
-        fieldnames = ["Zeit", "Geschwindigkeit", "Fahrtrichtung", "Lenkwinkel", "Abstand", "IR_Status"]
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-
-        # Schreibe die Kopfzeile, falls die Datei neu erstellt wurde
-        if not file_exists:
-            writer.writeheader()
-
-        writer.writerows(log)  # Log-Daten in die Datei schreiben
-
-    print(f"Log-Daten wurden in '{file_name}' gespeichert.")    
+   
