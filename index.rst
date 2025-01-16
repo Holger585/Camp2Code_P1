@@ -6,6 +6,19 @@
 Welcome to Camp2Code Projektphase 1's documentation!
 ====================================================
 
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Inhaltsverzeichnis
+   
+   basecar
+   sensorcar
+   soniccar
+   app_data
+   app_gui
+   basisklassen
+
+
 .. automodule:: basecar
    :members:
    :undoc-members:
@@ -37,12 +50,9 @@ Welcome to Camp2Code Projektphase 1's documentation!
    :private-members:
    :special-members:
 
+   
+
 .. autofunction:: BaseCar
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
 
 
 Indices and tables

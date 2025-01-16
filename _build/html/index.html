@@ -17,6 +17,7 @@
     <script src="_static/translations.js"></script>
     <link rel="index" title="Stichwortverzeichnis" href="genindex.html" />
     <link rel="search" title="Suche" href="search.html" />
+    <link rel="next" title="basecar.py" href="basecar.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,9 +34,38 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-basecar">
-<span id="welcome-to-camp2code-projektphase-1-s-documentation"></span><h1>Welcome to Camp2Code Projektphase 1’s documentation!<a class="headerlink" href="#module-basecar" title="Permalink to this heading">¶</a></h1>
-<dl class="py class">
+  <div class="section" id="welcome-to-camp2code-projektphase-1-s-documentation">
+<h1>Welcome to Camp2Code Projektphase 1’s documentation!<a class="headerlink" href="#welcome-to-camp2code-projektphase-1-s-documentation" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Inhaltsverzeichnis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basecar.html">basecar.py</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basecar.html#basecar.BaseCar"><code class="docutils literal notranslate"><span class="pre">BaseCar</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sensorcar.html">sonsorcar.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="soniccar.html">soniccar.py</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="soniccar.html#soniccar.SonicCar"><code class="docutils literal notranslate"><span class="pre">SonicCar</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="app_data.html">app_data.py</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="app_data.html#app_data.Data"><code class="docutils literal notranslate"><span class="pre">Data</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="app_gui.html">app_gui.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basisklassen.html">basisklassen.py</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="basisklassen.html#basisklassen.BackWheels"><code class="docutils literal notranslate"><span class="pre">BackWheels</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="basisklassen.html#basisklassen.FrontWheels"><code class="docutils literal notranslate"><span class="pre">FrontWheels</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="basisklassen.html#basisklassen.Infrared"><code class="docutils literal notranslate"><span class="pre">Infrared</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="basisklassen.html#basisklassen.Motor"><code class="docutils literal notranslate"><span class="pre">Motor</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="basisklassen.html#basisklassen.PWM"><code class="docutils literal notranslate"><span class="pre">PWM</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="basisklassen.html#basisklassen.Servo"><code class="docutils literal notranslate"><span class="pre">Servo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="basisklassen.html#basisklassen.Ultrasonic"><code class="docutils literal notranslate"><span class="pre">Ultrasonic</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<span class="target" id="module-basecar"></span><dl class="py class">
 <dt class="sig sig-object py" id="basecar.BaseCar">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">basecar.</span></span><span class="sig-name descname"><span class="pre">BaseCar</span></span><a class="reference internal" href="_modules/basecar.html#BaseCar"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#basecar.BaseCar" title="Link zu dieser Definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -316,7 +346,7 @@ und Fahrmodi mit Log-Funktionalität.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">direction</span></code></dt><dd><p>Gibt die aktuelle Fahrtrichtung des Fahrzeugs zurück: 1 = Vorwärts, -1 = Rückwärts, 0 = Stillstand.</p>
 </dd>
-<dt><a class="reference internal" href="#soniccar.SonicCar.get_distance" title="soniccar.SonicCar.get_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_distance</span></code></a></dt><dd><p>Liest die aktuelle Entfernung vom Ultraschallsensor.</p>
+<dt><a class="reference internal" href="soniccar.html#soniccar.SonicCar.get_distance" title="soniccar.SonicCar.get_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_distance</span></code></a></dt><dd><p>Liest die aktuelle Entfernung vom Ultraschallsensor.</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">speed</span></code></dt><dd><p>Gibt die aktuelle Geschwindigkeit des Fahrzeugs zurück.</p>
 </dd>
@@ -341,10 +371,10 @@ und Fahrmodi mit Log-Funktionalität.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_2</span></code>(speed)</p></td>
 <td><p>Führt eine komplexere vordefinierte Abfolge von Bewegungen aus.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#soniccar.SonicCar.fahrmodus_3" title="soniccar.SonicCar.fahrmodus_3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_3</span></code></a>([min_dist, speed, angle])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="soniccar.html#soniccar.SonicCar.fahrmodus_3" title="soniccar.SonicCar.fahrmodus_3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_3</span></code></a>([min_dist, speed, angle])</p></td>
 <td><p>Fahrmodus 3: Fährt vorwärts, bis ein Hindernis erkannt wird.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#soniccar.SonicCar.fahrmodus_4" title="soniccar.SonicCar.fahrmodus_4"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_4</span></code></a>([speed, lenken])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="soniccar.html#soniccar.SonicCar.fahrmodus_4" title="soniccar.SonicCar.fahrmodus_4"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_4</span></code></a>([speed, lenken])</p></td>
 <td><p>Fahrmodus 4: Erkundungstour mit zufälligem Lenkwinkel und Rückwärtsfahrt bei Hindernissen.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loggen</span></code>([time, speed, direction, ...])</p></td>
@@ -430,6 +460,11 @@ und Fahrmodi mit Log-Funktionalität.</p>
 </tbody>
 </table>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="app_data.Data.__annotations__">
+<span class="sig-name descname"><span class="pre">__annotations__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#app_data.Data.__annotations__" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="app_data.Data.__dict__">
 <span class="sig-name descname"><span class="pre">__dict__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">mappingproxy({'__module__':</span> <span class="pre">'app_data',</span> <span class="pre">'__init__':</span> <span class="pre">&lt;function</span> <span class="pre">Data.__init__&gt;,</span> <span class="pre">'read_data':</span> <span class="pre">&lt;function</span> <span class="pre">Data.read_data&gt;,</span> <span class="pre">'__dict__':</span> <span class="pre">&lt;attribute</span> <span class="pre">'__dict__'</span> <span class="pre">of</span> <span class="pre">'Data'</span> <span class="pre">objects&gt;,</span> <span class="pre">'__weakref__':</span> <span class="pre">&lt;attribute</span> <span class="pre">'__weakref__'</span> <span class="pre">of</span> <span class="pre">'Data'</span> <span class="pre">objects&gt;,</span> <span class="pre">'__doc__':</span> <span class="pre">None,</span> <span class="pre">'__annotations__':</span> <span class="pre">{}})</span></em><a class="headerlink" href="#app_data.Data.__dict__" title="Link zu dieser Definition">¶</a></dt>
 <dd></dd></dl>
@@ -457,8 +492,6 @@ und Fahrmodi mit Log-Funktionalität.</p>
 
 </dd></dl>
 
-<div class="toctree-wrapper compound">
-</div>
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
@@ -486,11 +519,21 @@ und Fahrmodi mit Log-Funktionalität.</p>
 
 
 <h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Inhaltsverzeichnis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basecar.html">basecar.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensorcar.html">sonsorcar.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="soniccar.html">soniccar.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_data.html">app_data.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_gui.html">app_gui.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basisklassen.html">basisklassen.py</a></li>
+</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="basecar.html" title="nächstes Kapitel">basecar.py</a></li>
   </ul></li>
 </ul>
 </div>
