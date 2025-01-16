@@ -114,12 +114,12 @@ class SensorCar(SonicCar):
                 # Links lenken Stufe 4
                 elif ir_value[0] and ir_value[1] == False:
                     angle = 55
-                    speed_value = int(speed * 0.5)
+                    speed_value = int(speed * 0.6)
                     self.drive(speed_value,angle)
                 # Rechts lenken Stufe 4
                 elif ir_value[3] == False and ir_value[4]:
                     angle = 125
-                    speed_value = int(speed * 0.5)
+                    speed_value = int(speed * 0.6)
                     self.drive(speed_value,angle) 
                 # Links lenken Stufe 3
                 elif ir_value[0] and ir_value[1]:
@@ -162,18 +162,17 @@ class SensorCar(SonicCar):
                     # Counter cnt zur Verzögerung der Korrekturfahrt
                     if modus >= 6 and cnt > int(speed/15):
                         angle = 180 - angle
-                        speed_value = -30
+                        speed_value = -speed_value
                         self.drive(speed_value,angle) 
                         cnt = 0  
                     else:
                         cnt = cnt + 1
-                    time.sleep(0.1)
+                    time.sleep(0.05)
                 if (0 < distance < mindist) and modus == 7:
                     self.stop()
                     print("Mindistanz unterschritten, Fahrzeug Stoppt")
                     break
-                self.loggen(time.time() - start_time, speed_value, self._direction, angle, self.get_distance, ir_value, self._moduswahl) 
-                #self.loggen(self.get_distance, speed_value, angle, time.time() - start_time, ir_value, self._moduswahl)                                                               
+                self.loggen(time.time() - start_time, speed_value, self._direction, angle, self.get_distance, ir_value, self._moduswahl)                                                              
                 
         finally:
             # Terminal-Einstellungen wiederherstellen und Auto stoppen
@@ -182,7 +181,6 @@ class SensorCar(SonicCar):
             print("Fahrmodus beendet.")
 
     
-
     def fahrmodus(self, fmodus = 1, speed = 50, angle = 90,  mindist = 12):
         if fmodus == 1:
             self.fahrmodus_1(speed)
@@ -210,15 +208,6 @@ class SensorCar(SonicCar):
             writer.writerows(self._log)  # Log-Daten in die Datei schreiben
 
         print(f"Log-Daten wurden in '{file_name}' gespeichert.") 
-
-        # result_df, df = read_data()
-        # #add_data aufrufen zur Aktualisierung der Daten
-        # try:
-        #     subprocess.run(["python3", "app_data.py"], check=True)         
-        #     print("app_data.py wurde erfolgreich ausgeführt.")     
-        # except subprocess.CalledProcessError as e:         
-        #     print(f"Fehler bei der Ausführung von app_data.py: {e}")
-
 
 
 if __name__ == "__main__":
