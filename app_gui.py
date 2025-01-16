@@ -56,19 +56,19 @@ app.layout = dbc.Container([
                     children=[
                         dbc.ButtonGroup(
                             [
-                                dbc.Button("Fahrmodus 1", id='btFM1'), 
+                                dbc.Button("Fahrmodus 1", id='btFM1', style={'width':'160px'}), 
                                 dbc.Popover("Vorwärts- und Rückwärtsfahrt", target="btFM1", body=True, trigger="hover", placement="top"),
-                                dbc.Button("Fahrmodus 2", id='btFM2'), 
+                                dbc.Button("Fahrmodus 2", id='btFM2', style={'width':'160px'}), 
                                 dbc.Popover("Kreisfahrt mit max. Lenkwinkel", target="btFM2", body=True, trigger="hover", placement="top"),
-                                dbc.Button("Fahrmodus 3", id='btFM3'), 
+                                dbc.Button("Fahrmodus 3", id='btFM3', style={'width':'160px'}), 
                                 dbc.Popover("Vorwärts fahren bis Hindernis", target="btFM3", body=True, trigger="hover", placement="top"),
-                                dbc.Button("Fahrmodus 4", id='btFM4'), 
+                                dbc.Button("Fahrmodus 4", id='btFM4', style={'width':'160px'}), 
                                 dbc.Popover("Erkundungstour", target="btFM4", body=True, trigger="hover", placement="top"),
-                                dbc.Button("Fahrmodus 5", id='btFM5'), 
+                                dbc.Button("Fahrmodus 5", id='btFM5', style={'width':'160px'}), 
                                 dbc.Popover("Linienverfolgung", target="btFM5", body=True, trigger="hover", placement="top"),
-                                dbc.Button("Fahrmodus 6", id='btFM6'), 
+                                dbc.Button("Fahrmodus 6", id='btFM6', style={'width':'160px'}), 
                                 dbc.Popover("Erweiterte Linienverfolgung", target="btFM6", body=True, trigger="hover", placement="top"),
-                                dbc.Button("Fahrmodus 7", id='btFM7'), 
+                                dbc.Button("Fahrmodus 7", id='btFM7', style={'width':'160px'}), 
                                 dbc.Popover("Erweiterte Linienverfolgung mit Hinderniserkennung", target="btFM7", body=True, trigger="hover", placement="top"),
                             ],
                             size="lg",
@@ -78,7 +78,7 @@ app.layout = dbc.Container([
                         dbc.Popover("Stoppen der aktuellen Fahrt", target="btStopp", body=True, trigger="hover", placement="top"),
                         dbc.Button('Kalibrierung!', id='btCali', n_clicks=0, style={'margin':'15px'}, size="lg"),
                         dbc.Popover("Kalibrierung der IR-Sensoren", target="btCali", body=True, trigger="hover", placement="top"),
-                        html.Div(id='cali_value'),
+                        html.Div(id='cali_value', style={'textAlign':'right'}),
                         # Hier die Dropdowns hinzufügen
                         html.Div(
                             children=[
@@ -260,16 +260,18 @@ app.layout = dbc.Container([
 # Button Fahrmodus 1
 @app.callback(
     output_button_disable,
+    Output('btFM1', 'children', allow_duplicate=True),
     Output('btFM1', 'color', allow_duplicate=True),
     Input('btFM1', 'n_clicks'), 
     prevent_initial_call=True
 )
 def update_output(n_clicks):
-    return True, True, True, True, True, True, True, 'warning'
+    return True, True, True, True, True, True, True, [dbc.Spinner(size="sm"), " FM1 aktiv..."], 'warning'
 
 # Button Fahrmodus 1 Farbänderung
 @app.callback(
     output_button_disable,        
+    Output('btFM1', 'children', allow_duplicate=True),    
     Output('fahrt-dropdown', 'options', allow_duplicate=True), 
     Output('fahrt-dropdown', 'value', allow_duplicate=True),     
     Output('btFM1', 'color', allow_duplicate=True),
@@ -280,21 +282,23 @@ def update_output(color):
     if color == 'warning':
         car.fahrmodus(fmodus=1, speed=car.vmax_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
-    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
+    return False, False, False, False, False, False, False, 'Fahrmodus 1', [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
 # Button Fahrmodus 2
 @app.callback(
     output_button_disable, 
+    Output('btFM2', 'children', allow_duplicate=True),    
     Output('btFM2', 'color'),
     Input('btFM2', 'n_clicks'), 
     prevent_initial_call=True
 )
 def update_output(n_clicks):
-    return True, True, True, True, True, True, True, 'warning'
+    return True, True, True, True, True, True, True, [dbc.Spinner(size="sm"), " FM2 aktiv..."],'warning'
 
 # Button Fahrmodus 2 Farbänderung
 @app.callback(
     output_button_disable, 
+    Output('btFM2', 'children', allow_duplicate=True),    
     Output('fahrt-dropdown', 'options', allow_duplicate=True), 
     Output('fahrt-dropdown', 'value', allow_duplicate=True),            
     Output('btFM2', 'color', allow_duplicate=True),
@@ -305,21 +309,23 @@ def update_output(color):
     if color == 'warning':
         car.fahrmodus(fmodus=2, speed=car.vmax_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
-    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
+    return False, False, False, False, False, False, False, 'Fahrmodus 2', [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
 # Button Fahrmodus 3
 @app.callback(
-    output_button_disable, 
+    output_button_disable,
+    Output('btFM3', 'children', allow_duplicate=True),      
     Output('btFM3', 'color'),
     Input('btFM3', 'n_clicks'), 
     prevent_initial_call=True
 )
 def update_output(n_clicks):
-    return True, True, True, True, True, True, True, 'warning'
+    return True, True, True, True, True, True, True, [dbc.Spinner(size="sm"), " FM3 aktiv..."], 'warning'
 
 # Button Fahrmodus 3 Farbänderung
 @app.callback(
-    output_button_disable,        
+    output_button_disable, 
+    Output('btFM3', 'children', allow_duplicate=True),            
     Output('fahrt-dropdown', 'options', allow_duplicate=True), 
     Output('fahrt-dropdown', 'value', allow_duplicate=True),     
     Output('btFM3', 'color', allow_duplicate=True),
@@ -330,21 +336,23 @@ def update_output(color):
     if color == 'warning':
         car.fahrmodus(fmodus=3, speed=car.vmax_vorgabe,  mindist=car.mindist_vorgabe)
         data.read_data()  
-    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
+    return False, False, False, False, False, False, False, 'Fahrmodus 3', [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
 # Button Fahrmodus 4
 @app.callback(
     output_button_disable, 
+    Output('btFM4', 'children', allow_duplicate=True),     
     Output('btFM4', 'color'),
     Input('btFM4', 'n_clicks'), 
     prevent_initial_call=True
 )
 def update_output(n_clicks):
-    return True, True, True, True, True, True, True, 'warning'
+    return True, True, True, True, True, True, True, [dbc.Spinner(size="sm"), " FM4 aktiv..."],'warning'
 
 # Button Fahrmodus 4 Farbänderung
 @app.callback(
     output_button_disable, 
+    Output('btFM4', 'children', allow_duplicate=True),     
     Output('fahrt-dropdown', 'options', allow_duplicate=True), 
     Output('fahrt-dropdown', 'value', allow_duplicate=True),            
     Output('btFM4', 'color', allow_duplicate=True),
@@ -355,22 +363,24 @@ def update_output(color):
     if color == 'warning':
         car.fahrmodus(fmodus=4, speed=car.vmax_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
-    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
+    return False, False, False, False, False, False, False, 'Fahrmodus 4', [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
 
 # Button Fahrmodus 5
 @app.callback(
     output_button_disable, 
+    Output('btFM5', 'children', allow_duplicate=True),      
     Output('btFM5', 'color'),
     Input('btFM5', 'n_clicks'), 
     prevent_initial_call=True
 )
 def update_output(n_clicks):
-    return True, True, True, True, True, True, True, 'warning'
+    return True, True, True, True, True, True, True, [dbc.Spinner(size="sm"), " FM5 aktiv..."], 'warning'
 
 # Button Fahrmodus 5 Farbänderung
 @app.callback(
     output_button_disable,  
+    Output('btFM5', 'children', allow_duplicate=True),      
     Output('fahrt-dropdown', 'options', allow_duplicate=True), 
     Output('fahrt-dropdown', 'value', allow_duplicate=True),           
     Output('btFM5', 'color', allow_duplicate=True),
@@ -381,21 +391,23 @@ def update_output(color):
     if color == 'warning':
         car.fahrmodus(fmodus=5, speed=car.vmax_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
-    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
+    return False, False, False, False, False, False, False, 'Fahrmodus 5', [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
 # Button Fahrmodus 6
 @app.callback(
     output_button_disable, 
+    Output('btFM6', 'children', allow_duplicate=True),     
     Output('btFM6', 'color'),
     Input('btFM6', 'n_clicks'), 
     prevent_initial_call=True
 )
 def update_output(n_clicks):
-    return True, True, True, True, True, True, True, 'warning'
+    return True, True, True, True, True, True, True, [dbc.Spinner(size="sm"), " FM6 aktiv..."], 'warning'
 
 # Button Fahrmodus 6 Farbänderung
 @app.callback(
-    output_button_disable,   
+    output_button_disable, 
+    Output('btFM6', 'children', allow_duplicate=True),       
     Output('fahrt-dropdown', 'options', allow_duplicate=True), 
     Output('fahrt-dropdown', 'value', allow_duplicate=True),          
     Output('btFM6', 'color', allow_duplicate=True),
@@ -406,21 +418,23 @@ def update_output(color):
     if color == 'warning':
         car.fahrmodus(fmodus=6, speed=car.vmax_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
-    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
+    return False, False, False, False, False, False, False, 'Fahrmodus 6', [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
 # Button Fahrmodus 7
 @app.callback(
     output_button_disable, 
+    Output('btFM7', 'children', allow_duplicate=True),     
     Output('btFM7', 'color'),
     Input('btFM7', 'n_clicks'), 
     prevent_initial_call=True
 )
 def update_output(n_clicks):
-    return True, True, True, True, True, True, True, 'warning'
+    return True, True, True, True, True, True, True, [dbc.Spinner(size="sm"), " FM7 aktiv..."], 'warning'
 
 # Button Fahrmodus 7 Farbänderung
 @app.callback(
-    output_button_disable,   
+    output_button_disable,  
+    Output('btFM7', 'children', allow_duplicate=True),      
     Output('fahrt-dropdown', 'options', allow_duplicate=True), 
     Output('fahrt-dropdown', 'value', allow_duplicate=True),          
     Output('btFM7', 'color', allow_duplicate=True),
@@ -431,22 +445,29 @@ def update_output(color):
     if color == 'warning':
         car.fahrmodus(fmodus=7, speed=car.vmax_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
-    return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
+    return False, False, False, False, False, False, False, 'Fahrmodus 7', [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
 # Stopp-Button
 @app.callback(
+    Output('btFM1', 'children', allow_duplicate=True),
     Output('btFM1', 'disabled', allow_duplicate=True),
-    Output('btFM1', 'color', allow_duplicate=True),         
+    Output('btFM1', 'color', allow_duplicate=True),  
+    Output('btFM2', 'children', allow_duplicate=True),       
     Output('btFM2', 'disabled', allow_duplicate=True),
     Output('btFM2', 'color', allow_duplicate=True),
+    Output('btFM3', 'children', allow_duplicate=True),
     Output('btFM3', 'disabled', allow_duplicate=True),
     Output('btFM3', 'color', allow_duplicate=True),
+    Output('btFM4', 'children', allow_duplicate=True),
     Output('btFM4', 'disabled', allow_duplicate=True),
     Output('btFM4', 'color', allow_duplicate=True),
+    Output('btFM5', 'children', allow_duplicate=True),
     Output('btFM5', 'disabled', allow_duplicate=True),
     Output('btFM5', 'color', allow_duplicate=True),
+    Output('btFM6', 'children', allow_duplicate=True),
     Output('btFM6', 'disabled', allow_duplicate=True),
     Output('btFM6', 'color', allow_duplicate=True),
+    Output('btFM7', 'children', allow_duplicate=True),
     Output('btFM7', 'disabled', allow_duplicate=True),
     Output('btFM7', 'color', allow_duplicate=True),
     Input('btStopp', 'n_clicks'), 
@@ -454,7 +475,7 @@ def update_output(color):
 )
 def update_output(n_clicks):
     car.ismanually_stopped = True
-    return False, 'primary', False, 'primary',False, 'primary',False, 'primary',False, 'primary',False, 'primary', False, 'primary'
+    return 'Fahrmodus 1', False, 'primary', 'Fahrmodus 2', False, 'primary', 'Fahrmodus 3', False, 'primary', 'Fahrmodus 4', False, 'primary', 'Fahrmodus 5', False, 'primary', 'Fahrmodus 6', False, 'primary', 'Fahrmodus 7', False, 'primary'
 
 @app.callback(
     Output('btCali', 'children'),
