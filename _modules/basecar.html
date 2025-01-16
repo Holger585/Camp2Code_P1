@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>basecar &#8212; Camp2Code Projektphase 1 V1 Dokumentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Stichwortverzeichnis"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python-Modulindex"
+             >Module</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Camp2Code Projektphase 1 V1 Dokumentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Modul-Quellcode</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">basecar</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Quellcode für basecar</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">basisklassen</span> <span class="kn">import</span> <span class="n">FrontWheels</span><span class="p">,</span> <span class="n">BackWheels</span>
+
+<div class="viewcode-block" id="BaseCar"><a class="viewcode-back" href="../index.html#basecar.BaseCar">[Doku]</a><span class="k">class</span> <span class="nc">BaseCar</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Basisklasse für ein ferngesteuertes Fahrzeug, das Vorder- und Hinterräder steuern kann.</span>
+<span class="sd">    Die Konfiguration wird aus einer JSON-Datei geladen, mit Fallback auf Standardwerte.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BaseCar.__init__"><a class="viewcode-back" href="../index.html#basecar.BaseCar.__init__">[Doku]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialisiert das Fahrzeug, indem es Konfigurationsdaten lädt und die Räder initialisiert.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;config.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">configdata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">turning_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;turning_offset&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">forward_A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;forward_A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">forward_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;forward_B&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fehler: config.json nicht gefunden. Standardwerte werden verwendet.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">turning_offset</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">forward_A</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">forward_B</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">frontwheels</span> <span class="o">=</span> <span class="n">FrontWheels</span><span class="p">(</span><span class="n">turning_offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">turning_offset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backwheels</span> <span class="o">=</span> <span class="n">BackWheels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_A</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_B</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span> <span class="o">=</span> <span class="mi">90</span>  <span class="c1"># Standardwinkel in der Mitte</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Initialgeschwindigkeit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Stillstand</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1">#Log erstellen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ismanually_stopped</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1">#Externe Stoppfunktion</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">steering_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gibt den aktuellen Lenkwinkel des Fahrzeugs zurück.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span>
+
+    <span class="nd">@steering_angle</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">steering_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setzt den Lenkwinkel und passt ihn an zulässige Grenzen an.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            angle (int): Der gewünschte Lenkwinkel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">angle</span> <span class="o">&lt;</span> <span class="mi">45</span> <span class="ow">or</span> <span class="n">angle</span> <span class="o">&gt;</span> <span class="mi">135</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warnung: Eingabewinkel </span><span class="si">{</span><span class="n">angle</span><span class="si">}</span><span class="s2"> ist nicht zulässig. Der Winkel wird angepasst.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">135</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frontwheels</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">speed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gibt die aktuelle Geschwindigkeit des Fahrzeugs zurück.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span>
+
+    <span class="nd">@speed</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed_value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setzt die Geschwindigkeit und begrenzt sie auf zulässige Werte.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            speed_value (int): Die gewünschte Geschwindigkeit (-100 bis 100 ausgenommen -30 bis 30).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">speed_value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="o">-</span><span class="mi">30</span> <span class="o">&lt;</span> <span class="n">speed_value</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">speed_value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">speed_value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">=</span> <span class="o">-</span><span class="mi">30</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Geschwindigkeit angepasst: </span><span class="si">{</span><span class="n">speed_value</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="si">}</span><span class="s2"> km/h&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">=</span> <span class="mi">30</span>        
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Geschwindigkeit angepasst: </span><span class="si">{</span><span class="n">speed_value</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="si">}</span><span class="s2"> km/h&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gibt die aktuelle Fahrtrichtung des Fahrzeugs zurück:</span>
+<span class="sd">        1 = Vorwärts, -1 = Rückwärts, 0 = Stillstand.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span>
+
+<div class="viewcode-block" id="BaseCar.drive"><a class="viewcode-back" href="../index.html#basecar.BaseCar.drive">[Doku]</a>    <span class="k">def</span> <span class="nf">drive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">steering_angle</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Steuert das Fahrzeug mit der angegebenen Geschwindigkeit und dem Lenkwinkel.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            speed (int, optional): Die gewünschte Geschwindigkeit.</span>
+<span class="sd">            steering_angle (int, optional): Der gewünschte Lenkwinkel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">speed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="n">speed</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">backwheels</span><span class="o">.</span><span class="n">forward</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">backwheels</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">backwheels</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backwheels</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">steering_angle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering_angle</span> <span class="o">=</span> <span class="n">steering_angle</span></div>
+
+<div class="viewcode-block" id="BaseCar.stop"><a class="viewcode-back" href="../index.html#basecar.BaseCar.stop">[Doku]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stoppt das Fahrzeug vollständig.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+        <span class="c1">#print(&quot;Fahrzeug wurde angehalten.&quot;)</span>
+
+<div class="viewcode-block" id="BaseCar.loggen"><a class="viewcode-back" href="../index.html#basecar.BaseCar.loggen">[Doku]</a>    <span class="k">def</span> <span class="nf">loggen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">speed</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">steering_angle</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>  <span class="n">ir_value</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">f_modus</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            time (float): Zeit seit Start in Sekunden.</span>
+<span class="sd">            speed (int): Geschwindigkeit des Fahrzeugs.</span>
+<span class="sd">            direction (int): Fahrtrichtung</span>
+<span class="sd">            steering_angle (int): Aktueller Lenkwinkel.</span>
+<span class="sd">            distance (int): Gemessener Abstand.</span>
+<span class="sd">            ir_value (list): Status der IR-LED´s</span>
+<span class="sd">            f_modus (int): Fahrmodusauswahl </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;Zeit&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="s2">&quot;Geschwindigkeit&quot;</span><span class="p">:</span> <span class="n">speed</span><span class="p">,</span>
+            <span class="s2">&quot;Fahrtrichtung&quot;</span><span class="p">:</span> <span class="n">direction</span><span class="p">,</span>
+            <span class="s2">&quot;Lenkwinkel&quot;</span><span class="p">:</span> <span class="n">steering_angle</span><span class="p">,</span>
+            <span class="s2">&quot;Abstand&quot;</span><span class="p">:</span> <span class="n">distance</span><span class="p">,</span>
+            <span class="s2">&quot;IR_Status&quot;</span><span class="p">:</span> <span class="n">ir_value</span><span class="p">,</span>
+            <span class="s2">&quot;Fahrmodus&quot;</span><span class="p">:</span> <span class="n">f_modus</span>
+        <span class="p">})</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Zeit: </span><span class="si">{</span><span class="n">time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, Geschwindigkeit: </span><span class="si">{</span><span class="n">speed</span><span class="si">}</span><span class="s2">, Fahrtrichtung: </span><span class="si">{</span><span class="n">direction</span><span class="si">}</span><span class="s2">, Lenkwinkel: </span><span class="si">{</span><span class="n">steering_angle</span><span class="si">}</span><span class="s2">, Abstand: </span><span class="si">{</span><span class="n">distance</span><span class="si">}</span><span class="s2"> cm, IR_Status: </span><span class="si">{</span><span class="n">ir_value</span><span class="si">}</span><span class="s2">, Fahrmodus: </span><span class="si">{</span><span class="n">f_modus</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>            </div>
+
+<div class="viewcode-block" id="BaseCar.set_fahren_und_warten"><a class="viewcode-back" href="../index.html#basecar.BaseCar.set_fahren_und_warten">[Doku]</a>    <span class="k">def</span> <span class="nf">set_fahren_und_warten</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">steering_angle</span><span class="p">,</span> <span class="n">wait_time</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">f_modus</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bewegt das Fahrzeug mit gegebener Geschwindigkeit und Lenkwinkel und wartet anschließend.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            speed (int): Die Geschwindigkeit.</span>
+<span class="sd">            steering_angle (int): Der Lenkwinkel.</span>
+<span class="sd">            wait_time (float): Die Wartezeit in Sekunden.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#self.drive(speed=speed, steering_angle=steering_angle)</span>
+        <span class="c1"># self.loggen(time.time() - start_time, speed, self._direction, steering_angle, 0, [0,0,0,0,0], f_modus) </span>
+        <span class="c1"># print(f&quot;Geschwindigkeit: {self._speed}, Lenkwinkel: {self._steering_angle}&quot;)</span>
+        <span class="c1">#time.sleep(wait_time)</span>
+
+        <span class="n">run_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ismanually_stopped</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed</span><span class="o">=</span><span class="n">speed</span><span class="p">,</span> <span class="n">steering_angle</span><span class="o">=</span><span class="n">steering_angle</span><span class="p">)</span>
+            <span class="n">current_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">run_time</span> <span class="o">&gt;</span> <span class="n">wait_time</span><span class="p">:</span>
+                <span class="c1">#self.stop()</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ismanually_stopped</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span><span class="p">,</span> <span class="n">steering_angle</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">f_modus</span><span class="p">)</span> 
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Geschwindigkeit: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="si">}</span><span class="s2">, Lenkwinkel: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCar.fahrmodus_1"><a class="viewcode-back" href="../index.html#basecar.BaseCar.fahrmodus_1">[Doku]</a>    <span class="k">def</span> <span class="nf">fahrmodus_1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Führt eine vordefinierte Abfolge von Bewegungen aus.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>  
+        <span class="c1"># Erster Eintrag im Log auf Null setzen         </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>      
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="o">-</span><span class="n">speed</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BaseCar.fahrmodus_2"><a class="viewcode-back" href="../index.html#basecar.BaseCar.fahrmodus_2">[Doku]</a>    <span class="k">def</span> <span class="nf">fahrmodus_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Führt eine komplexere vordefinierte Abfolge von Bewegungen aus.</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="n">lenkwinkelvorgabe</span> <span class="o">=</span> <span class="mi">135</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>  
+        <span class="c1"># Erster Eintrag im Log auf Null setzen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>         
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;01-Initialisierung&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;01-Initialisierung beendet&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;02-1 Sekunde vorwärts&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;02-Fertig!&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;03-Anhalten und einschlagen&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lenkwinkelvorgabe</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;03-Angehalten&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;04-8 Sekunden vorwärts rechtsrum fahren&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="n">lenkwinkelvorgabe</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;04-Fertig!&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;05-Anhalten&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lenkwinkelvorgabe</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;05-Angehalten&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;06-8 Sekunden rückwärts fahren&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="o">-</span><span class="n">speed</span><span class="p">,</span> <span class="n">lenkwinkelvorgabe</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;06-Fertig!&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;07-Anhalten und gerade stellen&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;07-Angehalten&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;08-1 Sekunde rückwärts&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="o">-</span><span class="n">speed</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;08-Fertig!&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren_und_warten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># Sicherstellen, dass das Fahrzeug anhält</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">car</span> <span class="o">=</span> <span class="n">BaseCar</span><span class="p">()</span>
+    <span class="c1">#help(BaseCar)</span>
+    <span class="n">car</span><span class="o">.</span><span class="n">fahrmodus_1</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+    <span class="c1">#car.fahrmodus_2()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Schnellsuche</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Los" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Stichwortverzeichnis"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python-Modulindex"
+             >Module</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Camp2Code Projektphase 1 V1 Dokumentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Modul-Quellcode</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">basecar</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2025, Team 1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

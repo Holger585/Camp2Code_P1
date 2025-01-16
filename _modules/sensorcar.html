@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sensorcar &#8212; Camp2Code Projektphase 1 V1 Dokumentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Stichwortverzeichnis"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python-Modulindex"
+             >Module</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Camp2Code Projektphase 1 V1 Dokumentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Modul-Quellcode</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">sensorcar</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Quellcode für sensorcar</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">soniccar</span> <span class="kn">import</span> <span class="n">SonicCar</span>
+<span class="kn">from</span> <span class="nn">basisklassen</span> <span class="kn">import</span> <span class="n">Infrared</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">select</span>
+<span class="kn">import</span> <span class="nn">tty</span>
+<span class="kn">import</span> <span class="nn">termios</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<div class="viewcode-block" id="SensorCar"><a class="viewcode-back" href="../index.html#sensorcar.SensorCar">[Doku]</a><span class="k">class</span> <span class="nc">SensorCar</span><span class="p">(</span><span class="n">SonicCar</span><span class="p">):</span>
+<div class="viewcode-block" id="SensorCar.__init__"><a class="viewcode-back" href="../index.html#sensorcar.SensorCar.__init__">[Doku]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialisiert das Fahrzeug .</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_moduswahl</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Liste zum Speichern der Log-Daten</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infrared</span> <span class="o">=</span> <span class="n">Infrared</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ir_value</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;config.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="c1"># self._ir_init = self.data.get(&quot;ir_init&quot;, 0)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">infrared</span><span class="o">.</span><span class="n">_references</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ir_init&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fehler: config.json nicht gefunden. Standardwerte werden verwendet. </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">infrared</span><span class="o">.</span><span class="n">_references</span> <span class="o">=</span> <span class="p">[</span><span class="mi">300</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="mi">300</span><span class="p">]</span>
+            <span class="c1"># self.ir_cali()   </span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">get_infrared</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ir_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infrared</span><span class="o">.</span><span class="n">read_digital</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ir_value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">get_moduswahl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moduswahl</span>
+
+    <span class="c1"># Speichermethode der Kalibrierwerte</span>
+<div class="viewcode-block" id="SensorCar.save_reference"><a class="viewcode-back" href="../index.html#sensorcar.SensorCar.save_reference">[Doku]</a>    <span class="k">def</span> <span class="nf">save_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1">#config.json öffnen</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;config.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+            <span class="c1">#config.json mit neuem Datensatz schreiben</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;config.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ir_init&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fehler: config.json nicht gefunden. Standardwerte werden verwendet. </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ir_init&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">infrared</span><span class="o">.</span><span class="n">_references</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ir_init&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">infrared</span><span class="o">.</span><span class="n">_references</span><span class="p">)</span>   </div>
+
+<div class="viewcode-block" id="SensorCar.ir_cali"><a class="viewcode-back" href="../index.html#sensorcar.SensorCar.ir_cali">[Doku]</a>    <span class="k">def</span> <span class="nf">ir_cali</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infrared</span><span class="o">.</span><span class="n">cali_references</span><span class="p">()</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_reference</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">infrared</span><span class="o">.</span><span class="n">_references</span><span class="p">)</span>   
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">infrared</span><span class="o">.</span><span class="n">_references</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SensorCar.fahrmodus_5_6_7"><a class="viewcode-back" href="../index.html#sensorcar.SensorCar.fahrmodus_5_6_7">[Doku]</a>    <span class="k">def</span> <span class="nf">fahrmodus_5_6_7</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="mi">90</span><span class="p">,</span> <span class="n">modus</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="n">ir_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_infrared</span>
+        <span class="c1"># input(&#39;Bitte das Fahrzeug auf die Linie stellen.&#39;)</span>
+        <span class="c1"># while True:</span>
+        <span class="c1">#     if ir_value[2] == False:</span>
+        <span class="c1">#         print(self.infrared.read_digital())</span>
+        <span class="c1">#         input(&#39;Fahrzeug steht nicht auf der Linie. Bitte mittig positionieren.&#39;)</span>
+        <span class="c1">#     else:</span>
+        <span class="c1">#         print(&#39;Linie erkannt. Fahrmodus 5 wird gestartet.&#39;)</span>
+        <span class="c1">#         break</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_moduswahl</span> <span class="o">=</span> <span class="n">modus</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">speed_value</span> <span class="o">=</span> <span class="n">speed</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>  
+        <span class="c1"># Erster Eintrag im Log auf Null setzen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">speed_value</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">,</span> <span class="n">ir_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moduswahl</span><span class="p">)</span>  
+        <span class="c1"># Terminal-Einstellungen für ESC-Abbruch vorbereiten</span>
+        <span class="n">old_settings</span> <span class="o">=</span> <span class="n">termios</span><span class="o">.</span><span class="n">tcgetattr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">)</span>
+        <span class="n">tty</span><span class="o">.</span><span class="n">setcbreak</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed_value</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>   
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="c1"># 1) Zeitlimit prüfen (120 Sekunden)</span>
+                <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span> <span class="o">&gt;</span> <span class="mi">120</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Zeitlimit (120s) erreicht. Fahrmodus beenden.&quot;</span><span class="p">)</span>
+                    <span class="k">break</span>
+
+                <span class="c1"># 2) ESC-Abfrage: ohne Blockieren</span>
+                <span class="k">if</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">ord</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>  <span class="c1"># ESC-Taste</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Abbruch durch ESC-Taste.&quot;</span><span class="p">)</span>
+                        <span class="k">break</span>
+
+                <span class="n">ir_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infrared</span><span class="o">.</span><span class="n">read_digital</span><span class="p">()</span> 
+                <span class="nb">print</span><span class="p">(</span><span class="n">ir_value</span><span class="p">)</span>
+                <span class="c1"># Fahrzeug stoppen                </span>
+                <span class="k">if</span> <span class="n">ir_value</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">frontwheels</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>   
+                    <span class="k">break</span>          
+                <span class="c1"># Links lenken Stufe 4</span>
+                <span class="k">elif</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">angle</span> <span class="o">=</span> <span class="mi">55</span>
+                    <span class="n">speed_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">speed</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed_value</span><span class="p">,</span><span class="n">angle</span><span class="p">)</span>
+                <span class="c1"># Rechts lenken Stufe 4</span>
+                <span class="k">elif</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span>
+                    <span class="n">angle</span> <span class="o">=</span> <span class="mi">125</span>
+                    <span class="n">speed_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">speed</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed_value</span><span class="p">,</span><span class="n">angle</span><span class="p">)</span> 
+                <span class="c1"># Links lenken Stufe 3</span>
+                <span class="k">elif</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">angle</span> <span class="o">=</span> <span class="mi">70</span>
+                    <span class="n">speed_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">speed</span> <span class="o">*</span> <span class="mf">0.7</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed_value</span><span class="p">,</span><span class="n">angle</span><span class="p">)</span> 
+                <span class="c1"># Rechts lenken Stufe 3</span>
+                <span class="k">elif</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span>
+                    <span class="n">angle</span> <span class="o">=</span> <span class="mi">110</span>
+                    <span class="n">speed_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">speed</span> <span class="o">*</span> <span class="mf">0.7</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed_value</span><span class="p">,</span><span class="n">angle</span><span class="p">)</span>  
+                <span class="c1"># Links lenken Stufe 2</span>
+                <span class="k">elif</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">angle</span> <span class="o">=</span> <span class="mi">80</span>
+                    <span class="n">speed_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">speed</span> <span class="o">*</span> <span class="mf">0.85</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed_value</span><span class="p">,</span><span class="n">angle</span><span class="p">)</span> 
+                <span class="c1"># Rechts lenken Stufe 2</span>
+                <span class="k">elif</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">angle</span> <span class="o">=</span> <span class="mi">100</span>
+                    <span class="n">speed_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">speed</span> <span class="o">*</span> <span class="mf">0.85</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed_value</span><span class="p">,</span><span class="n">angle</span><span class="p">)</span> 
+                <span class="c1"># Links lenken Stufe 1</span>
+                <span class="k">elif</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+                    <span class="n">angle</span> <span class="o">=</span> <span class="mi">85</span>
+                    <span class="n">speed_value</span> <span class="o">=</span> <span class="n">speed</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed_value</span><span class="p">,</span><span class="n">angle</span><span class="p">)</span>
+                <span class="c1"># Rechts lenken Stufe 1</span>
+                <span class="k">elif</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+                    <span class="n">angle</span> <span class="o">=</span> <span class="mi">95</span>
+                    <span class="n">speed_value</span> <span class="o">=</span> <span class="n">speed</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed_value</span><span class="p">,</span><span class="n">angle</span><span class="p">)</span>
+                <span class="c1"># Geradeaus fahren</span>
+                <span class="k">elif</span> <span class="n">ir_value</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+                    <span class="n">angle</span> <span class="o">=</span> <span class="mi">90</span>
+                    <span class="n">speed_value</span> <span class="o">=</span> <span class="n">speed</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed_value</span><span class="p">,</span><span class="n">angle</span><span class="p">)</span> 
+                <span class="c1"># Linie nicht erkannt</span>
+                <span class="k">elif</span> <span class="n">ir_value</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]:</span>  
+                    <span class="c1"># Aktivierung Fahrmodus 6</span>
+                    <span class="c1"># Counter cnt zur Verzögerung der Korrekturfahrt</span>
+                    <span class="k">if</span> <span class="n">modus</span> <span class="o">&gt;=</span> <span class="mi">6</span> <span class="ow">and</span> <span class="n">cnt</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">speed</span><span class="o">/</span><span class="mi">15</span><span class="p">):</span>
+                        <span class="n">angle</span> <span class="o">=</span> <span class="mi">180</span> <span class="o">-</span> <span class="n">angle</span>
+                        <span class="n">speed_value</span> <span class="o">=</span> <span class="o">-</span><span class="mi">30</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed_value</span><span class="p">,</span><span class="n">angle</span><span class="p">)</span> 
+                        <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>  
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">cnt</span> <span class="o">=</span> <span class="n">cnt</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>  
+                <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">speed_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">,</span> <span class="n">ir_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moduswahl</span><span class="p">)</span> 
+                <span class="c1">#self.loggen(self.get_distance, speed_value, angle, time.time() - start_time, ir_value, self._moduswahl)                                                               </span>
+                
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># Terminal-Einstellungen wiederherstellen und Auto stoppen</span>
+            <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSADRAIN</span><span class="p">,</span> <span class="n">old_settings</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fahrmodus beendet.&quot;</span><span class="p">)</span></div>
+
+    
+
+<div class="viewcode-block" id="SensorCar.fahrmodus"><a class="viewcode-back" href="../index.html#sensorcar.SensorCar.fahrmodus">[Doku]</a>    <span class="k">def</span> <span class="nf">fahrmodus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fmodus</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">speed</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="mi">90</span><span class="p">,</span>  <span class="n">mindist</span> <span class="o">=</span> <span class="mi">12</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fmodus</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fahrmodus_1</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fmodus</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fahrmodus_2</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fmodus</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fahrmodus_3</span><span class="p">(</span><span class="n">mindist</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fmodus</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fahrmodus_4</span><span class="p">(</span><span class="n">speed</span><span class="o">=</span><span class="n">speed</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fmodus</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fahrmodus_5_6_7</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">fmodus</span><span class="p">)</span>
+
+        <span class="c1"># Schreiben der Log-Daten in eine CSV-Datei</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;fahrmodus_log.csv&quot;</span>
+        <span class="n">file_exists</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>  <span class="c1"># Prüfen, ob die Datei existiert</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csv_file</span><span class="p">:</span>
+            <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Zeit&quot;</span><span class="p">,</span> <span class="s2">&quot;Geschwindigkeit&quot;</span><span class="p">,</span> <span class="s2">&quot;Fahrtrichtung&quot;</span><span class="p">,</span> <span class="s2">&quot;Lenkwinkel&quot;</span><span class="p">,</span> <span class="s2">&quot;Abstand&quot;</span><span class="p">,</span> <span class="s2">&quot;IR_Status&quot;</span><span class="p">,</span> <span class="s2">&quot;Fahrmodus&quot;</span><span class="p">]</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">csv_file</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">)</span>
+
+            <span class="c1"># Schreibe die Kopfzeile, falls die Datei neu erstellt wurde</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">file_exists</span><span class="p">:</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+
+            <span class="n">writer</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">)</span>  <span class="c1"># Log-Daten in die Datei schreiben</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Log-Daten wurden in &#39;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&#39; gespeichert.&quot;</span><span class="p">)</span> </div></div>
+
+        <span class="c1"># result_df, df = read_data()</span>
+        <span class="c1"># #add_data aufrufen zur Aktualisierung der Daten</span>
+        <span class="c1"># try:</span>
+        <span class="c1">#     subprocess.run([&quot;python3&quot;, &quot;app_data.py&quot;], check=True)         </span>
+        <span class="c1">#     print(&quot;app_data.py wurde erfolgreich ausgeführt.&quot;)     </span>
+        <span class="c1"># except subprocess.CalledProcessError as e:         </span>
+        <span class="c1">#     print(f&quot;Fehler bei der Ausführung von app_data.py: {e}&quot;)</span>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">car</span> <span class="o">=</span> <span class="n">SensorCar</span><span class="p">()</span>
+    <span class="n">car</span><span class="o">.</span><span class="n">frontwheels</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+    <span class="c1"># print(car._ir_init)</span>
+    <span class="c1"># print(car.get_infrared)</span>
+    <span class="c1">#car.ir_cali()</span>
+    <span class="c1"># print(car.infrared._references)</span>
+    <span class="c1"># print(car.infrared.read_digital())</span>
+
+    <span class="n">car</span><span class="o">.</span><span class="n">fahrmodus</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1">#car.fahrmodus_5_6_7(75,90,6)</span>
+
+   
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Schnellsuche</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Los" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Stichwortverzeichnis"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python-Modulindex"
+             >Module</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Camp2Code Projektphase 1 V1 Dokumentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Modul-Quellcode</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">sensorcar</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2025, Team 1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

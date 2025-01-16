@@ -1,0 +1,1077 @@
+
+<!DOCTYPE html>
+
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>basisklassen &#8212; Camp2Code Projektphase 1 V1 Dokumentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/translations.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="../genindex.html" />
+    <link rel="search" title="Suche" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Quellcode für basisklassen</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Information: Modules with base classes for project RPiCar</span>
+<span class="sd">    File name: basisklassen.py</span>
+<span class="sd">    Author: Robert Heise, Tobias Venn, Florian Edenhofner (FIDA)</span>
+<span class="sd">    Date created: 11/10/2021</span>
+<span class="sd">    Date last modified: 02/03/2022</span>
+<span class="sd">    Python Version: 3.7</span>
+<span class="sd">    Usage: Base classes U4I/FIDA &quot;Autonomous driving&quot; with Sunfounder PiCar-S project phase 1</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">RPi.GPIO</span> <span class="k">as</span> <span class="nn">GPIO</span>
+<span class="kn">import</span> <span class="nn">smbus</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+
+<div class="viewcode-block" id="Ultrasonic"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Ultrasonic">[Doku]</a><span class="k">class</span> <span class="nc">Ultrasonic</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A class for the SunFounder ultrasonic modules</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        CHANNEL (int): GPIO-Channel of the ultra sonic module. GPIO according to the Sunfounder setup</span>
+<span class="sd">        preparation_time (float): Waiting time in milliseconds before sending the ultrasound pulse.</span>
+<span class="sd">        impuls_length (float): Length of the ultrasound pulse.</span>
+<span class="sd">        timeout (float): waiting time before stopping the measurement in form of the maximum measurement duration.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CHANNEL</span> <span class="o">=</span> <span class="mi">20</span>
+
+<div class="viewcode-block" id="Ultrasonic.__init__"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Ultrasonic.__init__">[Doku]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">preparation_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">impuls_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.00001</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">        preparation_time (float): Waiting time in milliseconds before sending the ultrasound pulse. Defaults to 0.01.</span>
+<span class="sd">        impuls_length (float): Length of the ultrasound pulse. Defaults to 0.00001.</span>
+<span class="sd">        timeout (float): waiting time before stopping the measurement in form of the maximum measurement duration. Defaults to 0.05.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preparation_time</span> <span class="o">=</span> <span class="n">preparation_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">implus_length</span> <span class="o">=</span> <span class="n">impuls_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">setmode</span><span class="p">(</span><span class="n">GPIO</span><span class="o">.</span><span class="n">BCM</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Ultrasonic.distance"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Ultrasonic.distance">[Doku]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns distance in cm or an error.</span>
+<span class="sd">        Error types:</span>
+<span class="sd">            -1: Low signal and timeout reached</span>
+<span class="sd">            -2: High signal and timeout reached</span>
+<span class="sd">            -3: Negative distance</span>
+<span class="sd">            -4: Error in time measurement</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [int]: Distance in cm for a single measurement. Negative values for errors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pulse_end</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">pulse_start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preparation_time</span><span class="p">)</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">implus_length</span><span class="p">)</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">IN</span><span class="p">)</span>
+
+        <span class="n">timeout_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pulse_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>          
+            <span class="k">if</span> <span class="n">pulse_start</span> <span class="o">-</span> <span class="n">timeout_start</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
+                <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">while</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">pulse_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>          
+            <span class="k">if</span> <span class="n">pulse_end</span> <span class="o">-</span> <span class="n">timeout_start</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
+                <span class="k">return</span> <span class="o">-</span><span class="mi">2</span>
+
+        <span class="k">if</span> <span class="n">pulse_start</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">pulse_end</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pulse_duration</span> <span class="o">=</span> <span class="n">pulse_end</span> <span class="o">-</span> <span class="n">pulse_start</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">pulse_duration</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">*</span> <span class="mf">343.0</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">distance</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>              
+                <span class="k">return</span> <span class="n">distance</span>
+            <span class="k">else</span><span class="p">:</span>              
+                <span class="k">return</span> <span class="o">-</span><span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>          
+            <span class="k">return</span> <span class="o">-</span><span class="mi">4</span></div>
+
+<div class="viewcode-block" id="Ultrasonic.stop"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Ultrasonic.stop">[Doku]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Sets GPIO (channel) of the Raspberry to False and stops possible noise of the sensor (shutdown)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Ultrasonic.test"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Ultrasonic.test">[Doku]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Prints 10 measurements in 5 seconds, negative numbers for errors which can appear for large distances</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;Error&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;cm&#39;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> : </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">unit</span><span class="p">))</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">.5</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Infrared"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Infrared">[Doku]</a><span class="k">class</span> <span class="nc">Infrared</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A class for the SunFounder infrared module.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        ADDRESS (int): Address of the infrared module.</span>
+<span class="sd">        _bus (smbus): Bus of the infrared module.</span>
+<span class="sd">        _references (list): List of floats that serve as reference values.</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        IOError: If the connection to the module cannot be established.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ADDRESS</span> <span class="o">=</span> <span class="mh">0x11</span>
+
+<div class="viewcode-block" id="Infrared.__init__"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Infrared.__init__">[Doku]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">references</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Constructor of the class Infrared</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            references (list, optional): List of floats to use as references. Defaults to [300, 300, 300, 300].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bus</span> <span class="o">=</span> <span class="n">smbus</span><span class="o">.</span><span class="n">SMBus</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_references</span> <span class="o">=</span> <span class="n">references</span></div>
+
+<div class="viewcode-block" id="Infrared._read_raw"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Infrared._read_raw">[Doku]</a>    <span class="k">def</span> <span class="nf">_read_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Reads the value of the infrared module as raw values.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [list]: List of bytes read in as raw values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">raw_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bus</span><span class="o">.</span><span class="n">read_i2c_block_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                <span class="n">Connection_OK</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">Connection_OK</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">Connection_OK</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">raw_result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error accessing Infrared Sensor at address&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Infrared.read_analog"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Infrared.read_analog">[Doku]</a>    <span class="k">def</span> <span class="nf">read_analog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trys</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Reads the value of the infrared module as analog.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            trys (int): number of attempts to establish the connection to the module. Defaults to 5.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            IOError: If the connection to the module cannot be established.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [list]: List of bytes of the measurement of each sensor read in as analog values. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">trys</span><span class="p">):</span>
+            <span class="n">raw_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_raw</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">raw_result</span><span class="p">:</span>
+                <span class="n">analog_result</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+                    <span class="n">high_byte</span> <span class="o">=</span> <span class="n">raw_result</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span>
+                    <span class="n">low_byte</span> <span class="o">=</span> <span class="n">raw_result</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="n">analog_result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">high_byte</span> <span class="o">+</span> <span class="n">low_byte</span>
+                    <span class="k">if</span> <span class="n">analog_result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1024</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                <span class="k">return</span> <span class="n">analog_result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Line follower read error. Please check the wiring.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Infrared.read_digital"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Infrared.read_digital">[Doku]</a>    <span class="k">def</span> <span class="nf">read_digital</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Reads the value of the infrared module as digital.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [list]: List of digitized measurement of the sensors using the reference as threshold.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">analog</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_analog</span><span class="p">())</span>
+        <span class="n">digital</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">analog</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_references</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">digital</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Infrared.get_average"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Infrared.get_average">[Doku]</a>    <span class="k">def</span> <span class="nf">get_average</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mount</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the mean value of the measurements.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mount (int): Number of measurements taken. Defaults to 10.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [float]: List of measurement as mean of &#39;mount&#39; individual measurements.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">single_reads</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mount</span><span class="p">):</span>
+            <span class="n">single_reads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_analog</span><span class="p">())</span>
+        <span class="n">single_reads</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">single_reads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">single_reads</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Infrared.set_references"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Infrared.set_references">[Doku]</a>    <span class="k">def</span> <span class="nf">set_references</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Sets the reference &#39;ref&#39; as a list of float</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ref (list): list of floats that are used as reference values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_references</span> <span class="o">=</span> <span class="n">ref</span></div>
+
+<div class="viewcode-block" id="Infrared.cali_references"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Infrared.cali_references">[Doku]</a>    <span class="k">def</span> <span class="nf">cali_references</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Recording the reference</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Place on background:&#39;</span><span class="p">)</span>
+        <span class="n">background</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_average</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;measured background:&#39;</span><span class="p">,</span> <span class="n">background</span><span class="p">)</span>
+        <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Place on line:&#39;</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_average</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;measured line:&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_references</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">background</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reference:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_references</span><span class="p">)</span> </div>
+
+<div class="viewcode-block" id="Infrared.test"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Infrared.test">[Doku]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Tests the connection to the infrared module. Prints 10 measurements in 5 seconds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_analog</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">.5</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="FrontWheels"><a class="viewcode-back" href="../basisklassen.html#basisklassen.FrontWheels">[Doku]</a><span class="k">class</span> <span class="nc">FrontWheels</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A class for the SunFounder steering of the front wheels. It allows maximum steering angles of 45°</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        FRONT_WHEEL_CHANNEL (int): Address of the front wheel module. From Sunfounder!</span>
+<span class="sd">        MAX_TURNING_ANGLE (int): Maximum steering angle. In order to avoid damage.</span>
+<span class="sd">        BUS_NUMBER (int): Bus of the front wheel module. From Sunfounder!</span>
+<span class="sd">        _straight_angle (int): Angle set as straight.</span>
+<span class="sd">        _turning_offset (int): Offset used to calculate the angle.</span>
+<span class="sd">        _servo (object): An object of the class Servo with the parameters FRONT_WHEEL_CHANNEL, BUS_NUMBER and _turning_offset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">FRONT_WHEEL_CHANNEL</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">MAX_TURNING_ANGLE</span> <span class="o">=</span> <span class="mi">45</span>
+    <span class="n">BUS_NUMBER</span> <span class="o">=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="FrontWheels.__init__"><a class="viewcode-back" href="../basisklassen.html#basisklassen.FrontWheels.__init__">[Doku]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turning_offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Setup channels and basic stuff</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            turning_offset (int): Offset used to calculate the angle. Defaults to 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_straight_angle</span> <span class="o">=</span> <span class="mi">90</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_turning_offset</span> <span class="o">=</span> <span class="n">turning_offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_servo</span> <span class="o">=</span> <span class="n">Servo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FRONT_WHEEL_CHANNEL</span><span class="p">,</span>
+                            <span class="n">bus_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">BUS_NUMBER</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_turning_offset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_servo</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_turning_max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MAX_TURNING_ANGLE</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FrontWheels._turning_max"><a class="viewcode-back" href="../basisklassen.html#basisklassen.FrontWheels._turning_max">[Doku]</a>    <span class="k">def</span> <span class="nf">_turning_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Sets the maximum and minimum steering angle to &#39;angle&#39;.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            angle (int): maximum steering angle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_turning_max</span> <span class="o">=</span> <span class="n">angle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_straight_angle</span> <span class="o">-</span> <span class="n">angle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_straight_angle</span> <span class="o">+</span> <span class="n">angle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;left&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_angle</span><span class="p">,</span>
+                        <span class="s2">&quot;straight&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_straight_angle</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_angle</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="FrontWheels.turn"><a class="viewcode-back" href="../basisklassen.html#basisklassen.FrontWheels.turn">[Doku]</a>    <span class="k">def</span> <span class="nf">turn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Turn the front wheels to the given angle. Sets steering angle &#39;angle&#39; as Int in the interval of 45-135° (90° straight ahead).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            angle (int): steering angle to be set.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: steering angle to be set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">angle</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_straight_angle</span>
+        <span class="k">if</span> <span class="n">angle</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]:</span>
+            <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]:</span>
+            <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_servo</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">angle</span></div>
+
+<div class="viewcode-block" id="FrontWheels.get_angles"><a class="viewcode-back" href="../basisklassen.html#basisklassen.FrontWheels.get_angles">[Doku]</a>    <span class="k">def</span> <span class="nf">get_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the maximum steering angles.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [dict]: Dictionary of maximum steering angles</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span></div>
+
+<div class="viewcode-block" id="FrontWheels.test"><a class="viewcode-back" href="../basisklassen.html#basisklassen.FrontWheels.test">[Doku]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Tests the connection to the front wheel module. Prints 10 measurements in 5 seconds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;angle : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">90</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_angles</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">.1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;angle : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">.1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;angle : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">90</span><span class="p">))</span></div></div>
+
+
+<span class="c1">#import TB6612</span>
+<span class="c1">#import PCA9685</span>
+<div class="viewcode-block" id="BackWheels"><a class="viewcode-back" href="../basisklassen.html#basisklassen.BackWheels">[Doku]</a><span class="k">class</span> <span class="nc">BackWheels</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for the SunFounder rear wheel drive.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        MOTOR_A (int): address of the motor module for one side of the rear wheel.</span>
+<span class="sd">        MOTOR_B (int): Address of the motor module for the other side of the rear wheel.</span>
+<span class="sd">        PWM_A (int): Address of the PWM module for one side of the rear wheel.</span>
+<span class="sd">        PWM_B (int): Address of the PWM module for the other side of the rear wheel.</span>
+<span class="sd">        BUS_NUMBER (int): Bus number of the motor module.</span>
+<span class="sd">        forward_A (int): Direction of rotation for motor A.</span>
+<span class="sd">        forward_B (int): Direction of rotation for motor B.</span>
+<span class="sd">        left_wheel (object): An object of the class Motor</span>
+<span class="sd">        right_wheel (object): An object of the class Motor</span>
+<span class="sd">        speed (int): Speed of the motors.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MOTOR_A</span> <span class="o">=</span> <span class="mi">17</span>
+    <span class="n">MOTOR_B</span> <span class="o">=</span> <span class="mi">27</span>
+
+    <span class="n">PWM_A</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">PWM_B</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="n">BUS_NUMBER</span> <span class="o">=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="BackWheels.__init__"><a class="viewcode-back" href="../basisklassen.html#basisklassen.BackWheels.__init__">[Doku]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forward_A</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">forward_B</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Init the direction channel and pwm channel</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            forward_A (int): 0,1 (Configuration of the rotation direction of a motor). Defaults to 0.</span>
+<span class="sd">            forward_B (int): 0,1 (Configuration of the rotation direction of the other motor). Defaults to 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forward_A</span> <span class="o">=</span> <span class="n">forward_A</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forward_B</span> <span class="o">=</span> <span class="n">forward_B</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_wheel</span> <span class="o">=</span> <span class="n">Motor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MOTOR_A</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_A</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_wheel</span> <span class="o">=</span> <span class="n">Motor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MOTOR_B</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_B</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pwm</span> <span class="o">=</span> <span class="n">PWM</span><span class="p">(</span><span class="n">bus_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">BUS_NUMBER</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_set_a_pwm</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Sets the PWM values for motor A.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                value (int): PWM value for motor A.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">pulse_wide</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pwm</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4095</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pwm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PWM_A</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pulse_wide</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_set_b_pwm</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Sets the PWM values for motor B.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                value (int): PWM value for motor B.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">pulse_wide</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pwm</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4095</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pwm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PWM_B</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pulse_wide</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_wheel</span><span class="o">.</span><span class="n">pwm</span> <span class="o">=</span> <span class="n">_set_a_pwm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_wheel</span><span class="o">.</span><span class="n">pwm</span> <span class="o">=</span> <span class="n">_set_b_pwm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="BackWheels.forward"><a class="viewcode-back" href="../basisklassen.html#basisklassen.BackWheels.forward">[Doku]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Sets drive mode to forward. Move both wheels forward        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_wheel</span><span class="o">.</span><span class="n">forward</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_wheel</span><span class="o">.</span><span class="n">forward</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BackWheels.backward"><a class="viewcode-back" href="../basisklassen.html#basisklassen.BackWheels.backward">[Doku]</a>    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Sets drive mode to forward. Move both wheels forward        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_wheel</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_wheel</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BackWheels.stop"><a class="viewcode-back" href="../basisklassen.html#basisklassen.BackWheels.stop">[Doku]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Sets the speed to 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">speed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the speed. 0-100. 0 is stop. 100 is max speed.</span>
+
+<span class="sd">        Use as getter: Int=BW.speed </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: speed of the motors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span>
+
+    <span class="nd">@speed</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the speed. 0-100. 0 is stop. 100 is max speed. It also sets the speed of the left and right back wheels.</span>
+
+<span class="sd">        Use as setter: BW.speed=Int</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            speed (int): speed of the motors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">=</span> <span class="n">speed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_wheel</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_wheel</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span>
+
+<div class="viewcode-block" id="BackWheels.test"><a class="viewcode-back" href="../basisklassen.html#basisklassen.BackWheels.test">[Doku]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Tests setting the speed. Tests driving forward and backward for t seconds.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            t (int): time in seconds to drive. Defaults to 1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;forward speed : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="p">))</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">40</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;forward speed : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="p">))</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;forward speed : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="p">))</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;stop speed : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="p">))</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;forward speed : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="p">))</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;now backward&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;backward speed : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="p">))</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;stop speed : </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="p">))</span></div></div>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The following lines contain the classes defined in Servo.py, TB6612.py, and PCA9698.py.</span>
+<span class="sd">These classes could be defined in one single file.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">taken from</span>
+<span class="sd">**********************************************************************</span>
+<span class="sd">* Filename    : Servo.py</span>
+<span class="sd">* Description : Driver module for servo, with PCA9685</span>
+<span class="sd">* Author      : Cavon</span>
+<span class="sd">* Brand       : SunFounder</span>
+<span class="sd">* E-mail      : service@sunfounder.com</span>
+<span class="sd">* Website     : www.sunfounder.com</span>
+<span class="sd">* Update      : Cavon    2016-09-13    New release</span>
+<span class="sd">*               Cavon    2016-09-21    Change channel from 1 to all</span>
+<span class="sd">**********************************************************************</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<div class="viewcode-block" id="Servo"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Servo">[Doku]</a><span class="k">class</span> <span class="nc">Servo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Servo driver class&#39;&#39;&#39;</span>
+    <span class="n">_MIN_PULSE_WIDTH</span> <span class="o">=</span> <span class="mi">600</span>
+    <span class="n">_MAX_PULSE_WIDTH</span> <span class="o">=</span> <span class="mi">2400</span>
+    <span class="n">_DEFAULT_PULSE_WIDTH</span> <span class="o">=</span> <span class="mi">1500</span>
+    <span class="n">_FREQUENCY</span> <span class="o">=</span> <span class="mi">60</span>
+
+    <span class="n">_DEBUG</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_DEBUG_INFO</span> <span class="o">=</span> <span class="s1">&#39;DEBUG &quot;Servo.py&quot;:&#39;</span>
+
+<div class="viewcode-block" id="Servo.__init__"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Servo.__init__">[Doku]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lock</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bus_number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="mh">0x40</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Init a servo on specific channel, this offset &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">channel</span> <span class="o">&gt;</span> <span class="mi">16</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Servo channel </span><span class="se">\&quot;</span><span class="si">{0}</span><span class="se">\&quot;</span><span class="s2"> is not in (0, 15).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">channel</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s2">&quot;Debug on&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">channel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span> <span class="o">=</span> <span class="n">lock</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pwm</span> <span class="o">=</span> <span class="n">PWM</span><span class="p">(</span><span class="n">bus_number</span><span class="o">=</span><span class="n">bus_number</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="n">address</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_FREQUENCY</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Servo._debug_"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Servo._debug_">[Doku]</a>    <span class="k">def</span> <span class="nf">_debug_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG_INFO</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Servo.setup"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Servo.setup">[Doku]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pwm</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Servo._angle_to_analog"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Servo._angle_to_analog">[Doku]</a>    <span class="k">def</span> <span class="nf">_angle_to_analog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Calculate 12-bit analog value from giving angle &#39;&#39;&#39;</span>
+        <span class="n">pulse_wide</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pwm</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_MIN_PULSE_WIDTH</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_MAX_PULSE_WIDTH</span><span class="p">)</span>
+        <span class="n">analog_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">pulse_wide</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000000</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Angle </span><span class="si">%d</span><span class="s1"> equals Analog_value </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">analog_value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">analog_value</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frequency</span>
+
+    <span class="nd">@frequency</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frequency</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pwm</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span>
+
+    <span class="nd">@offset</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set offset for much user-friendly &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Set offset to </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Servo.write"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Servo.write">[Doku]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Turn the servo with giving angle. &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">:</span>
+                <span class="n">angle</span> <span class="o">=</span> <span class="mi">180</span>
+            <span class="k">if</span> <span class="n">angle</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">angle</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">angle</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">angle</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Servo </span><span class="se">\&quot;</span><span class="si">{0}</span><span class="se">\&quot;</span><span class="s2"> turn angle </span><span class="se">\&quot;</span><span class="si">{1}</span><span class="se">\&quot;</span><span class="s2"> is not in (0, 180).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angle_to_analog</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">val</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pwm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Turn angle = </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">angle</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG</span>
+
+    <span class="nd">@debug</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">debug</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set if debug information shows &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">debug</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG</span> <span class="o">=</span> <span class="n">debug</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;debug must be &quot;True&quot; (Set debug on) or &quot;False&quot; (Set debug off), not &quot;</span><span class="si">{0}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">debug</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG_INFO</span><span class="p">,</span> <span class="s2">&quot;Set debug on&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG_INFO</span><span class="p">,</span> <span class="s2">&quot;Set debug off&quot;</span><span class="p">)</span></div>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">taken from</span>
+<span class="sd">**********************************************************************</span>
+<span class="sd">* Filename    : TB6612.py</span>
+<span class="sd">* Description : A driver module for TB6612</span>
+<span class="sd">* Author      : Cavon</span>
+<span class="sd">* Brand       : SunFounder</span>
+<span class="sd">* E-mail      : service@sunfounder.com</span>
+<span class="sd">* Website     : www.sunfounder.com</span>
+<span class="sd">* Update      : Cavon    2016-09-23    New release</span>
+<span class="sd">**********************************************************************</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c1">#import RPi.GPIO as GPIO</span>
+
+
+<div class="viewcode-block" id="Motor"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Motor">[Doku]</a><span class="k">class</span> <span class="nc">Motor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Motor driver class</span>
+<span class="sd">        Set direction_channel to the GPIO channel which connect to MA, </span>
+<span class="sd">        Set motor_B to the GPIO channel which connect to MB,</span>
+<span class="sd">        Both GPIO channel use BCM numbering;</span>
+<span class="sd">        Set pwm_channel to the PWM channel which connect to PWMA,</span>
+<span class="sd">        Set pwm_B to the PWM channel which connect to PWMB;</span>
+<span class="sd">        PWM channel using PCA9685, Set pwm_address to your address, if is not 0x40</span>
+<span class="sd">        Set debug to True to print out debug informations.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">_DEBUG</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_DEBUG_INFO</span> <span class="o">=</span> <span class="s1">&#39;DEBUG &quot;TB6612.py&quot;:&#39;</span>
+
+<div class="viewcode-block" id="Motor.__init__"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Motor.__init__">[Doku]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction_channel</span><span class="p">,</span> <span class="n">pwm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Init a motor on giving dir. channel and PWM channel.&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s2">&quot;Debug on&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction_channel</span> <span class="o">=</span> <span class="n">direction_channel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pwm</span> <span class="o">=</span> <span class="n">pwm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="n">offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forward_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">backward_offset</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">setwarnings</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">setmode</span><span class="p">(</span><span class="n">GPIO</span><span class="o">.</span><span class="n">BCM</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;setup motor direction channel at </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">direction_channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;setup motor pwm channel&#39;</span><span class="p">)</span>  <span class="c1"># self._debug_(&#39;setup motor pwm channel as %s &#39; % self._pwm.__name__)</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_channel</span><span class="p">,</span> <span class="n">GPIO</span><span class="o">.</span><span class="n">OUT</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Motor._debug_"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Motor._debug_">[Doku]</a>    <span class="k">def</span> <span class="nf">_debug_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG_INFO</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">speed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span>
+
+    <span class="nd">@speed</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set Speed with giving value &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">speed</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">101</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;speed ranges fron 0 to 100, not &quot;</span><span class="si">{0}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">speed</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pwm</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pwm is not callable, please set Motor.pwm to a pwm control function with only 1 veriable speed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Set speed to: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">speed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">=</span> <span class="n">speed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pwm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Motor.forward"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Motor.forward">[Doku]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set the motor direction to forward &#39;&#39;&#39;</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_channel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_offset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Motor moving forward (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_offset</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Motor.backward"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Motor.backward">[Doku]</a>    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set the motor direction to backward &#39;&#39;&#39;</span>
+        <span class="n">GPIO</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_channel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">backward_offset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Motor moving backward (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backward_offset</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Motor.stop"><a class="viewcode-back" href="../basisklassen.html#basisklassen.Motor.stop">[Doku]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Stop the motor by giving a 0 speed &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Motor stop&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span>
+
+    <span class="nd">@offset</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set offset for much user-friendly &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;offset value must be Bool value, not&quot;</span><span class="si">{0}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forward_offset</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backward_offset</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Set offset to </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">debug</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG</span>
+
+    <span class="nd">@debug</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">debug</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set if debug information shows &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">debug</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG</span> <span class="o">=</span> <span class="n">debug</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;debug must be &quot;True&quot; (Set debug on) or &quot;False&quot; (Set debug off), not &quot;</span><span class="si">{0}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">debug</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG_INFO</span><span class="p">,</span> <span class="s2">&quot;Set debug on&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG_INFO</span><span class="p">,</span> <span class="s2">&quot;Set debug off&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pwm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pwm</span>
+
+    <span class="nd">@pwm</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">pwm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pwm</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;pwm set&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pwm</span> <span class="o">=</span> <span class="n">pwm</span></div>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">taken from</span>
+<span class="sd">**********************************************************************</span>
+<span class="sd">* Filename    : PCA9685.py</span>
+<span class="sd">* Description : A driver module for PCA9685</span>
+<span class="sd">* Author      : Cavon</span>
+<span class="sd">* Brand       : SunFounder</span>
+<span class="sd">* E-mail      : service@sunfounder.com</span>
+<span class="sd">* Website     : www.sunfounder.com</span>
+<span class="sd">* Version     : v2.0.0</span>
+<span class="sd">**********************************************************************</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c1">#import smbus</span>
+<span class="c1">#import time</span>
+<span class="c1">#import math</span>
+
+
+<div class="viewcode-block" id="PWM"><a class="viewcode-back" href="../basisklassen.html#basisklassen.PWM">[Doku]</a><span class="k">class</span> <span class="nc">PWM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A PWM control class for PCA9685.&quot;&quot;&quot;</span>
+    <span class="n">_MODE1</span> <span class="o">=</span> <span class="mh">0x00</span>
+    <span class="n">_MODE2</span> <span class="o">=</span> <span class="mh">0x01</span>
+    <span class="n">_SUBADR1</span> <span class="o">=</span> <span class="mh">0x02</span>
+    <span class="n">_SUBADR2</span> <span class="o">=</span> <span class="mh">0x03</span>
+    <span class="n">_SUBADR3</span> <span class="o">=</span> <span class="mh">0x04</span>
+    <span class="n">_PRESCALE</span> <span class="o">=</span> <span class="mh">0xFE</span>
+    <span class="n">_LED0_ON_L</span> <span class="o">=</span> <span class="mh">0x06</span>
+    <span class="n">_LED0_ON_H</span> <span class="o">=</span> <span class="mh">0x07</span>
+    <span class="n">_LED0_OFF_L</span> <span class="o">=</span> <span class="mh">0x08</span>
+    <span class="n">_LED0_OFF_H</span> <span class="o">=</span> <span class="mh">0x09</span>
+    <span class="n">_ALL_LED_ON_L</span> <span class="o">=</span> <span class="mh">0xFA</span>
+    <span class="n">_ALL_LED_ON_H</span> <span class="o">=</span> <span class="mh">0xFB</span>
+    <span class="n">_ALL_LED_OFF_L</span> <span class="o">=</span> <span class="mh">0xFC</span>
+    <span class="n">_ALL_LED_OFF_H</span> <span class="o">=</span> <span class="mh">0xFD</span>
+
+    <span class="n">_RESTART</span> <span class="o">=</span> <span class="mh">0x80</span>
+    <span class="n">_SLEEP</span> <span class="o">=</span> <span class="mh">0x10</span>
+    <span class="n">_ALLCALL</span> <span class="o">=</span> <span class="mh">0x01</span>
+    <span class="n">_INVRT</span> <span class="o">=</span> <span class="mh">0x10</span>
+    <span class="n">_OUTDRV</span> <span class="o">=</span> <span class="mh">0x04</span>
+
+    <span class="n">_DEBUG</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_DEBUG_INFO</span> <span class="o">=</span> <span class="s1">&#39;DEBUG &quot;PCA9685.py&quot;:&#39;</span>
+
+<div class="viewcode-block" id="PWM.__init__"><a class="viewcode-back" href="../basisklassen.html#basisklassen.PWM.__init__">[Doku]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bus_number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="mh">0x40</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bus_number</span> <span class="o">=</span> <span class="n">bus_number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bus</span> <span class="o">=</span> <span class="n">smbus</span><span class="o">.</span><span class="n">SMBus</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bus_number</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PWM._debug_"><a class="viewcode-back" href="../basisklassen.html#basisklassen.PWM._debug_">[Doku]</a>    <span class="k">def</span> <span class="nf">_debug_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG_INFO</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PWM.setup"><a class="viewcode-back" href="../basisklassen.html#basisklassen.PWM.setup">[Doku]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Init the class with bus_number and address&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Reseting PCA9685 MODE1 (without SLEEP) and MODE2&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_all_value</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_MODE2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_OUTDRV</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_MODE1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ALLCALL</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.005</span><span class="p">)</span>
+
+        <span class="n">mode1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_MODE1</span><span class="p">)</span>
+        <span class="n">mode1</span> <span class="o">=</span> <span class="n">mode1</span> <span class="o">&amp;</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_SLEEP</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_MODE1</span><span class="p">,</span> <span class="n">mode1</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.005</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frequency</span> <span class="o">=</span> <span class="mi">60</span></div>
+
+<div class="viewcode-block" id="PWM._write_byte_data"><a class="viewcode-back" href="../basisklassen.html#basisklassen.PWM._write_byte_data">[Doku]</a>    <span class="k">def</span> <span class="nf">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Write data to I2C with self.address&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Writing value </span><span class="si">%2X</span><span class="s1"> to </span><span class="si">%2X</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">reg</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bus</span><span class="o">.</span><span class="n">write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">i</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_i2c</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PWM._read_byte_data"><a class="viewcode-back" href="../basisklassen.html#basisklassen.PWM._read_byte_data">[Doku]</a>    <span class="k">def</span> <span class="nf">_read_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Read data from I2C with self.address&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Reading value from </span><span class="si">%2X</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">reg</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bus</span><span class="o">.</span><span class="n">read_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">results</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">i</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_i2c</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PWM._run_command"><a class="viewcode-back" href="../basisklassen.html#basisklassen.PWM._run_command">[Doku]</a>    <span class="k">def</span> <span class="nf">_run_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">subprocess</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+            <span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
+        <span class="c1"># print(result)</span>
+        <span class="c1"># print(status)</span>
+        <span class="k">return</span> <span class="n">status</span><span class="p">,</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="PWM._check_i2c"><a class="viewcode-back" href="../basisklassen.html#basisklassen.PWM._check_i2c">[Doku]</a>    <span class="k">def</span> <span class="nf">_check_i2c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">listdir</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I2C bus number is: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">bus_number</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Checking I2C device:&quot;</span><span class="p">)</span>
+        <span class="n">devices</span> <span class="o">=</span> <span class="n">listdir</span><span class="p">(</span><span class="s2">&quot;/dev/&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;i2c-</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">bus_number</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I2C device exist.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Seems like I2C have not been set, run &#39;sudo raspi-config&#39; to enable I2C&quot;</span><span class="p">)</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;i2cdetect -y </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">bus_number</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_command</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Your PCA9685 address is set to 0x</span><span class="si">%02X</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;i2cdetect output:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">addresses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">tmp_addresses</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+            <span class="n">tmp_addresses</span> <span class="o">=</span> <span class="n">tmp_addresses</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp_addresses</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp_addresses</span> <span class="o">=</span> <span class="n">tmp_addresses</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">tmp_addresses</span> <span class="o">=</span> <span class="n">tmp_addresses</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">address</span> <span class="ow">in</span> <span class="n">tmp_addresses</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">address</span> <span class="o">!=</span> <span class="s1">&#39;--&#39;</span><span class="p">:</span>
+                    <span class="n">addresses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Conneceted i2c device:&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">addresses</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;None&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">address</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  0x</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">address</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;</span><span class="si">%02X</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="ow">in</span> <span class="n">addresses</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wierd, I2C device is connected, Try to run the program again, If problem stills, email this information to support@sunfounder.com&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Device is missing.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Check the address or wiring of PCA9685 Server driver, or email this information to support@sunfounder.com&quot;</span><span class="p">)</span>
+            <span class="n">quit</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frequency</span>
+
+    <span class="nd">@frequency</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set PWM frequency&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Set frequency to </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">freq</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frequency</span> <span class="o">=</span> <span class="n">freq</span>
+        <span class="n">prescale_value</span> <span class="o">=</span> <span class="mf">25000000.0</span>
+        <span class="n">prescale_value</span> <span class="o">/=</span> <span class="mf">4096.0</span>
+        <span class="n">prescale_value</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
+        <span class="n">prescale_value</span> <span class="o">-=</span> <span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Setting PWM frequency to </span><span class="si">%d</span><span class="s1"> Hz&#39;</span> <span class="o">%</span> <span class="n">freq</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Estimated pre-scale: </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">prescale_value</span><span class="p">)</span>
+        <span class="n">prescale</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">prescale_value</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Final pre-scale: </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">prescale</span><span class="p">)</span>
+
+        <span class="n">old_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_MODE1</span><span class="p">)</span>
+        <span class="n">new_mode</span> <span class="o">=</span> <span class="p">(</span><span class="n">old_mode</span> <span class="o">&amp;</span> <span class="mh">0x7F</span><span class="p">)</span> <span class="o">|</span> <span class="mh">0x10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_MODE1</span><span class="p">,</span> <span class="n">new_mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_PRESCALE</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">prescale</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_MODE1</span><span class="p">,</span> <span class="n">old_mode</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.005</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_MODE1</span><span class="p">,</span> <span class="n">old_mode</span> <span class="o">|</span> <span class="mh">0x80</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PWM.write"><a class="viewcode-back" href="../basisklassen.html#basisklassen.PWM.write">[Doku]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">on</span><span class="p">,</span> <span class="n">off</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set on and off value on specific channel&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Set channel &quot;</span><span class="si">%d</span><span class="s1">&quot; to value &quot;</span><span class="si">%d</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">off</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_LED0_ON_L</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">channel</span><span class="p">,</span> <span class="n">on</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_LED0_ON_H</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">channel</span><span class="p">,</span> <span class="n">on</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_LED0_OFF_L</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">channel</span><span class="p">,</span> <span class="n">off</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_LED0_OFF_H</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">channel</span><span class="p">,</span> <span class="n">off</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PWM.write_all_value"><a class="viewcode-back" href="../basisklassen.html#basisklassen.PWM.write_all_value">[Doku]</a>    <span class="k">def</span> <span class="nf">write_all_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on</span><span class="p">,</span> <span class="n">off</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set on and off value on all channel&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debug_</span><span class="p">(</span><span class="s1">&#39;Set all channel to value &quot;</span><span class="si">%d</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">off</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ALL_LED_ON_L</span><span class="p">,</span> <span class="n">on</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ALL_LED_ON_H</span><span class="p">,</span> <span class="n">on</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ALL_LED_OFF_L</span><span class="p">,</span> <span class="n">off</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_byte_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ALL_LED_OFF_H</span><span class="p">,</span> <span class="n">off</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PWM.map"><a class="viewcode-back" href="../basisklassen.html#basisklassen.PWM.map">[Doku]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">in_min</span><span class="p">,</span> <span class="n">in_max</span><span class="p">,</span> <span class="n">out_min</span><span class="p">,</span> <span class="n">out_max</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;To map the value from arange to another&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">in_min</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">out_max</span> <span class="o">-</span> <span class="n">out_min</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">in_max</span> <span class="o">-</span> <span class="n">in_min</span><span class="p">)</span> <span class="o">+</span> <span class="n">out_min</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG</span>
+
+    <span class="nd">@debug</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">debug</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set if debug information shows&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">debug</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG</span> <span class="o">=</span> <span class="n">debug</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;debug must be &quot;True&quot; (Set debug on) or &quot;False&quot; (Set debug off), not &quot;</span><span class="si">{0}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">debug</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG_INFO</span><span class="p">,</span> <span class="s2">&quot;Set debug on&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_DEBUG_INFO</span><span class="p">,</span> <span class="s2">&quot;Set debug off&quot;</span><span class="p">)</span></div>
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--modus&#39;</span><span class="p">,</span> <span class="s1">&#39;--m&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Startet Test für Klasse direkt.&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">modus</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function for testing the base classes</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        modus (int): The mode that can be choosen by the user</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-- DEMO BASISKLASSEN--------------------&#39;</span><span class="p">)</span>
+    <span class="n">modi</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;Ausrichtung der Servo der Lenkung auf Geradeaus&#39;</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Test Hinterräder - Antrieb / Klasse: Back_Wheels&#39;</span><span class="p">,</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Test Vorderräder - Lenkung / Klasse: Front_Wheels&#39;</span><span class="p">,</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;Test Ultraschallmodul / Klasse: Ultrasonic&#39;</span><span class="p">,</span>
+        <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;Test Infrarotmodul / Klasse: Infrared&#39;</span><span class="p">,</span>
+        <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;Test Hinter- und Vorderräder unter Verwendung der Konfigurationen in config.json&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--&#39;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Auswahl:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">modi</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{i}</span><span class="s1"> - </span><span class="si">{name}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">modi</span><span class="p">[</span><span class="n">m</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--&#39;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">modus</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">modus_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">modi</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">modus</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Wähle  (Andere Taste für Abbruch): ? &#39;</span><span class="p">))</span>
+            <span class="n">modus</span> <span class="o">=</span> <span class="n">modus_list</span><span class="p">[</span><span class="n">modus</span><span class="p">]</span>
+            <span class="k">break</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Getroffene Auswahl nicht möglich.&#39;</span><span class="p">)</span>
+            <span class="n">quit</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Der Servomotor wird nach rechts und links bewegt und dann auf geradeus ausgerichtet.&#39;</span><span class="p">)</span>
+        <span class="n">fw</span> <span class="o">=</span> <span class="n">FrontWheels</span><span class="p">()</span>
+        <span class="n">fw</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">.5</span><span class="p">)</span>
+        <span class="n">fw</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mi">135</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">.5</span><span class="p">)</span>
+        <span class="n">fw</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">=</span><span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Servo der Lenkung auf 90 Grad/geradeaus ausgerichtet! (ENTER zum beenden)&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;ACHTUNG! Das Auto wird ein Stück fahren!</span><span class="se">\n</span><span class="s1"> Drücken Sie ENTER zum Start.&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Test Hinterräder&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">bw</span> <span class="o">=</span> <span class="n">BackWheels</span><span class="p">()</span>
+            <span class="n">bw</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Abbruch.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Test Vorderräder&#39;</span><span class="p">)</span>
+        <span class="n">fw</span> <span class="o">=</span> <span class="n">FrontWheels</span><span class="p">()</span>
+        <span class="n">fw</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Test Ultrasonic&#39;</span><span class="p">)</span>
+        <span class="n">usm</span> <span class="o">=</span> <span class="n">Ultrasonic</span><span class="p">()</span>
+        <span class="n">usm</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Test Infrared&#39;</span><span class="p">)</span>
+        <span class="n">irm</span> <span class="o">=</span> <span class="n">Infrared</span><span class="p">()</span>
+        <span class="n">irm</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="n">modus</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;config.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">turning_offset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;turning_offset&quot;</span><span class="p">]</span>
+                <span class="n">forward_A</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;forward_A&quot;</span><span class="p">]</span>
+                <span class="n">forward_B</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;forward_B&quot;</span><span class="p">]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Daten in config.json:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; - Turning Offset: &quot;</span><span class="p">,</span> <span class="n">turning_offset</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; - Forward A: &quot;</span><span class="p">,</span> <span class="n">forward_A</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; - Forward B: &quot;</span><span class="p">,</span> <span class="n">forward_B</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Keine geeignete Datei config.json gefunden!&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test der Vorderräder:&quot;</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39; Drücken Sie ENTER zum Start.&#39;</span><span class="p">)</span>
+            <span class="n">fw</span> <span class="o">=</span> <span class="n">FrontWheels</span><span class="p">(</span><span class="n">turning_offset</span><span class="o">=</span><span class="n">turning_offset</span><span class="p">)</span>
+            <span class="n">fw</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test der Hinterräder:&quot;</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39; ACHTUNG! Das Auto wird ein Stück fahren!</span><span class="se">\n</span><span class="s1"> Drücken Sie ENTER zum Start.&#39;</span><span class="p">)</span>
+            <span class="n">bw</span> <span class="o">=</span> <span class="n">BackWheels</span><span class="p">(</span><span class="n">forward_A</span><span class="o">=</span><span class="n">forward_A</span><span class="p">,</span> <span class="n">forward_B</span><span class="o">=</span><span class="n">forward_B</span><span class="p">)</span>
+            <span class="n">bw</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Camp2Code Projektphase 1</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Inhaltsverzeichnis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basecar.html">basecar.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sensorcar.html">sonsorcar.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../soniccar.html">soniccar.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_data.html">app_data.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../app_gui.html">app_gui.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basisklassen.html">basisklassen.py</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Modul-Quellcode</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Schnellsuche</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Los" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2025, Team 1.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
