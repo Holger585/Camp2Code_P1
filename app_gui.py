@@ -765,7 +765,7 @@ def update_diagrams(selected_fahrt):
             )
         ],
         layout=go.Layout(
-            title={"text": f"Abstand über Zeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
+            title={"text": f"Abstand (Fahrt {selected_fahrt})","font": {"color": "white"}},
             xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
             yaxis={"title": {"text": "Abstand (cm)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},            
             height=400,
