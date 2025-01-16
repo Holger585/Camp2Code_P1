@@ -554,20 +554,22 @@ def update_output(n_clicks):
 )
 def update_output(n_clicks):
     if n_clicks >= 1:
-        if n_clicks % 3 == 1:
+        if n_clicks % 4 == 1:
             car.frontwheels.turn(90)
             return f'Fzg. auf Hintergrd. stellen', 'warning' , '', car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe
-        elif n_clicks % 3 == 2:
+        elif n_clicks % 4 == 2:
             car.background = car.infrared.get_average(100)
             print('measured background:', car.background)
             return f'Fzg. auf Linie stellen', 'warning' , f'Hintergrund: {car.background}', car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe
-        elif n_clicks % 3 == 0:
+        elif n_clicks % 4 == 3:
             line = car.infrared.get_average(100)
             print('measured line:', line)
             car.infrared._references = (np.array(line) + np.array(car.background)) / 2
             print('Reference:', car.infrared._references)
             car.save_reference(car.infrared._references)
-            return f'Neukalibrierung starten', 'primary' , f'Hintergrund: {car.background} Vordergrund: {line} Schwellwert: {car.infrared._references}', car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe
+            return f'Werteanzeige löschen', 'success' , f'Hintergrund: {car.background} Vordergrund: {line} Schwellwert: {car.infrared._references}', car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe
+        elif n_clicks % 4 == 0:
+            return f'Neukalibrierung starten', 'primary' , '', car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe        
     return f'Kalibrierung starten', 'primary' , '', car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe
 
 # Button zum Ausklappen des manuellen Fahrmodus
@@ -759,7 +761,7 @@ def update_diagrams(selected_fahrt):
         data=[
             go.Scatter(
                 x=filtered_df['Zeit'],
-                y=filtered_df['Abstand2'],
+                y=filtered_df['Abstand2'].interpolate(method='linear'),
                 mode='lines',
                 name="Abstand"
             )
@@ -788,14 +790,14 @@ def update_diagrams(selected_fahrt):
         data=[
             go.Scatter(
                 x=filtered_df['Zeit'],
-                y=filtered_df['Geschwindigkeit']/1.85,
+                y=filtered_df['Geschwindigkeit']/2,
                 mode='lines',
                 line_shape='hv',  # Horizontale Stufenanzeige
                 name="Geschwindigkeit"
             )
         ],
         layout=go.Layout(
-            title={"text": f"Fahrstrecke (Fahrt {selected_fahrt})","font": {"color": "white"}},
+            title={"text": f"Geschwindigkeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
             xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
             yaxis={"title": {"text": "Geschwindigkeit (cm/s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
             height=400,
@@ -820,7 +822,8 @@ def update_diagrams(selected_fahrt):
                 x=filtered_df['Zeit'],
                 y=filtered_df['Fahrstrecke'],
                 mode='lines',
-                name="Fahrstrecke"
+                name="Fahrstrecke",
+                line=dict(color='violet')
             )
         ],
         layout=go.Layout(
@@ -849,7 +852,8 @@ def update_diagrams(selected_fahrt):
                 x=filtered_df['Zeit'],
                 y=filtered_df['Lenkwinkel'] - 90,  # Adjusting the Lenkwinkel values
                 mode='lines',
-                name="Lenkwinkel"
+                name="Lenkwinkel",
+                line=dict(color='green')
             )
         ],
         layout=go.Layout(
@@ -860,7 +864,7 @@ def update_diagrams(selected_fahrt):
                 "tickfont": {"color": "white"},
                 "gridcolor": "grey",
                 "linecolor": "grey",
-                "dtick": 10  # Setting the tick step to 10 degrees
+                "dtick": 10 
             },
             height=400,
             paper_bgcolor="rgba(40,40,40,1)",
@@ -872,9 +876,10 @@ def update_diagrams(selected_fahrt):
         data=[
             go.Scatter(
                 x=filtered_df['Zeit'],
-                y=filtered_df['IR_Status2'],
+                y=filtered_df['IR_Status2'].interpolate(method='linear'),
                 mode='lines',
-                name="IR-Status"
+                name="IR-Status",
+                line=dict(color='red')
             )
         ],
         layout=go.Layout(
