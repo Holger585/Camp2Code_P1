@@ -294,12 +294,6 @@ app.layout = dbc.Container([
         className="mb-4"
     ),
     dbc.Row(
-        dbc.Col(dcc.Graph(id='fahrstrecke-zeit'), width=10),  # Breite auf 10 gesetzt
-        justify="center",  # Horizontale Zentrierung
-        align="center",    # Vertikale Zentrierung
-        className="mb-4"
-    ),
-    dbc.Row(
         dbc.Col(dcc.Graph(id='lenkwinkel-zeit'), width=10),  # Breite auf 10 gesetzt
         justify="center",  # Horizontale Zentrierung
         align="center",    # Vertikale Zentrierung
@@ -317,6 +311,12 @@ app.layout = dbc.Container([
         align="center",    # Vertikale Zentrierung
         className="mb-4"
     ),
+    dbc.Row(
+        dbc.Col(dcc.Graph(id='fahrstrecke-zeit'), width=10),  # Breite auf 10 gesetzt
+        justify="center",  # Horizontale Zentrierung
+        align="center",    # Vertikale Zentrierung
+        className="mb-4"
+    ),    
 ], fluid=True)
 
 
