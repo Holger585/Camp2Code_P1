@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import json
 from dash.dependencies import Output, Input
 from app_data import Data
-from sensorcar import *
+from sensorcar import SensorCar
 import numpy as np
 
 car = SensorCar()
@@ -515,6 +515,7 @@ def update_output(value):
         Output('geschwindigkeit-zeit', 'figure'),
         Output('fahrstrecke-zeit', 'figure'),
         Output('sonic-zeit', 'figure'),
+        Output('sonic-zeit', 'style'),
         Output('lenkwinkel-zeit', 'figure'),
         Output('ir-status-zeit', 'figure'),
         Output('Vmin', 'children'),
@@ -671,7 +672,10 @@ def update_diagrams(selected_fahrt):
         )
     )
 
-    return geschwindigkeit_fig, fahrstrecke_fig, sonic_fig, lenkwinkel_fig, ir_status_fig, vmin_value, vmax_value, vmean_value, fahrzeit_value, fahrstrecke_value, fahrmodus_value
+    # Show or hide the sonic_fig based on Fahrmodus
+    sonic_fig_style = {'display': 'block'} if fahrmodus_value in ['3','4', '7'] else {'display': 'none'}
+
+    return geschwindigkeit_fig, fahrstrecke_fig, sonic_fig, sonic_fig_style, lenkwinkel_fig, ir_status_fig, vmin_value, vmax_value, vmean_value, fahrzeit_value, fahrstrecke_value, fahrmodus_value
 
 if __name__ == "__main__":
     app.run_server(debug=True, host=ip_host, port=8053)
