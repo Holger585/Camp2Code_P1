@@ -556,18 +556,18 @@ def update_output(n_clicks):
     if n_clicks >= 1:
         if n_clicks % 3 == 1:
             car.frontwheels.turn(90)
-            return f'Fzg. auf Hintergrd. stellen', 'warning' , ''
+            return f'Fzg. auf Hintergrd. stellen', 'warning' , '', car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe
         elif n_clicks % 3 == 2:
             car.background = car.infrared.get_average(100)
             print('measured background:', car.background)
-            return f'Fzg. auf Linie stellen', 'warning' , f'Hintergrund: {car.background}'
+            return f'Fzg. auf Linie stellen', 'warning' , f'Hintergrund: {car.background}', car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe
         elif n_clicks % 3 == 0:
             line = car.infrared.get_average(100)
             print('measured line:', line)
             car.infrared._references = (np.array(line) + np.array(car.background)) / 2
             print('Reference:', car.infrared._references)
-            #car.save_reference(car.infrared._references)
-            return f'Neukalibrierung starten', 'primary' , f'Hintergrund: {car.background} Vordergrund: {line} Schwellwert: {car.infrared._references}'
+            car.save_reference(car.infrared._references)
+            return f'Neukalibrierung starten', 'primary' , f'Hintergrund: {car.background} Vordergrund: {line} Schwellwert: {car.infrared._references}', car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe
     return f'Kalibrierung starten', 'primary' , '', car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe
 
 # Button zum Ausklappen des manuellen Fahrmodus
@@ -732,6 +732,7 @@ def update_output(n_clicks):
         Output('sonic-zeit', 'style'),
         Output('lenkwinkel-zeit', 'figure'),
         Output('ir-status-zeit', 'figure'),
+        Output('ir-status-zeit', 'style'),
         Output('Vmin', 'children'),
         Output('Vmax', 'children'),
         Output('Vmean', 'children'),
@@ -888,8 +889,9 @@ def update_diagrams(selected_fahrt):
 
     # Show or hide the sonic_fig based on Fahrmodus
     sonic_fig_style = {'display': 'block'} if fahrmodus_value in ['3','4', '7'] else {'display': 'none'}
+    ir_status_fig_style = {'display': 'block'} if fahrmodus_value in ['5', '6', '7'] else {'display': 'none'}
 
-    return geschwindigkeit_fig, fahrstrecke_fig, sonic_fig, sonic_fig_style, lenkwinkel_fig, ir_status_fig, vmin_value, vmax_value, vmean_value, fahrzeit_value, fahrstrecke_value, fahrmodus_value
+    return geschwindigkeit_fig, fahrstrecke_fig, sonic_fig, sonic_fig_style, lenkwinkel_fig, ir_status_fig, ir_status_fig_style, vmin_value, vmax_value, vmean_value, fahrzeit_value, fahrstrecke_value, fahrmodus_value
 
 if __name__ == "__main__":
     app.run_server(debug=True, host=ip_host, port=8053)
