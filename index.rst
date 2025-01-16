@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Camp2Code Projektphase 1's documentation!
+Dokumentation zur Camp2Code Projektphase 1
 ====================================================
 
 
@@ -50,12 +50,14 @@ Welcome to Camp2Code Projektphase 1's documentation!
    :private-members:
    :special-members:
 
-   
+.. automodule:: basisklassen
+   :members:
+   :undoc-members:
+   :private-members:
+   :special-members:
 
-.. autofunction:: BaseCar
 
-
-Indices and tables
+Index & Suche
 ==================
 
 * :ref:`genindex`

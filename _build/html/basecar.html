@@ -17,7 +17,7 @@
     <script src="_static/translations.js"></script>
     <link rel="index" title="Stichwortverzeichnis" href="genindex.html" />
     <link rel="search" title="Suche" href="search.html" />
-    <link rel="next" title="soniccar" href="soniccar.html" />
+    <link rel="next" title="sonsorcar.py" href="sensorcar.html" />
     <link rel="prev" title="Welcome to Camp2Code Projektphase 1’s documentation!" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -45,11 +45,11 @@ Die Konfiguration wird aus einer JSON-Datei geladen, mit Fallback auf Standardwe
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><a class="reference internal" href="index.html#basecar.BaseCar.direction" title="basecar.BaseCar.direction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">direction</span></code></a></dt><dd><p>Gibt die aktuelle Fahrtrichtung des Fahrzeugs zurück: 1 = Vorwärts, -1 = Rückwärts, 0 = Stillstand.</p>
+<dt><a class="reference internal" href="#basecar.BaseCar.direction" title="basecar.BaseCar.direction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">direction</span></code></a></dt><dd><p>Gibt die aktuelle Fahrtrichtung des Fahrzeugs zurück: 1 = Vorwärts, -1 = Rückwärts, 0 = Stillstand.</p>
 </dd>
-<dt><a class="reference internal" href="index.html#basecar.BaseCar.speed" title="basecar.BaseCar.speed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">speed</span></code></a></dt><dd><p>Gibt die aktuelle Geschwindigkeit des Fahrzeugs zurück.</p>
+<dt><a class="reference internal" href="#basecar.BaseCar.speed" title="basecar.BaseCar.speed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">speed</span></code></a></dt><dd><p>Gibt die aktuelle Geschwindigkeit des Fahrzeugs zurück.</p>
 </dd>
-<dt><a class="reference internal" href="index.html#basecar.BaseCar.steering_angle" title="basecar.BaseCar.steering_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">steering_angle</span></code></a></dt><dd><p>Gibt den aktuellen Lenkwinkel des Fahrzeugs zurück.</p>
+<dt><a class="reference internal" href="#basecar.BaseCar.steering_angle" title="basecar.BaseCar.steering_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">steering_angle</span></code></a></dt><dd><p>Gibt den aktuellen Lenkwinkel des Fahrzeugs zurück.</p>
 </dd>
 </dl>
 </dd>
@@ -61,22 +61,22 @@ Die Konfiguration wird aus einer JSON-Datei geladen, mit Fallback auf Standardwe
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="index.html#basecar.BaseCar.drive" title="basecar.BaseCar.drive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drive</span></code></a>([speed, steering_angle])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#basecar.BaseCar.drive" title="basecar.BaseCar.drive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drive</span></code></a>([speed, steering_angle])</p></td>
 <td><p>Steuert das Fahrzeug mit der angegebenen Geschwindigkeit und dem Lenkwinkel.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="index.html#basecar.BaseCar.fahrmodus_1" title="basecar.BaseCar.fahrmodus_1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_1</span></code></a>([speed])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#basecar.BaseCar.fahrmodus_1" title="basecar.BaseCar.fahrmodus_1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_1</span></code></a>([speed])</p></td>
 <td><p>Führt eine vordefinierte Abfolge von Bewegungen aus.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="index.html#basecar.BaseCar.fahrmodus_2" title="basecar.BaseCar.fahrmodus_2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_2</span></code></a>(speed)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#basecar.BaseCar.fahrmodus_2" title="basecar.BaseCar.fahrmodus_2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_2</span></code></a>(speed)</p></td>
 <td><p>Führt eine komplexere vordefinierte Abfolge von Bewegungen aus.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="index.html#basecar.BaseCar.loggen" title="basecar.BaseCar.loggen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loggen</span></code></a>([time, speed, direction, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#basecar.BaseCar.loggen" title="basecar.BaseCar.loggen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loggen</span></code></a>([time, speed, direction, ...])</p></td>
 <td><p>Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="index.html#basecar.BaseCar.set_fahren_und_warten" title="basecar.BaseCar.set_fahren_und_warten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fahren_und_warten</span></code></a>(speed, steering_angle, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#basecar.BaseCar.set_fahren_und_warten" title="basecar.BaseCar.set_fahren_und_warten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fahren_und_warten</span></code></a>(speed, steering_angle, ...)</p></td>
 <td><p>Bewegt das Fahrzeug mit gegebener Geschwindigkeit und Lenkwinkel und wartet anschließend.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="index.html#basecar.BaseCar.stop" title="basecar.BaseCar.stop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#basecar.BaseCar.stop" title="basecar.BaseCar.stop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code></a>()</p></td>
 <td><p>Stoppt das Fahrzeug vollständig.</p></td>
 </tr>
 </tbody>
@@ -215,7 +215,11 @@ Die Konfiguration wird aus einer JSON-Datei geladen, mit Fallback auf Standardwe
 <li class="toctree-l2"><a class="reference internal" href="#basecar.BaseCar"><code class="docutils literal notranslate"><span class="pre">BaseCar</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="soniccar.html">soniccar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensorcar.html">sonsorcar.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="soniccar.html">soniccar.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_data.html">app_data.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app_gui.html">app_gui.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basisklassen.html">basisklassen.py</a></li>
 </ul>
 
 <div class="relations">
@@ -223,7 +227,7 @@ Die Konfiguration wird aus einer JSON-Datei geladen, mit Fallback auf Standardwe
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="vorheriges Kapitel">Welcome to Camp2Code Projektphase 1’s documentation!</a></li>
-      <li>Next: <a href="soniccar.html" title="nächstes Kapitel">soniccar</a></li>
+      <li>Next: <a href="sensorcar.html" title="nächstes Kapitel">sonsorcar.py</a></li>
   </ul></li>
 </ul>
 </div>

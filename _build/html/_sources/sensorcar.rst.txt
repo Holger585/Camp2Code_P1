@@ -1,4 +1,4 @@
-sonsorcar.py
+sensorcar.py
 =========
 
 .. automodule:: sensor
