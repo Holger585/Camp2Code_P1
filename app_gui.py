@@ -454,17 +454,17 @@ def update_output(n_clicks):
     if n_clicks >= 1:
         if n_clicks % 3 == 1:
             car.frontwheels.turn(90)
-            return f'Fahrzeug auf Hintergrund stellen.', 'warning' , ''
+            return f'Fzg. auf Hintergrund stellen.', 'warning' , ''
         elif n_clicks % 3 == 2:
             car.background = car.infrared.get_average(100)
             print('measured background:', car.background)
-            return f'Fahrzeug auf Linie stellen.', 'warning' , f'Hintergrund: {car.background}'
+            return f'Fzg. auf Linie stellen.', 'warning' , f'Hintergrund: {car.background}'
         elif n_clicks % 3 == 0:
             line = car.infrared.get_average(100)
             print('measured line:', line)
             car.infrared._references = (np.array(line) + np.array(car.background)) / 2
             print('Reference:', car.infrared._references)
-            car.save_reference(car.infrared._references)
+            #car.save_reference(car.infrared._references)
             return f'Neukalibrierung starten', 'primary' , f'Hintergrund: {car.background} Vordergrund: {line} Schwellwert: {car.infrared._references}'
     return f'Kalibrierung starten', 'primary' , ''
 
