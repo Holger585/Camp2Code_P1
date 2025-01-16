@@ -224,6 +224,12 @@ app.layout = dbc.Container([
     
     # Graphen
     dbc.Row(
+        dbc.Col(dcc.Graph(id='sonic-zeit'), width=10),  # Breite auf 10 gesetzt
+        justify="center",  # Horizontale Zentrierung
+        align="center",    # Vertikale Zentrierung
+        className="mb-4"
+    ),    
+    dbc.Row(
         dbc.Col(dcc.Graph(id='geschwindigkeit-zeit'), width=10),  # Breite auf 10 gesetzt
         justify="center",  # Horizontale Zentrierung
         align="center",    # Vertikale Zentrierung
@@ -498,6 +504,7 @@ def update_output(value):
     [
         Output('geschwindigkeit-zeit', 'figure'),
         Output('fahrstrecke-zeit', 'figure'),
+        Output('sonic-zeit', 'figure'),
         Output('Vmin', 'children'),
         Output('Vmax', 'children'),
         Output('Vmean', 'children'),
@@ -518,7 +525,36 @@ def update_diagrams(selected_fahrt):
     fahrzeit_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Fahrzeit'].iloc[0]:.1f} s"
     fahrstrecke_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Fahrstrecke'].iloc[0]:.1f} m"
     fahrmodus_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Fahrmodus'].iloc[0]}"
-    
+
+    sonic_fig = go.Figure(
+        data=[
+            go.Scatter(
+                x=filtered_df['Zeit'],
+                y=filtered_df[filtered_df['Abstand'] > 0]['Abstand'],
+                mode='lines',
+                name="Abstand"
+            )
+        ],
+        layout=go.Layout(
+            title={"text": f"Abstand über Zeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
+            xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
+            yaxis={"title": {"text": "Abstand (cm)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},            
+            height=400,
+            paper_bgcolor="rgba(40,40,40,1)",
+            plot_bgcolor="rgba(40,40,40,1)",
+            shapes=[  # Hinzufügen der roten Linie
+                dict(
+                    type="line",
+                    x0=filtered_df['Zeit'].min(),
+                    x1=filtered_df['Zeit'].max(),
+                    y0=car.mindist_vorgabe,
+                    y1=car.mindist_vorgabe,
+                    line=dict(color="red", width=1),
+                )
+            ]
+        )
+    )
+
     geschwindigkeit_fig = go.Figure(
         data=[
             go.Scatter(
@@ -578,7 +614,7 @@ def update_diagrams(selected_fahrt):
         )
     )
 
-    return geschwindigkeit_fig, fahrstrecke_fig, vmin_value, vmax_value, vmean_value, fahrzeit_value, fahrstrecke_value, fahrmodus_value
+    return geschwindigkeit_fig, fahrstrecke_fig, sonic_fig, vmin_value, vmax_value, vmean_value, fahrzeit_value, fahrstrecke_value, fahrmodus_value
 
 if __name__ == "__main__":
     app.run_server(debug=True, host=ip_host, port=8053)
