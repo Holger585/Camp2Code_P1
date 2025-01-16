@@ -109,7 +109,7 @@ app.layout = dbc.Container([
                                         {'label': '30°', 'value': 30},
                                         {'label': '45°', 'value': 45},
                                     ],
-                                    value=30,  # Standardwert
+                                    value=45,  # Standardwert
                                     style={'width': '150px'}
                                 ),
                                 html.Label("Min. Distanz", style={'margin-left': '10px'}),  # Label links vom Dropdown
@@ -265,7 +265,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(fmodus=1, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
+        car.fahrmodus(fmodus=1, speed=car.vmax_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -290,7 +290,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(fmodus=2, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
+        car.fahrmodus(fmodus=2, speed=car.vmax_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -315,7 +315,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(fmodus=3, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
+        car.fahrmodus(fmodus=3, speed=car.vmax_vorgabe,  mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -340,7 +340,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(fmodus=4, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
+        car.fahrmodus(fmodus=4, speed=car.vmax_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -366,7 +366,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(fmodus=5, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
+        car.fahrmodus(fmodus=5, speed=car.vmax_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -391,7 +391,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(fmodus=6, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
+        car.fahrmodus(fmodus=6, speed=car.vmax_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -416,7 +416,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(fmodus=7, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
+        car.fahrmodus(fmodus=7, speed=car.vmax_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
