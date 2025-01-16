@@ -1,0 +1,7 @@
+Module Documentation
+=====================
+
+.. automodule:: basisklassen.py  # Ersetze 'my_module_name' durch den Namen deines Moduls
+   :members:
+   :undoc-members:
+   :show-inheritance:
