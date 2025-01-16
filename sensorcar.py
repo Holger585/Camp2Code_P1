@@ -82,7 +82,7 @@ class SensorCar(SonicCar):
         speed_value = speed
         start_time = time.time()  
         # Erster Eintrag im Log auf Null setzen
-        self.loggen(self.get_distance, speed_value, angle, 0, ir_value, self._moduswahl)  
+        self.loggen(0, speed_value, 0, angle, self.get_distance, ir_value, self._moduswahl)  
         # Terminal-Einstellungen für ESC-Abbruch vorbereiten
         old_settings = termios.tcgetattr(sys.stdin)
         tty.setcbreak(sys.stdin.fileno())
@@ -167,7 +167,8 @@ class SensorCar(SonicCar):
                     else:
                         cnt = cnt + 1
                     time.sleep(0.1)  
-                self.loggen(self.get_distance, speed_value, angle, time.time() - start_time, ir_value, self._moduswahl)                                                               
+                self.loggen(time.time() - start_time, speed_value, self._direction, angle, self.get_distance, ir_value, self._moduswahl) 
+                #self.loggen(self.get_distance, speed_value, angle, time.time() - start_time, ir_value, self._moduswahl)                                                               
                 
         finally:
             # Terminal-Einstellungen wiederherstellen und Auto stoppen
