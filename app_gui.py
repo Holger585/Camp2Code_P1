@@ -98,6 +98,8 @@ app.layout = dbc.Container([
                                 dbc.Popover("Erweiterte Linienverfolgung", target="btFM6", body=True, trigger="hover", placement="top"),
                                 dbc.Button("Fahrmodus 7", id='btFM7'), 
                                 dbc.Popover("Erweiterte Linienverfolgung mit Hinderniserkennung", target="btFM7", body=True, trigger="hover", placement="top"),
+                                dbc.Button("M",id="collapse-button", n_clicks=0),
+                                dbc.Popover("Manueller Fahrmodus", target="collapse-button", body=True, trigger="hover", placement="top"),
                             ],
                             size="lg",
                             className="me-1",
@@ -106,7 +108,7 @@ app.layout = dbc.Container([
                         dbc.Popover("Stoppen der aktuellen Fahrt", target="btStopp", body=True, trigger="hover", placement="top"),
                         dbc.Button('Kalibrierung!', id='btCali', n_clicks=0, style={'margin':'15px'}, size="lg"),
                         dbc.Popover("Kalibrierung der IR-Sensoren", target="btCali", body=True, trigger="hover", placement="top"),
-                        dbc.Button("M",id="collapse-button", style={'margin':'15px'}, size="lg", n_clicks=0,),                        
+                        #dbc.Button("M",id="collapse-button", style={'margin':'15px'}, size="lg", n_clicks=0,),                        
                         html.Div(id='cali_value', style={'textAlign':'right'}),
                         # Hier die Dropdowns hinzufügen
                         html.Div(
