@@ -9,82 +9,95 @@ import json
 import os
 import csv
 
-
 class SensorCar(SonicCar):
+    """
+    Erweiterte Fahrzeugklasse mit Infrarotsensoren für Linienverfolgung und Hinderniserkennung.
+    """
+
     def __init__(self):
         """
-        Initialisiert das Fahrzeug .
+        Initialisiert das Fahrzeug und die Infrarotsensoren.
         """
         super().__init__()
-        self._moduswahl = 5
+        self._moduswahl = 5  # Moduswahl für das Fahrzeug
         self._log = []  # Liste zum Speichern der Log-Daten
-        self.infrared = Infrared()
-        self._ir_value = [0,0,0,0,0]
+        self.infrared = Infrared()  # Initialisierung der Infrarotsensoren
+        self._ir_value = [0,0,0,0,0]  # Array zum Speichern der Infrarotwerte
         try:
             with open("config.json", "r") as f:
                 self.data = json.load(f)
-                # self._ir_init = self.data.get("ir_init", 0)
                 self.infrared._references = self.data.get("ir_init", 0)
-
         except FileNotFoundError as e:
             print(f"Fehler: config.json nicht gefunden. Standardwerte werden verwendet. {e}")
             self.infrared._references = [300,300,300,300,300]
-            # self.ir_cali()   
         except Exception as e:
             print(e)
 
     @property
     def get_infrared(self):
+        """
+        Liest die aktuellen Werte der Infrarotsensoren.
+
+        Returns:
+            list: Status der IR-LEDs.
+        """
         self._ir_value = self.infrared.read_digital()
         return self._ir_value
 
     @property
     def get_moduswahl(self):
+        """
+        Gibt den aktuellen Fahrmodus zurück.
+
+        Returns:
+            int: Aktueller Fahrmodus.
+        """
         return self._moduswahl
 
-    # Speichermethode der Kalibrierwerte
     def save_reference(self, reference):
+        """
+        Speichert die Kalibrierwerte der Infrarotsensoren in der Konfigurationsdatei.
+
+        Args:
+            reference (list): Kalibrierwerte der Infrarotsensoren.
+        """
         try:
-            #config.json öffnen
             with open("config.json", "r") as f:
                 self.data = json.load(f)
-
-            #config.json mit neuem Datensatz schreiben
             with open("config.json", "w") as f:
                 self.data["ir_init"] = list(reference)
                 json.dump(self.data, f, indent=4)
-
         except FileNotFoundError as e:
-            print("Fehler: config.json nicht gefunden. Standardwerte werden verwendet. {e}")
+            print(f"Fehler: config.json nicht gefunden. Standardwerte werden verwendet. {e}")
             self.data["ir_init"] = list(self.infrared._references)
         except Exception as e:
             print(e)
             self.data["ir_init"] = list(self.infrared._references)   
 
     def ir_cali(self):
+        """
+        Kalibriert die Infrarotsensoren und speichert die Kalibrierwerte.
+        """
         self.infrared.cali_references() 
         self.save_reference(self.infrared._references)   
         print(self.infrared._references)
 
-    def fahrmodus_5_6_7(self, speed = 30, angle = 90, modus = 5, mindist = 12):
+    def fahrmodus_5_6_7(self, speed=30, angle=90, modus=5, mindist=12):
+        """
+        Fahrmodus 5, 6 und 7: Linienverfolgung mit optionaler Hinderniserkennung.
+
+        Args:
+            speed (int): Geschwindigkeit des Fahrzeugs.
+            angle (int): Lenkwinkel des Fahrzeugs.
+            modus (int): Fahrmodus (5, 6 oder 7).
+            mindist (int): Minimaler Abstand zu Hindernissen in cm.
+        """
         ir_value = self.get_infrared
-        # input('Bitte das Fahrzeug auf die Linie stellen.')
-        # while True:
-        #     if ir_value[2] == False:
-        #         print(self.infrared.read_digital())
-        #         input('Fahrzeug steht nicht auf der Linie. Bitte mittig positionieren.')
-        #     else:
-        #         print('Linie erkannt. Fahrmodus 5 wird gestartet.')
-        #         break
-
-
         self._moduswahl = modus
         cnt = 0
         speed_value = speed
         start_time = time.time()  
-        # Erster Eintrag im Log auf Null setzen
         self.loggen(0, speed_value, 0, angle, self.get_distance, ir_value, self._moduswahl)  
-        # Terminal-Einstellungen für ESC-Abbruch vorbereiten
         old_settings = termios.tcgetattr(sys.stdin)
         tty.setcbreak(sys.stdin.fileno())
         self.drive(speed_value, angle)
@@ -170,7 +183,7 @@ class SensorCar(SonicCar):
                     time.sleep(0.05)
                 if (0 < distance < mindist) and modus == 7:
                     self.stop()
-                    print("Mindistanz unterschritten, Fahrzeug Stoppt")
+                    print("Mindistanz unterschritten, Fahrzeug stoppt")
                     break
                 self.loggen(time.time() - start_time, speed_value, self._direction, angle, self.get_distance, ir_value, self._moduswahl)                                                              
                 
@@ -180,8 +193,16 @@ class SensorCar(SonicCar):
             self.stop()
             print("Fahrmodus beendet.")
 
-    
-    def fahrmodus(self, fmodus = 1, speed = 50, angle = 90,  mindist = 12):
+    def fahrmodus(self, fmodus=1, speed=50, angle=90, mindist=12):
+        """
+        Wählt den Fahrmodus basierend auf der Eingabe aus und startet ihn.
+
+        Args:
+            fmodus (int): Fahrmodus (1 bis 7).
+            speed (int): Geschwindigkeit des Fahrzeugs.
+            angle (int): Lenkwinkel des Fahrzeugs.
+            mindist (int): Minimaler Abstand zu Hindernissen in cm.
+        """
         if fmodus == 1:
             self.fahrmodus_1(speed)
         elif fmodus == 2:
@@ -209,17 +230,8 @@ class SensorCar(SonicCar):
 
         print(f"Log-Daten wurden in '{file_name}' gespeichert.") 
 
-
 if __name__ == "__main__":
     car = SensorCar()
     car.frontwheels.turn(90)
-    # print(car._ir_init)
-    # print(car.get_infrared)
-    #car.ir_cali()
-    # print(car.infrared._references)
-    # print(car.infrared.read_digital())
-
     car.fahrmodus(7)
-    #car.fahrmodus_5_6_7(75,90,6)
 
-   
