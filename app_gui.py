@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 import json
 from dash.dependencies import Output, Input
 from app_data import Data
-from sensorcar import *
+from sensorcar import SensorCar
 import numpy as np
 
 car = SensorCar()
