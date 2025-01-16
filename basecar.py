@@ -13,12 +13,14 @@ class BaseCar:
         Initialisiert das Fahrzeug, indem es Konfigurationsdaten lädt und die Räder initialisiert.
         """
         try:
+            # Versuche, die Konfigurationsdatei zu öffnen und zu laden
             with open("config.json", "r") as f:
                 self.configdata = json.load(f)
                 self.turning_offset = self.configdata.get("turning_offset", 0)
                 self.forward_A = self.configdata.get("forward_A", 1)
                 self.forward_B = self.configdata.get("forward_B", 1)
         except FileNotFoundError:
+            # Falls die Datei nicht gefunden wird, Standardwerte verwenden
             print("Fehler: config.json nicht gefunden. Standardwerte werden verwendet.")
             self.turning_offset = 0
             self.forward_A = 0
@@ -162,7 +164,9 @@ class BaseCar:
             if current_time - run_time >= wait_time:
                 break
         if self.ismanually_stopped:
+            # Fahrzeug stoppen, wenn manuell gestoppt
             self.stop()
+        # Logge den aktuellen Zustand des Fahrzeugs
         self.loggen(time.time() - self.start_time, self._speed, self._direction, self._steering_angle, 0, [0,0,0,0,0], f_modus) 
 
     def fahrmodus_1(self, speed=50):

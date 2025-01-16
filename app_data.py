@@ -1,10 +1,20 @@
 import pandas as pd
 
 class Data():
+    """
+    Klasse zum Verarbeiten und Analysieren von Fahrtdaten aus einer CSV-Datei.
+    """
+
     def __init__(self):
+        """
+        Initialisiert die Data-Klasse und liest die Daten aus der CSV-Datei ein.
+        """
         self.read_data()     
 
     def read_data(self):
+        """
+        Liest die Fahrtdaten aus der CSV-Datei ein, berechnet zusätzliche Spalten und erstellt eine Zusammenfassung.
+        """
         # CSV-Datei einlesen
         df = pd.read_csv('fahrmodus_log.csv')
         df['Diff_Zeit'] = df['Zeit'].diff().shift(-1).fillna(0)
@@ -21,7 +31,6 @@ class Data():
             fahrt_ids.append(current_fahrt_id)
 
         df['FahrtID'] = fahrt_ids
-
 
         # Berechnung der Fahrstrecke mit stetigem Anstieg
         fahrstrecke = []
@@ -63,11 +72,11 @@ class Data():
 
         # Ermittlung der KPI für die Kopfzeile in eigenem df
         fahrt_id_result = 0
-        result_df= pd.DataFrame()
+        result_df = pd.DataFrame()
         for i in range(len(df)):
             if df['FahrtID'].iloc[i] != fahrt_id_result:
                 fahrt_id_result = df['FahrtID'].iloc[i]
-                result_df= pd.concat([result_df,pd.DataFrame({
+                result_df = pd.concat([result_df, pd.DataFrame({
                     'FahrtID': fahrt_id_result,
                     'Fahrzeit': [df[df['FahrtID'] == fahrt_id_result]['Zeit'].max()],
                     'Vmin': [(df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].min()/2)],
@@ -78,18 +87,8 @@ class Data():
                 })])
         self.result_df = result_df
         self.df = df
-        # return result_df, df
 
 if __name__ == "__main__":
     data = Data()
     print(data.result_df)
     print(data.df)
-    # print(result_df)
-    # print(df)
-
-# print(f"Fahrzeit1 : {result_df['Fahrzeit']}")
-# print(f"Geschwindigkeit min.: {df['Geschwindigkeit'].min()} km/h")
-# print(f"Geschwindigkeit max.: {df['Geschwindigkeit'].max()} km/h")
-# print(f"Geschwindigkeit mean: {df['Geschwindigkeit'].mean()} km/h")
-# print(f"Fahrstrecke gesamt: {df['Fahrstrecke'].sum():.1f} mm")
-# print(df)

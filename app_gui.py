@@ -12,8 +12,6 @@ data = Data()
 car.vmax_vorgabe = 50
 car.maxwinkel_vorgabe = 30
 car.mindist_vorgabe = 10
-# print(data.df)
-# print(data.result_df)
 
 # Konfigurationslogik
 try:
@@ -27,7 +25,7 @@ except FileNotFoundError:
 # Dash-App erstellen
 app = Dash(__name__, external_stylesheets=[dbc.themes.CYBORG])
 
-#Setzt Variable am Anfang auf 1
+# Setzt Variable am Anfang auf 1
 f_id = 1
 
 output_button_disable = [    
@@ -38,8 +36,7 @@ output_button_disable = [
     Output('btFM5', 'disabled', allow_duplicate=True),
     Output('btFM6', 'disabled', allow_duplicate=True),
     Output('btFM7', 'disabled', allow_duplicate=True),
-  
-    ]
+]
 
 # App-Layout
 app.layout = dbc.Container([
