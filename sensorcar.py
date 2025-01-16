@@ -7,8 +7,9 @@ import termios
 import time
 import json
 import os
-import random
 import csv
+
+
 class SensorCar(SonicCar):
     def __init__(self):
         """
@@ -65,7 +66,7 @@ class SensorCar(SonicCar):
         self.save_reference(self.infrared._references)   
         print(self.infrared._references)
 
-    def fahrmodus_5_6_7(self, speed = 30, angle = 90, modus = 5):
+    def fahrmodus_5_6_7(self, speed = 30, angle = 90, modus = 5, mindist = 12):
         ir_value = self.get_infrared
         # input('Bitte das Fahrzeug auf die Linie stellen.')
         # while True:
@@ -104,7 +105,7 @@ class SensorCar(SonicCar):
                         break
 
                 ir_value = self.infrared.read_digital() 
-                print(ir_value)
+                distance = self.get_distance
                 # Fahrzeug stoppen                
                 if ir_value == [1,1,1,1,1]:
                     self.stop()
@@ -157,7 +158,7 @@ class SensorCar(SonicCar):
                     self.drive(speed_value,angle) 
                 # Linie nicht erkannt
                 elif ir_value == [0,0,0,0,0]:  
-                    # Aktivierung Fahrmodus 6
+                    # Aktivierung in Fahrmodus 6 & 7
                     # Counter cnt zur Verzögerung der Korrekturfahrt
                     if modus >= 6 and cnt > int(speed/15):
                         angle = 180 - angle
@@ -166,7 +167,11 @@ class SensorCar(SonicCar):
                         cnt = 0  
                     else:
                         cnt = cnt + 1
-                    time.sleep(0.1)  
+                    time.sleep(0.1)
+                if (0 < distance < mindist) and modus == 7:
+                    self.stop()
+                    print("Mindistanz unterschritten, Fahrzeug Stoppt")
+                    break
                 self.loggen(time.time() - start_time, speed_value, self._direction, angle, self.get_distance, ir_value, self._moduswahl) 
                 #self.loggen(self.get_distance, speed_value, angle, time.time() - start_time, ir_value, self._moduswahl)                                                               
                 
@@ -188,7 +193,7 @@ class SensorCar(SonicCar):
         elif fmodus == 4:
             self.fahrmodus_4(speed=speed)
         elif fmodus >= 5:
-            self.fahrmodus_5_6_7(speed, angle, fmodus)
+            self.fahrmodus_5_6_7(speed, angle, fmodus, mindist)
 
         # Schreiben der Log-Daten in eine CSV-Datei
         file_name = f"fahrmodus_log.csv"
@@ -225,7 +230,7 @@ if __name__ == "__main__":
     # print(car.infrared._references)
     # print(car.infrared.read_digital())
 
-    car.fahrmodus(1)
+    car.fahrmodus(7)
     #car.fahrmodus_5_6_7(75,90,6)
 
    
