@@ -10,6 +10,9 @@ import numpy as np
 
 car = SensorCar()
 data = Data()
+car.vmax_vorgabe = 50
+car.maxwinkel_vorgabe = 30
+car.mindist_vorgabe = 10
 # print(data.df)
 # print(data.result_df)
 
@@ -79,7 +82,56 @@ app.layout = dbc.Container([
                         dbc.Popover("Stoppen der aktuellen Fahrt", target="btStopp", body=True, trigger="hover", placement="top"),
                         dbc.Button('Kalibrierung!', id='btCali', n_clicks=0, style={'margin':'15px'}, size="lg"),
                         dbc.Popover("Kalibrierung der IR-Sensoren", target="btCali", body=True, trigger="hover", placement="top"),
-                        html.Div(id='cali_value')
+                        html.Div(id='cali_value'),
+                        # Hier die Dropdowns hinzufügen
+                        html.Div(
+                            children=[
+                                html.Label("Max. Geschwindigkeit", style={'margin-left': '10px'}),  # Label links vom Dropdown
+                                dcc.Dropdown(
+                                    id='vmax_vorgabe',
+                                    options=[
+                                        {'label': '30', 'value': 30},
+                                        {'label': '40', 'value': 40},
+                                        {'label': '50', 'value': 50},
+                                        {'label': '60', 'value': 60},
+                                        {'label': '70', 'value': 70},
+                                        {'label': '80', 'value': 80},
+                                        {'label': '90', 'value': 90},
+                                        {'label': '100', 'value': 100},
+                                    ],
+                                    value=50,  # Standardwert
+                                    style={'width': '150px'}
+                                ),
+                                html.Label("Max. Lenkwinkel", style={'margin-left': '10px'}),  # Label links vom Dropdown
+                                dcc.Dropdown(
+                                    id='maxwinkel_vorgabe',
+                                    options=[
+                                        {'label': '15°', 'value': 15},
+                                        {'label': '30°', 'value': 30},
+                                        {'label': '45°', 'value': 45},
+                                    ],
+                                    value=30,  # Standardwert
+                                    style={'width': '150px'}
+                                ),
+                                html.Label("Min. Distanz", style={'margin-left': '10px'}),  # Label links vom Dropdown
+                                dcc.Dropdown(
+                                    id='mindist_vorgabe',
+                                    options=[
+                                        {'label': '5cm', 'value': 5},
+                                        {'label': '10cm', 'value': 10},
+                                        {'label': '15cm', 'value': 15},
+                                    ],
+                                    value=10,  # Standardwert
+                                    style={'width': '150px'}
+                                ),
+                            ],
+                            style={
+                                'display': 'flex',  # Flexbox verwenden, um Dropdowns nebeneinander zu setzen
+                                'justify-content': 'center',  # Zentrieren
+                                'gap': '20px',  # Abstand zwischen den Dropdowns
+                                'margin-top': '20px'  # Abstand nach oben
+                            }
+                        )                        
                     ]
                 ),
                 style={'display': 'flex', 'justify-content': 'center', 'align-items': 'center', 'width': '100%', 'margin-left': 'auto', 'margin-right': 'auto'}
@@ -192,6 +244,7 @@ app.layout = dbc.Container([
 
 
 # Callback zur Aktualisierung der Diagramme basierend auf der Fahrtauswahl
+
 # Button Fahrmodus 1
 @app.callback(
     output_button_disable,
@@ -213,7 +266,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(1)
+        car.fahrmodus(fmodus=1, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -238,7 +291,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(2)
+        car.fahrmodus(fmodus=2, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -263,7 +316,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(3)
+        car.fahrmodus(fmodus=3, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -288,7 +341,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(4)
+        car.fahrmodus(fmodus=4, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -314,7 +367,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(5)
+        car.fahrmodus(fmodus=5, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -339,7 +392,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(6)
+        car.fahrmodus(fmodus=6, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -364,7 +417,7 @@ def update_output(n_clicks):
 )
 def update_output(color):
     if color == 'warning':
-        car.fahrmodus(7)
+        car.fahrmodus(fmodus=7, speed=car.vmax_vorgabe, angle=car.maxwinkel_vorgabe, mindist=car.mindist_vorgabe)
         data.read_data()  
     return False, False, False, False, False, False, False, [{'label': f"Fahrt {fahrt_id}, Fahrmodus: {data.result_df[data.result_df['FahrtID'] == fahrt_id]['Fahrmodus'].iloc[0]}", 'value': fahrt_id} for fahrt_id in data.df['FahrtID'].unique()], data.df['FahrtID'].unique()[-1], 'primary'
 
@@ -414,6 +467,36 @@ def update_output(n_clicks):
             car.save_reference(car.infrared._references)
             return f'Neukalibrierung starten', 'primary' , f'Hintergrund: {car.background} Vordergrund: {line} Schwellwert: {car.infrared._references}'
     return f'Kalibrierung starten', 'primary' , ''
+
+# Dropdown Max Geschwindigkeit
+@app.callback(
+    Output('btCali', 'disabled', allow_duplicate=True),
+    Input('vmax_vorgabe', 'value'),
+    prevent_initial_call=True
+)
+def update_output(value):
+    car.vmax_vorgabe = value
+    return False
+
+# Dropdown Max Lenkwinkel
+@app.callback(
+    Output('btCali', 'disabled', allow_duplicate=True),
+    Input('maxwinkel_vorgabe', 'value'),
+   prevent_initial_call=True
+)
+def update_output(value):
+    car.maxwinkel_vorgabe = value
+    return False
+
+# Dropdown Min Abstand
+@app.callback(
+    Output('btCali', 'disabled', allow_duplicate=True),
+    Input('mindist_vorgabe', 'value'),
+    prevent_initial_call=True
+)
+def update_output(value):
+    car.mindist_vorgabe = value
+    return False
 
 @app.callback(
     [
