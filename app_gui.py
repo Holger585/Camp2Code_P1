@@ -48,7 +48,7 @@ app.layout = dbc.Container([
         dbc.Col(html.H1("Fahrmodus-Dashboard", className="text-center"), width=12),
         justify="center",  # Zentrieren der Zeile
         align="center",    # Vertikal zentrieren
-        className="mb-4"
+        className="mb-0"
     ),
     
     # Hauptcard mit ButtonGroup und Buttons
