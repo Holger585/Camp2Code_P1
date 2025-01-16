@@ -243,22 +243,8 @@ In `app_gui.py` wird eine Dash-App verwendet, um die gesammelten Daten anzuzeige
 
 ---
 
-## 10. Präsentation (Beispiel-Gliederung ~20 Minuten)
 
-1. **Titel & Ziel**: Kurze Übersicht des Projekts  
-2. **Motivation & Use Cases**: Relevanz von Sensorik & Robotik  
-3. **Hardwareaufbau**: Chassis, Raspberry Pi, Sensoren  
-4. **Softwarestruktur**: Basisklassen, `BaseCar`, `SonicCar`, `SensorCar`, Dash  
-5. **Implementierte Fahrmodi**: Kurze Beschreibung (1–7)  
-6. **Dash-App**: Live-Daten, Diagramme  
-7. **Demonstration**: Live-Vorführung (Linienverfolgung, Hinderniserkennung)  
-8. **Lessons Learned & Herausforderungen**  
-9. **Ausblick**  
-10. **Q&A**: Diskussion und Fragen  
-
----
-
-## 11. Code und Dokumentation
+## 10. Code und Dokumentation
 
 - **Code**:  
   - `basisklassen.py` (vorgegeben)  
