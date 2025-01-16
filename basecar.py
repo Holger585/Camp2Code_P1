@@ -29,8 +29,8 @@ class BaseCar:
         self._steering_angle = 90  # Standardwinkel in der Mitte
         self._speed = 0  # Initialgeschwindigkeit
         self._direction = 0  # Stillstand
-        self._log = [] #Log erstellen
-        self.ismanually_stopped = False #Externe Stoppfunktion
+        self._log = [] # Log erstellen
+        self.ismanually_stopped = False # Externe Stoppfunktion
         self.start_time = 0
 
     @property
@@ -62,6 +62,12 @@ class BaseCar:
 
     @speed.setter
     def speed(self, speed_value):
+        """
+        Setzt die Geschwindigkeit des Fahrzeugs und passt sie an zulässige Grenzen an.
+
+        Args:
+            speed_value (int): Die gewünschte Geschwindigkeit.
+        """
         self._speed = max(-100, min(100, speed_value))
         if -30 < speed_value < 30:
             if speed_value == 0:
@@ -110,18 +116,18 @@ class BaseCar:
         """
         self.drive(speed=0)
 
-    def loggen(self, time = 0.0, speed = 0, direction = 0, steering_angle = 0, distance = 0,  ir_value = [0,0,0,0,0], f_modus = 0):
+    def loggen(self, time=0.0, speed=0, direction=0, steering_angle=0, distance=0, ir_value=[0,0,0,0,0], f_modus=0):
         """
         Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.
 
         Args:
             time (float): Zeit seit Start in Sekunden.
             speed (int): Geschwindigkeit des Fahrzeugs.
-            direction (int): Fahrtrichtung
+            direction (int): Fahrtrichtung.
             steering_angle (int): Aktueller Lenkwinkel.
             distance (int): Gemessener Abstand.
-            ir_value (list): Status der IR-LED´s
-            f_modus (int): Fahrmodusauswahl 
+            ir_value (list): Status der IR-LEDs.
+            f_modus (int): Fahrmodusauswahl.
         """
         self._log.append({
             "Zeit": round(time, 3),
@@ -135,23 +141,37 @@ class BaseCar:
         print(f"Zeit: {time:.1f}, Geschwindigkeit: {speed}, Fahrtrichtung: {direction}, Lenkwinkel: {steering_angle}, Abstand: {distance} cm, IR_Status: {ir_value}, Fahrmodus: {f_modus}")            
 
     def set_fahren_und_warten(self, speed: int, steering_angle: int, wait_time: float, f_modus: int):
+        """
+        Setzt die Geschwindigkeit und den Lenkwinkel und wartet für eine bestimmte Zeit.
+
+        Args:
+            speed (int): Geschwindigkeit des Fahrzeugs.
+            steering_angle (int): Lenkwinkel des Fahrzeugs.
+            wait_time (float): Wartezeit in Sekunden.
+            f_modus (int): Fahrmodus.
+        """
         self.drive(speed=speed, steering_angle=steering_angle)
         self.loggen(time.time() - self.start_time, self._speed, self._direction, self._steering_angle, 0, [0,0,0,0,0], f_modus) 
         # Startzeit der Funktion zwischenspeichern
         run_time = time.time()
-        # Schleife um ein unterbrechen wärend der wait Funktion durch Tastendruck zu ermöglichen
+        # Schleife um ein Unterbrechen während der Wartefunktion durch Tastendruck zu ermöglichen
         while not self.ismanually_stopped:
             # Aktuelle Zeit zwischenspeichern
             current_time = time.time()
-            # Schleife nach ablauf der Zeit verlassen
+            # Schleife nach Ablauf der Zeit verlassen
             if current_time - run_time >= wait_time:
                 break
         if self.ismanually_stopped:
             self.stop()
         self.loggen(time.time() - self.start_time, self._speed, self._direction, self._steering_angle, 0, [0,0,0,0,0], f_modus) 
 
-
     def fahrmodus_1(self, speed=50):
+        """
+        Definiert Fahrmodus 1: Vorwärts, Stoppen, Rückwärts.
+
+        Args:
+            speed (int, optional): Geschwindigkeit des Fahrzeugs. Standard ist 50.
+        """
         # Setzen der Startzeit
         self.start_time = time.time()  
         # Erster Eintrag im Log auf Null setzen         
@@ -161,7 +181,13 @@ class BaseCar:
         self.set_fahren_und_warten(speed=-speed, steering_angle=90, wait_time=2, f_modus=1)
         self.stop()
 
-    def fahrmodus_2(self, speed = 50):    
+    def fahrmodus_2(self, speed=50):    
+        """
+        Definiert Fahrmodus 2: Vorwärts, Kurvenfahrt, Rückwärts.
+
+        Args:
+            speed (int, optional): Geschwindigkeit des Fahrzeugs. Standard ist 50.
+        """
         # Setzen der Startzeit
         self.start_time = time.time()  
         # Erster Eintrag im Log auf Null setzen
