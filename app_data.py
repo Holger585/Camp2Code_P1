@@ -25,20 +25,41 @@ class Data():
 
         # Berechnung der Fahrstrecke mit stetigem Anstieg
         fahrstrecke = []
+        ir_status2 = []
+        ir_status = 0
         current_distance = 0
         for i in range(len(df)):
             if i > 0 and df['FahrtID'].iloc[i] == df['FahrtID'].iloc[i-1]:
-                # if df['Geschwindigkeit'].iloc[i-1] == 0:  # Reset wenn vorherige Geschwindigkeit 0 war
-                #     current_distance = 0
-                # else:
-                    time_diff = df['Zeit'].iloc[i] - df['Zeit'].iloc[i-1]
-                    #current_distance += abs(df['Geschwindigkeit'].iloc[i-1]) * time_diff
-                    current_distance += ((abs(df['Geschwindigkeit'].iloc[i-1])/2) * time_diff)/100
+                time_diff = df['Zeit'].iloc[i] - df['Zeit'].iloc[i-1]
+                current_distance += ((abs(df['Geschwindigkeit'].iloc[i-1])/2) * time_diff)/100
             else:
                 current_distance = 0
             fahrstrecke.append(current_distance)
 
+            if df['IR_Status'].iloc[i] == '[1, 0, 0, 0, 0]':
+                ir_status = -4
+            elif df['IR_Status'].iloc[i] == '[1, 1 0, 0, 0]':
+                ir_status = -3
+            elif df['IR_Status'].iloc[i] == '[0, 1, 0, 0, 0]':
+                ir_status = -2       
+            elif df['IR_Status'].iloc[i] == '[0, 1, 1, 0, 0]':
+                ir_status = -1 
+            elif df['IR_Status'].iloc[i] == '[0, 0, 1, 0, 0]':
+                ir_status = 0                                        
+            elif df['IR_Status'].iloc[i] == '[0, 0, 1, 1, 0]':
+                ir_status = 1                                        
+            elif df['IR_Status'].iloc[i] == '[0, 0, 0, 1, 0]':
+                ir_status = 2                                        
+            elif df['IR_Status'].iloc[i] == '[0, 0, 0, 1, 1]':
+                ir_status = 3     
+            elif df['IR_Status'].iloc[i] == '[0, 0, 0, 0, 1]':
+                ir_status = 4                        
+            else:
+                ir_status = None 
+            ir_status2.append(ir_status)                                                                                                                           
+
         df['Fahrstrecke'] = fahrstrecke
+        df['IR_Status2'] = ir_status2
 
         # Ermittlung der KPI für die Kopfzeile in eigenem df
         fahrt_id_result = 0

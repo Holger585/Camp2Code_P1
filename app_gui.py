@@ -222,8 +222,6 @@ app.layout = dbc.Container([
         className="mb-4",  # Optional: Abstand nach unten
         style={'width': '84.4%', 'margin-left': 'auto', 'margin-right': 'auto'}  # Setzt die Breite der Row auf 10/12 der Gesamtbreite
     ),
-
-
     
     # Graphen
     dbc.Row(
@@ -240,6 +238,18 @@ app.layout = dbc.Container([
     ),
     dbc.Row(
         dbc.Col(dcc.Graph(id='fahrstrecke-zeit'), width=10),  # Breite auf 10 gesetzt
+        justify="center",  # Horizontale Zentrierung
+        align="center",    # Vertikale Zentrierung
+        className="mb-4"
+    ),
+    dbc.Row(
+        dbc.Col(dcc.Graph(id='lenkwinkel-zeit'), width=10),  # Breite auf 10 gesetzt
+        justify="center",  # Horizontale Zentrierung
+        align="center",    # Vertikale Zentrierung
+        className="mb-4"
+    ),
+    dbc.Row(
+        dbc.Col(dcc.Graph(id='ir-status-zeit'), width=10),  # Breite auf 10 gesetzt
         justify="center",  # Horizontale Zentrierung
         align="center",    # Vertikale Zentrierung
         className="mb-4"
@@ -508,6 +518,8 @@ def update_output(value):
         Output('geschwindigkeit-zeit', 'figure'),
         Output('fahrstrecke-zeit', 'figure'),
         Output('sonic-zeit', 'figure'),
+        Output('lenkwinkel-zeit', 'figure'),
+        Output('ir-status-zeit', 'figure'),
         Output('Vmin', 'children'),
         Output('Vmax', 'children'),
         Output('Vmean', 'children'),
@@ -521,6 +533,7 @@ def update_output(value):
 )
 def update_diagrams(selected_fahrt):
     filtered_df = data.df[data.df['FahrtID'] == selected_fahrt]
+    filtered_df['Abstand2'] = filtered_df['Abstand'].apply(lambda x: 500 if x == -2 else (x if x >= 0 else None))
 
     vmax_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmax'].iloc[0]:.1f} cm/s"
     vmin_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmin'].iloc[0]:.1f} cm/s"
@@ -533,7 +546,7 @@ def update_diagrams(selected_fahrt):
         data=[
             go.Scatter(
                 x=filtered_df['Zeit'],
-                y=filtered_df[filtered_df['Abstand'] > 0]['Abstand'],
+                y=filtered_df['Abstand2'],
                 mode='lines',
                 name="Abstand"
             )
@@ -617,7 +630,51 @@ def update_diagrams(selected_fahrt):
         )
     )
 
-    return geschwindigkeit_fig, fahrstrecke_fig, sonic_fig, vmin_value, vmax_value, vmean_value, fahrzeit_value, fahrstrecke_value, fahrmodus_value
+    lenkwinkel_fig = go.Figure(
+        data=[
+            go.Scatter(
+                x=filtered_df['Zeit'],
+                y=filtered_df['Lenkwinkel'] - 90,  # Adjusting the Lenkwinkel values
+                mode='lines',
+                name="Lenkwinkel"
+            )
+        ],
+        layout=go.Layout(
+            title={"text": f"Lenkwinkel über Zeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
+            xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
+            yaxis={
+                "title": {"text": "Lenkwinkel (°)","font": {"color": "white"}},
+                "tickfont": {"color": "white"},
+                "gridcolor": "grey",
+                "linecolor": "grey",
+                "dtick": 10  # Setting the tick step to 10 degrees
+            },
+            height=400,
+            paper_bgcolor="rgba(40,40,40,1)",
+            plot_bgcolor="rgba(40,40,40,1)"
+        )
+    )
+
+    ir_status_fig = go.Figure(
+        data=[
+            go.Scatter(
+                x=filtered_df['Zeit'],
+                y=filtered_df['IR_Status2'],
+                mode='lines',
+                name="IR-Status"
+            )
+        ],
+        layout=go.Layout(
+            title={"text": f"IR-Status über Zeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
+            xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
+            yaxis={"title": {"text": "IR-Status","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
+            height=400,
+            paper_bgcolor="rgba(40,40,40,1)",
+            plot_bgcolor="rgba(40,40,40,1)"
+        )
+    )
+
+    return geschwindigkeit_fig, fahrstrecke_fig, sonic_fig, lenkwinkel_fig, ir_status_fig, vmin_value, vmax_value, vmean_value, fahrzeit_value, fahrstrecke_value, fahrmodus_value
 
 if __name__ == "__main__":
     app.run_server(debug=True, host=ip_host, port=8053)
