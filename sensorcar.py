@@ -126,42 +126,42 @@ class SensorCar(SonicCar):
                     break          
                 # Links lenken Stufe 4
                 elif ir_value[0] and ir_value[1] == False:
-                    angle = 55
+                    angle = 45
                     speed_value = int(speed * 0.6)
                     self.drive(speed_value,angle)
                 # Rechts lenken Stufe 4
                 elif ir_value[3] == False and ir_value[4]:
-                    angle = 125
+                    angle = 135
                     speed_value = int(speed * 0.6)
                     self.drive(speed_value,angle) 
                 # Links lenken Stufe 3
                 elif ir_value[0] and ir_value[1]:
-                    angle = 70
+                    angle = 65
                     speed_value = int(speed * 0.7)
                     self.drive(speed_value,angle) 
                 # Rechts lenken Stufe 3
                 elif ir_value[3] and ir_value[4]:
-                    angle = 110
+                    angle = 115
                     speed_value = int(speed * 0.7)
                     self.drive(speed_value,angle)  
                 # Links lenken Stufe 2
                 elif ir_value[0] == False and ir_value[1]:
-                    angle = 80
+                    angle = 78
                     speed_value = int(speed * 0.85)
                     self.drive(speed_value,angle) 
                 # Rechts lenken Stufe 2
                 elif ir_value[3] and ir_value[4] == False:
-                    angle = 100
+                    angle = 102
                     speed_value = int(speed * 0.85)
                     self.drive(speed_value,angle) 
                 # Links lenken Stufe 1
                 elif ir_value[1] and ir_value[2]:
-                    angle = 85
+                    angle = 86
                     speed_value = speed
                     self.drive(speed_value,angle)
                 # Rechts lenken Stufe 1
                 elif ir_value[2] and ir_value[3]:
-                    angle = 95
+                    angle = 94
                     speed_value = speed
                     self.drive(speed_value,angle)
                 # Geradeaus fahren
