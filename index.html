@@ -189,11 +189,272 @@ Die Konfiguration wird aus einer JSON-Datei geladen, mit Fallback auf Standardwe
 
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-prename descclassname"><span class="pre">basecar.</span></span><span class="sig-name descname"><span class="pre">BaseCar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/basecar.html#BaseCar"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#id0" title="Link zu dieser Definition">¶</a></dt>
-<dd><p>Basisklasse für ein ferngesteuertes Fahrzeug, das Vorder- und Hinterräder steuern kann.
-Die Konfiguration wird aus einer JSON-Datei geladen, mit Fallback auf Standardwerte.</p>
+<span class="target" id="module-sensorcar"></span><dl class="py class">
+<dt class="sig sig-object py" id="sensorcar.SensorCar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sensorcar.</span></span><span class="sig-name descname"><span class="pre">SensorCar</span></span><a class="reference internal" href="_modules/sensorcar.html#SensorCar"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#sensorcar.SensorCar" title="Link zu dieser Definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">direction</span></code></dt><dd><p>Gibt die aktuelle Fahrtrichtung des Fahrzeugs zurück: 1 = Vorwärts, -1 = Rückwärts, 0 = Stillstand.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_distance</span></code></dt><dd><p>Liest die aktuelle Entfernung vom Ultraschallsensor.</p>
+</dd>
+<dt><strong>get_infrared</strong></dt><dd></dd>
+<dt><strong>get_moduswahl</strong></dt><dd></dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">speed</span></code></dt><dd><p>Gibt die aktuelle Geschwindigkeit des Fahrzeugs zurück.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">steering_angle</span></code></dt><dd><p>Gibt den aktuellen Lenkwinkel des Fahrzeugs zurück.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">drive</span></code>([speed, steering_angle])</p></td>
+<td><p>Steuert das Fahrzeug mit der angegebenen Geschwindigkeit und dem Lenkwinkel.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_1</span></code>([speed])</p></td>
+<td><p>Führt eine vordefinierte Abfolge von Bewegungen aus.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_2</span></code>(speed)</p></td>
+<td><p>Führt eine komplexere vordefinierte Abfolge von Bewegungen aus.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_3</span></code>([min_dist, speed, angle])</p></td>
+<td><p>Fahrmodus 3: Fährt vorwärts, bis ein Hindernis erkannt wird.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_4</span></code>([speed, lenken])</p></td>
+<td><p>Fahrmodus 4: Erkundungstour mit zufälligem Lenkwinkel und Rückwärtsfahrt bei Hindernissen.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loggen</span></code>([time, speed, direction, ...])</p></td>
+<td><p>Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sensorcar.SensorCar.save_reference" title="sensorcar.SensorCar.save_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_reference</span></code></a>(reference)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fahren_und_warten</span></code>(speed, steering_angle, ...)</p></td>
+<td><p>Bewegt das Fahrzeug mit gegebener Geschwindigkeit und Lenkwinkel und wartet anschließend.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code>()</p></td>
+<td><p>Stoppt das Fahrzeug vollständig.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 66%" />
+<col style="width: 34%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>fahrmodus</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>fahrmodus_5_6_7</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ir_cali</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sensorcar.html#SensorCar.__init__"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#sensorcar.SensorCar.__init__" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Initialisiert das Fahrzeug .</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'sensorcar'</span></em><a class="headerlink" href="#sensorcar.SensorCar.__module__" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.fahrmodus">
+<span class="sig-name descname"><span class="pre">fahrmodus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmodus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mindist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sensorcar.html#SensorCar.fahrmodus"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#sensorcar.SensorCar.fahrmodus" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.fahrmodus_5_6_7">
+<span class="sig-name descname"><span class="pre">fahrmodus_5_6_7</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sensorcar.html#SensorCar.fahrmodus_5_6_7"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#sensorcar.SensorCar.fahrmodus_5_6_7" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.get_infrared">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_infrared</span></span><a class="headerlink" href="#sensorcar.SensorCar.get_infrared" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>!! processed by numpydoc !!</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.get_moduswahl">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_moduswahl</span></span><a class="headerlink" href="#sensorcar.SensorCar.get_moduswahl" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>!! processed by numpydoc !!</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.ir_cali">
+<span class="sig-name descname"><span class="pre">ir_cali</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sensorcar.html#SensorCar.ir_cali"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#sensorcar.SensorCar.ir_cali" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.save_reference">
+<span class="sig-name descname"><span class="pre">save_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sensorcar.html#SensorCar.save_reference"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#sensorcar.SensorCar.save_reference" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-soniccar"></span><dl class="py class">
+<dt class="sig sig-object py" id="soniccar.SonicCar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soniccar.</span></span><span class="sig-name descname"><span class="pre">SonicCar</span></span><a class="reference internal" href="_modules/soniccar.html#SonicCar"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#soniccar.SonicCar" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Erweiterte Fahrzeugklasse mit Ultraschallsensor für Hinderniserkennung
+und Fahrmodi mit Log-Funktionalität.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">direction</span></code></dt><dd><p>Gibt die aktuelle Fahrtrichtung des Fahrzeugs zurück: 1 = Vorwärts, -1 = Rückwärts, 0 = Stillstand.</p>
+</dd>
+<dt><a class="reference internal" href="#soniccar.SonicCar.get_distance" title="soniccar.SonicCar.get_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_distance</span></code></a></dt><dd><p>Liest die aktuelle Entfernung vom Ultraschallsensor.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">speed</span></code></dt><dd><p>Gibt die aktuelle Geschwindigkeit des Fahrzeugs zurück.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">steering_angle</span></code></dt><dd><p>Gibt den aktuellen Lenkwinkel des Fahrzeugs zurück.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">drive</span></code>([speed, steering_angle])</p></td>
+<td><p>Steuert das Fahrzeug mit der angegebenen Geschwindigkeit und dem Lenkwinkel.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_1</span></code>([speed])</p></td>
+<td><p>Führt eine vordefinierte Abfolge von Bewegungen aus.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_2</span></code>(speed)</p></td>
+<td><p>Führt eine komplexere vordefinierte Abfolge von Bewegungen aus.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#soniccar.SonicCar.fahrmodus_3" title="soniccar.SonicCar.fahrmodus_3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_3</span></code></a>([min_dist, speed, angle])</p></td>
+<td><p>Fahrmodus 3: Fährt vorwärts, bis ein Hindernis erkannt wird.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#soniccar.SonicCar.fahrmodus_4" title="soniccar.SonicCar.fahrmodus_4"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_4</span></code></a>([speed, lenken])</p></td>
+<td><p>Fahrmodus 4: Erkundungstour mit zufälligem Lenkwinkel und Rückwärtsfahrt bei Hindernissen.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loggen</span></code>([time, speed, direction, ...])</p></td>
+<td><p>Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fahren_und_warten</span></code>(speed, steering_angle, ...)</p></td>
+<td><p>Bewegt das Fahrzeug mit gegebener Geschwindigkeit und Lenkwinkel und wartet anschließend.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code>()</p></td>
+<td><p>Stoppt das Fahrzeug vollständig.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="soniccar.SonicCar.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/soniccar.html#SonicCar.__init__"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#soniccar.SonicCar.__init__" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Initialisiert das Fahrzeug und den Ultraschallsensor.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soniccar.SonicCar.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'soniccar'</span></em><a class="headerlink" href="#soniccar.SonicCar.__module__" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soniccar.SonicCar.fahrmodus_3">
+<span class="sig-name descname"><span class="pre">fahrmodus_3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/soniccar.html#SonicCar.fahrmodus_3"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#soniccar.SonicCar.fahrmodus_3" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Fahrmodus 3: Fährt vorwärts, bis ein Hindernis erkannt wird.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_dist</strong> (<em>int</em>) – Mindestabstand zum Stoppen (in cm).</p></li>
+<li><p><strong>speed</strong> (<em>int</em>) – Geschwindigkeit des Fahrzeugs.</p></li>
+<li><p><strong>angle</strong> (<em>int</em>) – Lenkwinkel (in Grad).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soniccar.SonicCar.fahrmodus_4">
+<span class="sig-name descname"><span class="pre">fahrmodus_4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lenken</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">135</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/soniccar.html#SonicCar.fahrmodus_4"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#soniccar.SonicCar.fahrmodus_4" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Fahrmodus 4: Erkundungstour mit zufälligem Lenkwinkel und Rückwärtsfahrt bei Hindernissen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>speed</strong> (<em>int</em>) – Geschwindigkeit des Fahrzeugs.</p></li>
+<li><p><strong>lenken</strong> (<em>int</em>) – Lenkwinkel für Richtungsänderungen.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="soniccar.SonicCar.get_distance">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_distance</span></span><a class="headerlink" href="#soniccar.SonicCar.get_distance" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Liest die aktuelle Entfernung vom Ultraschallsensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Rückgabe</dt>
+<dd class="field-odd"><p>Gemessene Entfernung in Zentimetern.</p>
+</dd>
+<dt class="field-even">Rückgabetyp</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-app_data"></span><dl class="py class">
+<dt class="sig sig-object py" id="app_data.Data">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_data.</span></span><span class="sig-name descname"><span class="pre">Data</span></span><a class="reference internal" href="_modules/app_data.html#Data"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#app_data.Data" title="Link zu dieser Definition">¶</a></dt>
+<dd><p class="rubric">Methods</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 57%" />
+<col style="width: 43%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>read_data</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app_data.Data.__dict__">
+<span class="sig-name descname"><span class="pre">__dict__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">mappingproxy({'__module__':</span> <span class="pre">'app_data',</span> <span class="pre">'__init__':</span> <span class="pre">&lt;function</span> <span class="pre">Data.__init__&gt;,</span> <span class="pre">'read_data':</span> <span class="pre">&lt;function</span> <span class="pre">Data.read_data&gt;,</span> <span class="pre">'__dict__':</span> <span class="pre">&lt;attribute</span> <span class="pre">'__dict__'</span> <span class="pre">of</span> <span class="pre">'Data'</span> <span class="pre">objects&gt;,</span> <span class="pre">'__weakref__':</span> <span class="pre">&lt;attribute</span> <span class="pre">'__weakref__'</span> <span class="pre">of</span> <span class="pre">'Data'</span> <span class="pre">objects&gt;,</span> <span class="pre">'__doc__':</span> <span class="pre">None,</span> <span class="pre">'__annotations__':</span> <span class="pre">{}})</span></em><a class="headerlink" href="#app_data.Data.__dict__" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_data.Data.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app_data.html#Data.__init__"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#app_data.Data.__init__" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app_data.Data.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'app_data'</span></em><a class="headerlink" href="#app_data.Data.__module__" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app_data.Data.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#app_data.Data.__weakref__" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_data.Data.read_data">
+<span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app_data.html#Data.read_data"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#app_data.Data.read_data" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <div class="toctree-wrapper compound">

@@ -10,8 +10,33 @@ Welcome to Camp2Code Projektphase 1's documentation!
    :members:
    :undoc-members:
    :private-members:
-   :show-inheritance:
    :special-members:
+   :show-inheritance:
+
+.. automodule:: sensorcar
+   :members:
+   :undoc-members:
+   :private-members:
+   :special-members:
+
+.. automodule:: soniccar
+   :members:
+   :undoc-members:
+   :private-members:
+   :special-members:
+
+.. automodule:: app_data
+   :members:
+   :undoc-members:
+   :private-members:
+   :special-members:
+
+.. automodule:: app_gui
+   :members:
+   :undoc-members:
+   :private-members:
+   :special-members:
+
 .. autofunction:: BaseCar
 
 .. toctree::
