@@ -1,4 +1,3 @@
-import pandas as pd
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
