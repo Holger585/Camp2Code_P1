@@ -2,25 +2,53 @@ from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import json
-from dash.dependencies import Output, Input
+from dash.dependencies import Output, Input, State
 from app_data import Data
 from sensorcar import SensorCar
 import numpy as np
 
 car = SensorCar()
 data = Data()
-car.vmax_vorgabe = 50
-car.maxwinkel_vorgabe = 30
-car.mindist_vorgabe = 10
+
+class SaveConfig():
+    def __init__(self):
+        self.configdata = []
+
+    def save_config(self, Vmax: int, LWmax: int, DISTmin: int):
+        try:
+            with open("config.json", "r") as f:
+                self.configdata = json.load(f)
+            with open("config.json", "w") as f:
+                self.configdata["Vmax"] = Vmax
+                self.configdata["LWmax"] = LWmax
+                self.configdata["DISTmin"] = DISTmin
+                json.dump(self.configdata, f, indent=4)
+
+        except FileNotFoundError as e:
+            print(f"Fehler: config.json nicht gefunden. Standardwerte werden verwendet. {e}")
+            car.vmax_vorgabe = 50
+            car.maxwinkel_vorgabe = 30
+            car.mindist_vorgabe = 10
+        except Exception as e:
+            print(e)
+            car.vmax_vorgabe = 50
+            car.maxwinkel_vorgabe = 30
+            car.mindist_vorgabe = 10
+
+saveconfig = SaveConfig()
 
 # Konfigurationslogik
 try:
     with open("config.json", "r") as f:
         configdata = json.load(f)
         ip_host = configdata.get("ip_host", "0.0.0.0")  # Fallback zu "0.0.0.0"
+        car.vmax_vorgabe = configdata.get("Vmax", 50)  # Fallback zu 50
+        car.maxwinkel_vorgabe = configdata.get("LWmax", 45)  # Fallback zu 45
+        car.mindist_vorgabe = configdata.get("DISTmin", 10)  # Fallback zu 10
 except FileNotFoundError:
     print("Fehler: config.json nicht gefunden. Standardwerte werden verwendet.")
     ip_host = "0.0.0.0"
+
 
 # Dash-App erstellen
 app = Dash(__name__, external_stylesheets=[dbc.themes.CYBORG])
@@ -56,19 +84,19 @@ app.layout = dbc.Container([
                     children=[
                         dbc.ButtonGroup(
                             [
-                                dbc.Button("Fahrmodus 1", id='btFM1', style={'width':'160px'}), 
+                                dbc.Button("Fahrmodus 1", id='btFM1'), 
                                 dbc.Popover("Vorwärts- und Rückwärtsfahrt", target="btFM1", body=True, trigger="hover", placement="top"),
-                                dbc.Button("Fahrmodus 2", id='btFM2', style={'width':'160px'}), 
+                                dbc.Button("Fahrmodus 2", id='btFM2'), 
                                 dbc.Popover("Kreisfahrt mit max. Lenkwinkel", target="btFM2", body=True, trigger="hover", placement="top"),
-                                dbc.Button("Fahrmodus 3", id='btFM3', style={'width':'160px'}), 
+                                dbc.Button("Fahrmodus 3", id='btFM3'), 
                                 dbc.Popover("Vorwärts fahren bis Hindernis", target="btFM3", body=True, trigger="hover", placement="top"),
-                                dbc.Button("Fahrmodus 4", id='btFM4', style={'width':'160px'}), 
+                                dbc.Button("Fahrmodus 4", id='btFM4'), 
                                 dbc.Popover("Erkundungstour", target="btFM4", body=True, trigger="hover", placement="top"),
-                                dbc.Button("Fahrmodus 5", id='btFM5', style={'width':'160px'}), 
+                                dbc.Button("Fahrmodus 5", id='btFM5'), 
                                 dbc.Popover("Linienverfolgung", target="btFM5", body=True, trigger="hover", placement="top"),
-                                dbc.Button("Fahrmodus 6", id='btFM6', style={'width':'160px'}), 
+                                dbc.Button("Fahrmodus 6", id='btFM6'), 
                                 dbc.Popover("Erweiterte Linienverfolgung", target="btFM6", body=True, trigger="hover", placement="top"),
-                                dbc.Button("Fahrmodus 7", id='btFM7', style={'width':'160px'}), 
+                                dbc.Button("Fahrmodus 7", id='btFM7'), 
                                 dbc.Popover("Erweiterte Linienverfolgung mit Hinderniserkennung", target="btFM7", body=True, trigger="hover", placement="top"),
                             ],
                             size="lg",
@@ -78,6 +106,7 @@ app.layout = dbc.Container([
                         dbc.Popover("Stoppen der aktuellen Fahrt", target="btStopp", body=True, trigger="hover", placement="top"),
                         dbc.Button('Kalibrierung!', id='btCali', n_clicks=0, style={'margin':'15px'}, size="lg"),
                         dbc.Popover("Kalibrierung der IR-Sensoren", target="btCali", body=True, trigger="hover", placement="top"),
+                        dbc.Button("M",id="collapse-button", style={'margin':'15px'}, size="lg", n_clicks=0,),                        
                         html.Div(id='cali_value', style={'textAlign':'right'}),
                         # Hier die Dropdowns hinzufügen
                         html.Div(
@@ -95,10 +124,10 @@ app.layout = dbc.Container([
                                         {'label': '45cm/s', 'value': 90},
                                         {'label': '50cm/s', 'value': 100},
                                     ],
-                                    value=50,  # Standardwert
+                                    value=car.vmax_vorgabe,  # Standardwert
                                     style={'width': '150px'}
                                 ),
-                                html.Label("Max. Lenkwinkel", style={'margin-left': '10px'}),  # Label links vom Dropdown
+                                html.Label("Lenkwinkel", style={'margin-left': '10px'}),  # Label links vom Dropdown
                                 dcc.Dropdown(
                                     id='maxwinkel_vorgabe',
                                     options=[
@@ -106,18 +135,19 @@ app.layout = dbc.Container([
                                         {'label': '30°', 'value': 30},
                                         {'label': '45°', 'value': 45},
                                     ],
-                                    value=45,  # Standardwert
+                                    value=car.maxwinkel_vorgabe,  # Standardwert
                                     style={'width': '150px'}
                                 ),
                                 html.Label("Min. Distanz", style={'margin-left': '10px'}),  # Label links vom Dropdown
                                 dcc.Dropdown(
                                     id='mindist_vorgabe',
                                     options=[
+                                        {'label': 'Aus', 'value': 0},
                                         {'label': '5cm', 'value': 5},
                                         {'label': '10cm', 'value': 10},
                                         {'label': '15cm', 'value': 15},
                                     ],
-                                    value=10,  # Standardwert
+                                    value=car.mindist_vorgabe,  # Standardwert
                                     style={'width': '150px'}
                                 ),
                             ],
@@ -127,7 +157,41 @@ app.layout = dbc.Container([
                                 'gap': '20px',  # Abstand zwischen den Dropdowns
                                 'margin-top': '20px'  # Abstand nach oben
                             }
-                        )                        
+                        ),
+                        dbc.Collapse(
+                            dbc.Card(
+                                dbc.CardBody(
+                                    children=[
+                                        dbc.Button("Vor", id='btVor', color='primary', style={'width': '100px', 'margin':'15px'}, size="lg"),
+                                        dbc.Popover("Vorwärtsfahren", target="btVor", body=True, trigger="hover", placement="top"),
+                                        html.Div(
+                                            [
+                                                dbc.Button("Links", id='btLinks', color='primary', style={'width': '100px', 'margin':'15px'}, size="lg"),
+                                                dbc.Popover("Nach Links lenken", target="btLinks", body=True, trigger="hover", placement="left"),
+                                                dbc.Button("Stopp", id='btStop', color='danger', style={'width': '100px', 'margin':'15px'}, size="lg"),                                   
+                                                dbc.Button("Rechts", id='btRechts', color='primary', style={'width': '100px', 'margin':'15px'}, size="lg"),
+                                                dbc.Popover("Nach Rechts lenken", target="btRechts", body=True, trigger="hover", placement="right"),
+                                            ],
+                                            style={
+                                                'display': 'flex',  # Flexbox verwenden, um Buttons nebeneinander zu setzen
+                                                'justify-content': 'center',  # Zentrieren
+                                                'gap': '10px'  # Abstand zwischen den Buttons
+                                            }
+                                        ),
+                                        dbc.Button("Zurück", id='btZurueck', color='primary', style={'width': '100px', 'margin':'15px'}, size="lg"),
+                                        dbc.Popover("Rückwärtsfahren", target="btZurueck", body=True, trigger="hover", placement="bottom"),                                                                                                            
+                                    ],
+                                    style={
+                                        'display': 'flex',  # Flexbox verwenden, um Buttons nebeneinander zu setzen
+                                        'flex-direction': 'column',  # Vertikale Anordnung
+                                        'align-items': 'center',  # Zentrieren
+                                        'gap': '10px'  # Abstand zwischen den Buttons
+                                    }
+                                )
+                            ),
+                            id="collapse",
+                            is_open=False,
+                        ),                        
                     ]
                 ),
                 style={'display': 'flex', 'justify-content': 'center', 'align-items': 'center', 'width': '100%', 'margin-left': 'auto', 'margin-right': 'auto'}
@@ -481,17 +545,20 @@ def update_output(n_clicks):
     Output('btCali', 'children'),
     Output('btCali', 'color'),
     Output('cali_value', 'children'),
+    Output('vmax_vorgabe', 'value'),
+    Output('maxwinkel_vorgabe', 'value'),
+    Output('mindist_vorgabe', 'value'),
     [Input('btCali', 'n_clicks')]
 )
 def update_output(n_clicks):
     if n_clicks >= 1:
         if n_clicks % 3 == 1:
             car.frontwheels.turn(90)
-            return f'Fzg. auf Hintergrund stellen.', 'warning' , ''
+            return f'Fzg. auf Hintergrd. stellen', 'warning' , ''
         elif n_clicks % 3 == 2:
             car.background = car.infrared.get_average(100)
             print('measured background:', car.background)
-            return f'Fzg. auf Linie stellen.', 'warning' , f'Hintergrund: {car.background}'
+            return f'Fzg. auf Linie stellen', 'warning' , f'Hintergrund: {car.background}'
         elif n_clicks % 3 == 0:
             line = car.infrared.get_average(100)
             print('measured line:', line)
@@ -499,7 +566,18 @@ def update_output(n_clicks):
             print('Reference:', car.infrared._references)
             #car.save_reference(car.infrared._references)
             return f'Neukalibrierung starten', 'primary' , f'Hintergrund: {car.background} Vordergrund: {line} Schwellwert: {car.infrared._references}'
-    return f'Kalibrierung starten', 'primary' , ''
+    return f'Kalibrierung starten', 'primary' , '', car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe
+
+# Button zum Ausklappen des manuellen Fahrmodus
+@app.callback(
+    Output("collapse", "is_open"),
+    [Input("collapse-button", "n_clicks")],
+    [State("collapse", "is_open")],
+)
+def toggle_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
 
 # Dropdown Max Geschwindigkeit
 @app.callback(
@@ -509,6 +587,7 @@ def update_output(n_clicks):
 )
 def update_output(value):
     car.vmax_vorgabe = value
+    saveconfig.save_config(car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe)
     return False
 
 # Dropdown Max Lenkwinkel
@@ -519,6 +598,7 @@ def update_output(value):
 )
 def update_output(value):
     car.maxwinkel_vorgabe = value
+    saveconfig.save_config(car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe)
     return False
 
 # Dropdown Min Abstand
@@ -529,7 +609,118 @@ def update_output(value):
 )
 def update_output(value):
     car.mindist_vorgabe = value
+    saveconfig.save_config(car.vmax_vorgabe, car.maxwinkel_vorgabe, car.mindist_vorgabe)
     return False
+
+# Button Vorwärts
+@app.callback(
+    Output('btVor', 'color', allow_duplicate=True),
+    Output('btZurueck', 'disabled', allow_duplicate=True),  
+    Output('btRechts', 'color', allow_duplicate=True),
+    Output('btLinks', 'color', allow_duplicate=True),       
+    Input('btVor', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks): 
+    car.frontwheels.turn(90)
+    return 'success', True, 'primary', 'primary'
+
+# Button Vorwärts Farbänderung
+@app.callback( 
+    Output('btCali', 'disabled', allow_duplicate=True),    
+    Input('btVor', 'color'), 
+    prevent_initial_call=True
+)
+def update_output(color):
+    if color == 'success':
+        car.drive(car.vmax_vorgabe)
+    return False
+
+# Button Rückwärts
+@app.callback(
+    Output('btZurueck', 'color', allow_duplicate=True),
+    Output('btVor', 'disabled', allow_duplicate=True), 
+    Output('btRechts', 'color', allow_duplicate=True),
+    Output('btLinks', 'color', allow_duplicate=True),        
+    Input('btZurueck', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks):
+    car.frontwheels.turn(90)
+    return 'success', True, 'primary', 'primary'
+
+# Button Rückwärts Farbänderung
+@app.callback( 
+    Output('btCali', 'disabled', allow_duplicate=True),
+    Input('btZurueck', 'color'), 
+    prevent_initial_call=True
+)
+def update_output(color):
+    if color == 'success':
+        car.drive(-car.vmax_vorgabe)
+    return False  
+
+# Button Links lenken
+@app.callback(
+    Output('btLinks', 'color', allow_duplicate=True),    
+    Output('btRechts', 'color', allow_duplicate=True),
+    Input('btLinks', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks):
+    car.frontwheels.turn(90-car.maxwinkel_vorgabe)
+    return 'success', 'primary'
+
+# Button Links lenken Farbänderung
+@app.callback( 
+    Output('btCali', 'disabled', allow_duplicate=True),
+    Input('btLinks', 'color'), 
+    prevent_initial_call=True
+)
+def update_output(color):
+    if color == 'success':
+        car.frontwheels.turn(90-car.maxwinkel_vorgabe)
+    return False  
+
+# Button Rechts lenken
+@app.callback(
+    Output('btRechts', 'color', allow_duplicate=True),
+    Output('btLinks', 'color', allow_duplicate=True), 
+    Input('btRechts', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks):
+    car.frontwheels.turn(90+car.maxwinkel_vorgabe)
+    return 'success', 'primary'
+
+# Button Rechts lenken Farbänderung
+@app.callback( 
+    Output('btCali', 'disabled', allow_duplicate=True),
+    Input('btRechts', 'color'), 
+    prevent_initial_call=True
+)
+def update_output(color):
+    if color == 'success':
+        car.frontwheels.turn(90+car.maxwinkel_vorgabe)
+    return False     
+
+# Button Stopp
+@app.callback(
+    Output('btVor', 'color', allow_duplicate=True),
+    Output('btLinks', 'color', allow_duplicate=True),
+    Output('btRechts', 'color', allow_duplicate=True),
+    Output('btZurueck', 'color', allow_duplicate=True),
+    Output('btVor', 'disabled', allow_duplicate=True),
+    Output('btLinks', 'disabled', allow_duplicate=True),
+    Output('btRechts', 'disabled', allow_duplicate=True),
+    Output('btZurueck', 'disabled', allow_duplicate=True),
+    Input('btStop', 'n_clicks'), 
+    prevent_initial_call=True
+)
+def update_output(n_clicks):
+    car.stop()
+    car.frontwheels.turn(90)
+    return 'primary', 'primary', 'primary', 'primary', False, False, False, False
 
 @app.callback(
     [
