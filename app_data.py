@@ -28,11 +28,12 @@ class Data():
         current_distance = 0
         for i in range(len(df)):
             if i > 0 and df['FahrtID'].iloc[i] == df['FahrtID'].iloc[i-1]:
-                if df['Geschwindigkeit'].iloc[i-1] == 0:  # Reset wenn vorherige Geschwindigkeit 0 war
-                    current_distance = 0
-                else:
+                # if df['Geschwindigkeit'].iloc[i-1] == 0:  # Reset wenn vorherige Geschwindigkeit 0 war
+                #     current_distance = 0
+                # else:
                     time_diff = df['Zeit'].iloc[i] - df['Zeit'].iloc[i-1]
-                    current_distance += abs(df['Geschwindigkeit'].iloc[i-1]) * time_diff
+                    #current_distance += abs(df['Geschwindigkeit'].iloc[i-1]) * time_diff
+                    current_distance += ((abs(df['Geschwindigkeit'].iloc[i-1])/2) * time_diff)/100
             else:
                 current_distance = 0
             fahrstrecke.append(current_distance)
@@ -48,9 +49,9 @@ class Data():
                 result_df= pd.concat([result_df,pd.DataFrame({
                     'FahrtID': fahrt_id_result,
                     'Fahrzeit': [df[df['FahrtID'] == fahrt_id_result]['Zeit'].max()],
-                    'Vmin': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].min()],
-                    'Vmax': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].max()],
-                    'Vmean': [df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].abs().mean()],
+                    'Vmin': [(df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].min()/2)],
+                    'Vmax': [(df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].max()/2)],
+                    'Vmean': [(df[df['FahrtID'] == fahrt_id_result]['Geschwindigkeit'].abs().mean()/2)],
                     'Fahrstrecke': [df[df['FahrtID'] == fahrt_id_result]['Fahrstrecke'].max()],
                     'Fahrmodus': [df[df['FahrtID'] == fahrt_id_result]['Fahrmodus'].max()]
                 })])
@@ -59,8 +60,9 @@ class Data():
         # return result_df, df
 
 if __name__ == "__main__":
-    pass
-    # result_df, df = read_data()
+    data = Data()
+    print(data.result_df)
+    print(data.df)
     # print(result_df)
     # print(df)
 

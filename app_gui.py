@@ -90,14 +90,14 @@ app.layout = dbc.Container([
                                 dcc.Dropdown(
                                     id='vmax_vorgabe',
                                     options=[
-                                        {'label': '30', 'value': 30},
-                                        {'label': '40', 'value': 40},
-                                        {'label': '50', 'value': 50},
-                                        {'label': '60', 'value': 60},
-                                        {'label': '70', 'value': 70},
-                                        {'label': '80', 'value': 80},
-                                        {'label': '90', 'value': 90},
-                                        {'label': '100', 'value': 100},
+                                        {'label': '15cm/s', 'value': 30},
+                                        {'label': '20cm/s', 'value': 40},
+                                        {'label': '25cm/s', 'value': 50},
+                                        {'label': '30cm/s', 'value': 60},
+                                        {'label': '35cm/s', 'value': 70},
+                                        {'label': '40cm/s', 'value': 80},
+                                        {'label': '45cm/s', 'value': 90},
+                                        {'label': '50cm/s', 'value': 100},
                                     ],
                                     value=50,  # Standardwert
                                     style={'width': '150px'}
@@ -166,7 +166,7 @@ app.layout = dbc.Container([
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody(
-                        children=[html.P("Geschwindigkeit min:"), html.P(f"{data.result_df['Vmin'].iloc[0]:.1f} km/h", id="Vmin")],
+                        children=[html.P("Geschwindigkeit min:"), html.P(f"{data.result_df['Vmin'].iloc[0]:.1f} cm/s", id="Vmin")],
                     ),
                     style={ 'margin': '0px'}
                 ),
@@ -175,7 +175,7 @@ app.layout = dbc.Container([
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody(
-                        children=[html.P("Geschwindigkeit max:"), html.P(f"{data.result_df['Vmax'].iloc[0]:.1f} km/h", id="Vmax")],
+                        children=[html.P("Geschwindigkeit max:"), html.P(f"{data.result_df['Vmax'].iloc[0]:.1f} cm/s", id="Vmax")],
                     ),
                     style={'margin': '0px'}
                 ),
@@ -184,7 +184,7 @@ app.layout = dbc.Container([
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody(
-                        children=[html.P("Geschwindigkeit mean:"), html.P(f"{data.result_df['Vmean'].iloc[0]:.1f} km/h", id="Vmean")],
+                        children=[html.P("Geschwindigkeit mean:"), html.P(f"{data.result_df['Vmean'].iloc[0]:.1f} cm/s", id="Vmean")],
                     ),
                     style={'margin': '0px'}
                 ),
@@ -193,7 +193,7 @@ app.layout = dbc.Container([
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody(
-                        children=[html.P("Fahrstrecke:"), html.P(f"{data.result_df['Fahrstrecke'].iloc[0]:.1f} mm", id="Fahrstrecke")],
+                        children=[html.P("Fahrstrecke:"), html.P(f"{data.result_df['Fahrstrecke'].iloc[0]:.1f} m", id="Fahrstrecke")],
                     ),
                     style={'margin': '0px'}
                 ),
@@ -516,18 +516,18 @@ def update_output(value):
 def update_diagrams(selected_fahrt):
     filtered_df = data.df[data.df['FahrtID'] == selected_fahrt]
 
-    vmax_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmax'].iloc[0]:.1f} km/h"
-    vmin_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmin'].iloc[0]:.1f} km/h"
-    vmean_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmean'].iloc[0]:.1f} km/h"
+    vmax_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmax'].iloc[0]:.1f} cm/s"
+    vmin_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmin'].iloc[0]:.1f} cm/s"
+    vmean_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmean'].iloc[0]:.1f} cm/s"
     fahrzeit_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Fahrzeit'].iloc[0]:.1f} s"
-    fahrstrecke_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Fahrstrecke'].iloc[0]:.1f} mm"
+    fahrstrecke_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Fahrstrecke'].iloc[0]:.1f} m"
     fahrmodus_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Fahrmodus'].iloc[0]}"
     
     geschwindigkeit_fig = go.Figure(
         data=[
             go.Scatter(
                 x=filtered_df['Zeit'],
-                y=filtered_df['Geschwindigkeit'],
+                y=filtered_df['Geschwindigkeit']/1.85,
                 mode='lines',
                 line_shape='hv',  # Horizontale Stufenanzeige
                 name="Geschwindigkeit"
@@ -536,7 +536,7 @@ def update_diagrams(selected_fahrt):
         layout=go.Layout(
             title={"text": f"Fahrstrecke über Zeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
             xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
-            yaxis={"title": {"text": "Geschwindigkeit (km/h)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
+            yaxis={"title": {"text": "Geschwindigkeit (cm/s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
             height=400,
             paper_bgcolor="rgba(40,40,40,1)",
             plot_bgcolor="rgba(40,40,40,1)",            
@@ -565,7 +565,7 @@ def update_diagrams(selected_fahrt):
         layout=go.Layout(
             title={"text": f"Fahrstrecke über Zeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
             xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
-            yaxis={"title": {"text": "Fahrstrecke (km)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},            
+            yaxis={"title": {"text": "Fahrstrecke (m)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},            
             height=400,
             paper_bgcolor="rgba(40,40,40,1)",
             plot_bgcolor="rgba(40,40,40,1)",
