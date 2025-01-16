@@ -28,11 +28,8 @@ class Data():
         current_distance = 0
         for i in range(len(df)):
             if i > 0 and df['FahrtID'].iloc[i] == df['FahrtID'].iloc[i-1]:
-                if df['Geschwindigkeit'].iloc[i-1] == 0:  # Reset wenn vorherige Geschwindigkeit 0 war
-                    current_distance = 0
-                else:
-                    time_diff = df['Zeit'].iloc[i] - df['Zeit'].iloc[i-1]
-                    current_distance += abs(df['Geschwindigkeit'].iloc[i-1]) * time_diff
+                time_diff = df['Zeit'].iloc[i] - df['Zeit'].iloc[i-1]
+                current_distance += abs(df['Geschwindigkeit'].iloc[i-1]) * time_diff
             else:
                 current_distance = 0
             fahrstrecke.append(current_distance)

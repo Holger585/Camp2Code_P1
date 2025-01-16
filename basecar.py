@@ -135,12 +135,12 @@ class BaseCar:
         print(f"Zeit: {time:.1f}, Geschwindigkeit: {speed}, Fahrtrichtung: {direction}, Lenkwinkel: {steering_angle}, Abstand: {distance} cm, IR_Status: {ir_value}, Fahrmodus: {f_modus}")            
 
     def set_fahren_und_warten(self, speed: int, steering_angle: int, wait_time: float, f_modus: int):
-
+        self.drive(speed=speed, steering_angle=steering_angle)
+        self.loggen(time.time() - self.start_time, self._speed, self._direction, self._steering_angle, 0, [0,0,0,0,0], f_modus) 
         # Startzeit der Funktion zwischenspeichern
         run_time = time.time()
         # Schleife um ein unterbrechen wärend der wait Funktion durch Tastendruck zu ermöglichen
         while not self.ismanually_stopped:
-            self.drive(speed=speed, steering_angle=steering_angle)
             # Aktuelle Zeit zwischenspeichern
             current_time = time.time()
             # Schleife nach ablauf der Zeit verlassen
