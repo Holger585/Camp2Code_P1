@@ -288,12 +288,6 @@ app.layout = dbc.Container([
     
     # Graphen
     dbc.Row(
-        dbc.Col(dcc.Graph(id='sonic-zeit'), width=10),  # Breite auf 10 gesetzt
-        justify="center",  # Horizontale Zentrierung
-        align="center",    # Vertikale Zentrierung
-        className="mb-4"
-    ),    
-    dbc.Row(
         dbc.Col(dcc.Graph(id='geschwindigkeit-zeit'), width=10),  # Breite auf 10 gesetzt
         justify="center",  # Horizontale Zentrierung
         align="center",    # Vertikale Zentrierung
@@ -311,6 +305,12 @@ app.layout = dbc.Container([
         align="center",    # Vertikale Zentrierung
         className="mb-4"
     ),
+    dbc.Row(
+        dbc.Col(dcc.Graph(id='sonic-zeit'), width=10),  # Breite auf 10 gesetzt
+        justify="center",  # Horizontale Zentrierung
+        align="center",    # Vertikale Zentrierung
+        className="mb-4"
+    ),       
     dbc.Row(
         dbc.Col(dcc.Graph(id='ir-status-zeit'), width=10),  # Breite auf 10 gesetzt
         justify="center",  # Horizontale Zentrierung
@@ -795,7 +795,7 @@ def update_diagrams(selected_fahrt):
             )
         ],
         layout=go.Layout(
-            title={"text": f"Fahrstrecke über Zeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
+            title={"text": f"Fahrstrecke (Fahrt {selected_fahrt})","font": {"color": "white"}},
             xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
             yaxis={"title": {"text": "Geschwindigkeit (cm/s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
             height=400,
@@ -824,7 +824,7 @@ def update_diagrams(selected_fahrt):
             )
         ],
         layout=go.Layout(
-            title={"text": f"Fahrstrecke über Zeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
+            title={"text": f"Fahrstrecke (Fahrt {selected_fahrt})","font": {"color": "white"}},
             xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
             yaxis={"title": {"text": "Fahrstrecke (m)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},            
             height=400,
@@ -853,7 +853,7 @@ def update_diagrams(selected_fahrt):
             )
         ],
         layout=go.Layout(
-            title={"text": f"Lenkwinkel über Zeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
+            title={"text": f"Lenkwinkel (Fahrt {selected_fahrt})","font": {"color": "white"}},
             xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
             yaxis={
                 "title": {"text": "Lenkwinkel (°)","font": {"color": "white"}},
@@ -878,7 +878,7 @@ def update_diagrams(selected_fahrt):
             )
         ],
         layout=go.Layout(
-            title={"text": f"IR-Status über Zeit (Fahrt {selected_fahrt})","font": {"color": "white"}},
+            title={"text": f"IR-Status (Fahrt {selected_fahrt})","font": {"color": "white"}},
             xaxis={"title": {"text": "Zeit (s)","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
             yaxis={"title": {"text": "IR-Status","font": {"color": "white"}}, "tickfont": {"color": "white"}, "gridcolor": "grey", "linecolor": "grey"},
             height=400,
