@@ -1,0 +1,273 @@
+
+
+<!doctype html>
+
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>soniccar.py &#8212; Camp2Code Projektphase 1 V1 Dokumentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/translations.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="genindex.html" />
+    <link rel="search" title="Suche" href="search.html" />
+    <link rel="next" title="app_data.py" href="app_data.html" />
+    <link rel="prev" title="sensorcar.py" href="sensorcar.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Stichwortverzeichnis"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python-Modulindex"
+             >Module</a> |</li>
+        <li class="right" >
+          <a href="app_data.html" title="app_data.py"
+             accesskey="N">weiter</a> |</li>
+        <li class="right" >
+          <a href="sensorcar.html" title="sensorcar.py"
+             accesskey="P">zurück</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Camp2Code Projektphase 1 V1 Dokumentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">soniccar.py</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="soniccar-py">
+<h1>soniccar.py<a class="headerlink" href="#soniccar-py" title="Permalink to this heading">¶</a></h1>
+<span class="target" id="module-soniccar"></span><dl class="py class">
+<dt class="sig sig-object py" id="soniccar.SonicCar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soniccar.</span></span><span class="sig-name descname"><span class="pre">SonicCar</span></span><a class="reference internal" href="_modules/soniccar.html#SonicCar"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#soniccar.SonicCar" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Erweiterte Fahrzeugklasse mit Ultraschallsensor für Hinderniserkennung
+und Fahrmodi mit Log-Funktionalität.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">direction</span></code></dt><dd><p>Gibt die aktuelle Fahrtrichtung des Fahrzeugs zurück: 1 = Vorwärts, -1 = Rückwärts, 0 = Stillstand.</p>
+</dd>
+<dt><a class="reference internal" href="#soniccar.SonicCar.get_distance" title="soniccar.SonicCar.get_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_distance</span></code></a></dt><dd><p>Liest die aktuelle Entfernung vom Ultraschallsensor.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">speed</span></code></dt><dd><p>Gibt die aktuelle Geschwindigkeit des Fahrzeugs zurück.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">steering_angle</span></code></dt><dd><p>Gibt den aktuellen Lenkwinkel des Fahrzeugs zurück.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">drive</span></code>([speed, steering_angle])</p></td>
+<td><p>Steuert das Fahrzeug mit der angegebenen Geschwindigkeit und dem Lenkwinkel.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_1</span></code>([speed])</p></td>
+<td><p>Definiert Fahrmodus 1: Vorwärts, Stoppen, Rückwärts.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_2</span></code>([speed])</p></td>
+<td><p>Definiert Fahrmodus 2: Vorwärts, Kurvenfahrt, Rückwärts.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#soniccar.SonicCar.fahrmodus_3" title="soniccar.SonicCar.fahrmodus_3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_3</span></code></a>([min_dist, speed, angle])</p></td>
+<td><p>Fahrmodus 3: Fährt mit einer bestimmten Geschwindigkeit und Lenkwinkel, bis ein Hindernis erkannt wird.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#soniccar.SonicCar.fahrmodus_4" title="soniccar.SonicCar.fahrmodus_4"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_4</span></code></a>([min_dist, speed, angle])</p></td>
+<td><p>Fahrmodus 4: Fährt für 30 Sekunden mit zufälligem Lenkwinkel und überprüft den Abstand zu Hindernissen.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loggen</span></code>([time, speed, direction, ...])</p></td>
+<td><p>Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#soniccar.SonicCar.set_fahren" title="soniccar.SonicCar.set_fahren"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fahren</span></code></a>(speed, steering_angle, min_dist, ...)</p></td>
+<td><p>Setzt die Geschwindigkeit und den Lenkwinkel und überprüft den Abstand zu Hindernissen.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fahren_und_warten</span></code>(speed, steering_angle, ...)</p></td>
+<td><p>Setzt die Geschwindigkeit und den Lenkwinkel und wartet für eine bestimmte Zeit.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code>()</p></td>
+<td><p>Stoppt das Fahrzeug vollständig.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soniccar.SonicCar.__annotations__">
+<span class="sig-name descname"><span class="pre">__annotations__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#soniccar.SonicCar.__annotations__" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soniccar.SonicCar.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/soniccar.html#SonicCar.__init__"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#soniccar.SonicCar.__init__" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Initialisiert das Fahrzeug und den Ultraschallsensor.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="soniccar.SonicCar.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'soniccar'</span></em><a class="headerlink" href="#soniccar.SonicCar.__module__" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soniccar.SonicCar.fahrmodus_3">
+<span class="sig-name descname"><span class="pre">fahrmodus_3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/soniccar.html#SonicCar.fahrmodus_3"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#soniccar.SonicCar.fahrmodus_3" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Fahrmodus 3: Fährt mit einer bestimmten Geschwindigkeit und Lenkwinkel, bis ein Hindernis erkannt wird.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_dist</strong> (<em>int</em>) – Minimaler Abstand zu Hindernissen in cm.</p></li>
+<li><p><strong>speed</strong> (<em>int</em>) – Geschwindigkeit des Fahrzeugs.</p></li>
+<li><p><strong>angle</strong> (<em>int</em>) – Lenkwinkel des Fahrzeugs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soniccar.SonicCar.fahrmodus_4">
+<span class="sig-name descname"><span class="pre">fahrmodus_4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">135</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/soniccar.html#SonicCar.fahrmodus_4"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#soniccar.SonicCar.fahrmodus_4" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Fahrmodus 4: Fährt für 30 Sekunden mit zufälligem Lenkwinkel und überprüft den Abstand zu Hindernissen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_dist</strong> (<em>int</em>) – Minimaler Abstand zu Hindernissen in cm.</p></li>
+<li><p><strong>speed</strong> (<em>int</em>) – Geschwindigkeit des Fahrzeugs.</p></li>
+<li><p><strong>angle</strong> (<em>int</em>) – Lenkwinkel des Fahrzeugs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="soniccar.SonicCar.get_distance">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_distance</span></span><a class="headerlink" href="#soniccar.SonicCar.get_distance" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Liest die aktuelle Entfernung vom Ultraschallsensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Rückgabe</dt>
+<dd class="field-odd"><p>Gemessene Entfernung in Zentimetern.</p>
+</dd>
+<dt class="field-even">Rückgabetyp</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="soniccar.SonicCar.set_fahren">
+<span class="sig-name descname"><span class="pre">set_fahren</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steering_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_modus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/soniccar.html#SonicCar.set_fahren"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#soniccar.SonicCar.set_fahren" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Setzt die Geschwindigkeit und den Lenkwinkel und überprüft den Abstand zu Hindernissen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>speed</strong> (<em>int</em>) – Geschwindigkeit des Fahrzeugs.</p></li>
+<li><p><strong>steering_angle</strong> (<em>int</em>) – Lenkwinkel des Fahrzeugs.</p></li>
+<li><p><strong>min_dist</strong> (<em>int</em>) – Minimaler Abstand zu Hindernissen in cm.</p></li>
+<li><p><strong>f_modus</strong> (<em>int</em>) – Fahrmodus.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Inhaltsverzeichnis</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">soniccar.py</a><ul>
+<li><a class="reference internal" href="#soniccar.SonicCar"><code class="docutils literal notranslate"><span class="pre">SonicCar</span></code></a><ul>
+<li><a class="reference internal" href="#soniccar.SonicCar.__annotations__"><code class="docutils literal notranslate"><span class="pre">SonicCar.__annotations__</span></code></a></li>
+<li><a class="reference internal" href="#soniccar.SonicCar.__init__"><code class="docutils literal notranslate"><span class="pre">SonicCar.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#soniccar.SonicCar.__module__"><code class="docutils literal notranslate"><span class="pre">SonicCar.__module__</span></code></a></li>
+<li><a class="reference internal" href="#soniccar.SonicCar.fahrmodus_3"><code class="docutils literal notranslate"><span class="pre">SonicCar.fahrmodus_3()</span></code></a></li>
+<li><a class="reference internal" href="#soniccar.SonicCar.fahrmodus_4"><code class="docutils literal notranslate"><span class="pre">SonicCar.fahrmodus_4()</span></code></a></li>
+<li><a class="reference internal" href="#soniccar.SonicCar.get_distance"><code class="docutils literal notranslate"><span class="pre">SonicCar.get_distance</span></code></a></li>
+<li><a class="reference internal" href="#soniccar.SonicCar.set_fahren"><code class="docutils literal notranslate"><span class="pre">SonicCar.set_fahren()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Vorheriges Thema</h4>
+    <p class="topless"><a href="sensorcar.html"
+                          title="vorheriges Kapitel">sensorcar.py</a></p>
+  </div>
+  <div>
+    <h4>Nächstes Thema</h4>
+    <p class="topless"><a href="app_data.html"
+                          title="nächstes Kapitel">app_data.py</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Diese Seite</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/soniccar.rst.txt"
+            rel="nofollow">Quellcode anzeigen</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Schnellsuche</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Los" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Stichwortverzeichnis"
+             >Index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python-Modulindex"
+             >Module</a> |</li>
+        <li class="right" >
+          <a href="app_data.html" title="app_data.py"
+             >weiter</a> |</li>
+        <li class="right" >
+          <a href="sensorcar.html" title="sensorcar.py"
+             >zurück</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Camp2Code Projektphase 1 V1 Dokumentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">soniccar.py</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2025, Team 1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

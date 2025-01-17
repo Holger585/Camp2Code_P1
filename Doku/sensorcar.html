@@ -1,0 +1,301 @@
+
+
+<!doctype html>
+
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sensorcar.py &#8212; Camp2Code Projektphase 1 V1 Dokumentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/translations.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="genindex.html" />
+    <link rel="search" title="Suche" href="search.html" />
+    <link rel="next" title="soniccar.py" href="soniccar.html" />
+    <link rel="prev" title="basecar.py" href="basecar.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Stichwortverzeichnis"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python-Modulindex"
+             >Module</a> |</li>
+        <li class="right" >
+          <a href="soniccar.html" title="soniccar.py"
+             accesskey="N">weiter</a> |</li>
+        <li class="right" >
+          <a href="basecar.html" title="basecar.py"
+             accesskey="P">zurück</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Camp2Code Projektphase 1 V1 Dokumentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">sensorcar.py</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="sensorcar-py">
+<h1>sensorcar.py<a class="headerlink" href="#sensorcar-py" title="Permalink to this heading">¶</a></h1>
+<span class="target" id="module-sensorcar"></span><dl class="py class">
+<dt class="sig sig-object py" id="sensorcar.SensorCar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sensorcar.</span></span><span class="sig-name descname"><span class="pre">SensorCar</span></span><a class="reference internal" href="_modules/sensorcar.html#SensorCar"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#sensorcar.SensorCar" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Erweiterte Fahrzeugklasse mit Infrarotsensoren für Linienverfolgung und Hinderniserkennung.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">direction</span></code></dt><dd><p>Gibt die aktuelle Fahrtrichtung des Fahrzeugs zurück: 1 = Vorwärts, -1 = Rückwärts, 0 = Stillstand.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_distance</span></code></dt><dd><p>Liest die aktuelle Entfernung vom Ultraschallsensor.</p>
+</dd>
+<dt><a class="reference internal" href="#sensorcar.SensorCar.get_infrared" title="sensorcar.SensorCar.get_infrared"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_infrared</span></code></a></dt><dd><p>Liest die aktuellen Werte der Infrarotsensoren.</p>
+</dd>
+<dt><a class="reference internal" href="#sensorcar.SensorCar.get_moduswahl" title="sensorcar.SensorCar.get_moduswahl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_moduswahl</span></code></a></dt><dd><p>Gibt den aktuellen Fahrmodus zurück.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">speed</span></code></dt><dd><p>Gibt die aktuelle Geschwindigkeit des Fahrzeugs zurück.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">steering_angle</span></code></dt><dd><p>Gibt den aktuellen Lenkwinkel des Fahrzeugs zurück.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">drive</span></code>([speed, steering_angle])</p></td>
+<td><p>Steuert das Fahrzeug mit der angegebenen Geschwindigkeit und dem Lenkwinkel.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sensorcar.SensorCar.fahrmodus" title="sensorcar.SensorCar.fahrmodus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus</span></code></a>([fmodus, speed, angle, mindist])</p></td>
+<td><p>Wählt den Fahrmodus basierend auf der Eingabe aus und startet ihn.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_1</span></code>([speed])</p></td>
+<td><p>Definiert Fahrmodus 1: Vorwärts, Stoppen, Rückwärts.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_2</span></code>([speed])</p></td>
+<td><p>Definiert Fahrmodus 2: Vorwärts, Kurvenfahrt, Rückwärts.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_3</span></code>([min_dist, speed, angle])</p></td>
+<td><p>Fahrmodus 3: Fährt mit einer bestimmten Geschwindigkeit und Lenkwinkel, bis ein Hindernis erkannt wird.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_4</span></code>([min_dist, speed, angle])</p></td>
+<td><p>Fahrmodus 4: Fährt für 30 Sekunden mit zufälligem Lenkwinkel und überprüft den Abstand zu Hindernissen.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sensorcar.SensorCar.fahrmodus_5_6_7" title="sensorcar.SensorCar.fahrmodus_5_6_7"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_5_6_7</span></code></a>([speed, angle, modus, mindist])</p></td>
+<td><p>Fahrmodus 5, 6 und 7: Linienverfolgung mit optionaler Hinderniserkennung.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sensorcar.SensorCar.ir_cali" title="sensorcar.SensorCar.ir_cali"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ir_cali</span></code></a>()</p></td>
+<td><p>Kalibriert die Infrarotsensoren und speichert die Kalibrierwerte.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loggen</span></code>([time, speed, direction, ...])</p></td>
+<td><p>Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sensorcar.SensorCar.save_reference" title="sensorcar.SensorCar.save_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_reference</span></code></a>(reference)</p></td>
+<td><p>Speichert die Kalibrierwerte der Infrarotsensoren in der Konfigurationsdatei.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fahren</span></code>(speed, steering_angle, min_dist, ...)</p></td>
+<td><p>Setzt die Geschwindigkeit und den Lenkwinkel und überprüft den Abstand zu Hindernissen.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fahren_und_warten</span></code>(speed, steering_angle, ...)</p></td>
+<td><p>Setzt die Geschwindigkeit und den Lenkwinkel und wartet für eine bestimmte Zeit.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code>()</p></td>
+<td><p>Stoppt das Fahrzeug vollständig.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sensorcar.html#SensorCar.__init__"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#sensorcar.SensorCar.__init__" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Initialisiert das Fahrzeug und die Infrarotsensoren.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'sensorcar'</span></em><a class="headerlink" href="#sensorcar.SensorCar.__module__" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.fahrmodus">
+<span class="sig-name descname"><span class="pre">fahrmodus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmodus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mindist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sensorcar.html#SensorCar.fahrmodus"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#sensorcar.SensorCar.fahrmodus" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Wählt den Fahrmodus basierend auf der Eingabe aus und startet ihn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fmodus</strong> (<em>int</em>) – Fahrmodus (1 bis 7).</p></li>
+<li><p><strong>speed</strong> (<em>int</em>) – Geschwindigkeit des Fahrzeugs.</p></li>
+<li><p><strong>angle</strong> (<em>int</em>) – Lenkwinkel des Fahrzeugs.</p></li>
+<li><p><strong>mindist</strong> (<em>int</em>) – Minimaler Abstand zu Hindernissen in cm.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.fahrmodus_5_6_7">
+<span class="sig-name descname"><span class="pre">fahrmodus_5_6_7</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mindist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sensorcar.html#SensorCar.fahrmodus_5_6_7"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#sensorcar.SensorCar.fahrmodus_5_6_7" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Fahrmodus 5, 6 und 7: Linienverfolgung mit optionaler Hinderniserkennung.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>speed</strong> (<em>int</em>) – Geschwindigkeit des Fahrzeugs.</p></li>
+<li><p><strong>angle</strong> (<em>int</em>) – Lenkwinkel des Fahrzeugs.</p></li>
+<li><p><strong>modus</strong> (<em>int</em>) – Fahrmodus (5, 6 oder 7).</p></li>
+<li><p><strong>mindist</strong> (<em>int</em>) – Minimaler Abstand zu Hindernissen in cm.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.get_infrared">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_infrared</span></span><a class="headerlink" href="#sensorcar.SensorCar.get_infrared" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Liest die aktuellen Werte der Infrarotsensoren.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Rückgabe</dt>
+<dd class="field-odd"><p>Status der IR-LEDs.</p>
+</dd>
+<dt class="field-even">Rückgabetyp</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.get_moduswahl">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_moduswahl</span></span><a class="headerlink" href="#sensorcar.SensorCar.get_moduswahl" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Gibt den aktuellen Fahrmodus zurück.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Rückgabe</dt>
+<dd class="field-odd"><p>Aktueller Fahrmodus.</p>
+</dd>
+<dt class="field-even">Rückgabetyp</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.ir_cali">
+<span class="sig-name descname"><span class="pre">ir_cali</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sensorcar.html#SensorCar.ir_cali"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#sensorcar.SensorCar.ir_cali" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Kalibriert die Infrarotsensoren und speichert die Kalibrierwerte.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sensorcar.SensorCar.save_reference">
+<span class="sig-name descname"><span class="pre">save_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sensorcar.html#SensorCar.save_reference"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#sensorcar.SensorCar.save_reference" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Speichert die Kalibrierwerte der Infrarotsensoren in der Konfigurationsdatei.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><p><strong>reference</strong> (<em>list</em>) – Kalibrierwerte der Infrarotsensoren.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Inhaltsverzeichnis</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">sensorcar.py</a><ul>
+<li><a class="reference internal" href="#sensorcar.SensorCar"><code class="docutils literal notranslate"><span class="pre">SensorCar</span></code></a><ul>
+<li><a class="reference internal" href="#sensorcar.SensorCar.__init__"><code class="docutils literal notranslate"><span class="pre">SensorCar.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#sensorcar.SensorCar.__module__"><code class="docutils literal notranslate"><span class="pre">SensorCar.__module__</span></code></a></li>
+<li><a class="reference internal" href="#sensorcar.SensorCar.fahrmodus"><code class="docutils literal notranslate"><span class="pre">SensorCar.fahrmodus()</span></code></a></li>
+<li><a class="reference internal" href="#sensorcar.SensorCar.fahrmodus_5_6_7"><code class="docutils literal notranslate"><span class="pre">SensorCar.fahrmodus_5_6_7()</span></code></a></li>
+<li><a class="reference internal" href="#sensorcar.SensorCar.get_infrared"><code class="docutils literal notranslate"><span class="pre">SensorCar.get_infrared</span></code></a></li>
+<li><a class="reference internal" href="#sensorcar.SensorCar.get_moduswahl"><code class="docutils literal notranslate"><span class="pre">SensorCar.get_moduswahl</span></code></a></li>
+<li><a class="reference internal" href="#sensorcar.SensorCar.ir_cali"><code class="docutils literal notranslate"><span class="pre">SensorCar.ir_cali()</span></code></a></li>
+<li><a class="reference internal" href="#sensorcar.SensorCar.save_reference"><code class="docutils literal notranslate"><span class="pre">SensorCar.save_reference()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Vorheriges Thema</h4>
+    <p class="topless"><a href="basecar.html"
+                          title="vorheriges Kapitel">basecar.py</a></p>
+  </div>
+  <div>
+    <h4>Nächstes Thema</h4>
+    <p class="topless"><a href="soniccar.html"
+                          title="nächstes Kapitel">soniccar.py</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Diese Seite</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/sensorcar.rst.txt"
+            rel="nofollow">Quellcode anzeigen</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Schnellsuche</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Los" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Stichwortverzeichnis"
+             >Index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python-Modulindex"
+             >Module</a> |</li>
+        <li class="right" >
+          <a href="soniccar.html" title="soniccar.py"
+             >weiter</a> |</li>
+        <li class="right" >
+          <a href="basecar.html" title="basecar.py"
+             >zurück</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Camp2Code Projektphase 1 V1 Dokumentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">sensorcar.py</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2025, Team 1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,310 @@
+
+
+<!doctype html>
+
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>basecar.py &#8212; Camp2Code Projektphase 1 V1 Dokumentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/translations.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Stichwortverzeichnis" href="genindex.html" />
+    <link rel="search" title="Suche" href="search.html" />
+    <link rel="next" title="sensorcar.py" href="sensorcar.html" />
+    <link rel="prev" title="Dokumentation zur Camp2Code Projektphase 1" href="index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Stichwortverzeichnis"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python-Modulindex"
+             >Module</a> |</li>
+        <li class="right" >
+          <a href="sensorcar.html" title="sensorcar.py"
+             accesskey="N">weiter</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Dokumentation zur Camp2Code Projektphase 1"
+             accesskey="P">zurück</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Camp2Code Projektphase 1 V1 Dokumentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">basecar.py</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="basecar-py">
+<h1>basecar.py<a class="headerlink" href="#basecar-py" title="Permalink to this heading">¶</a></h1>
+<span class="target" id="module-basecar"></span><dl class="py class">
+<dt class="sig sig-object py" id="basecar.BaseCar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">basecar.</span></span><span class="sig-name descname"><span class="pre">BaseCar</span></span><a class="reference internal" href="_modules/basecar.html#BaseCar"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#basecar.BaseCar" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Basisklasse für ein ferngesteuertes Fahrzeug, das Vorder- und Hinterräder steuern kann.
+Die Konfiguration wird aus einer JSON-Datei geladen, mit Fallback auf Standardwerte.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="index.html#basecar.BaseCar.direction" title="basecar.BaseCar.direction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">direction</span></code></a></dt><dd><p>Gibt die aktuelle Fahrtrichtung des Fahrzeugs zurück: 1 = Vorwärts, -1 = Rückwärts, 0 = Stillstand.</p>
+</dd>
+<dt><a class="reference internal" href="index.html#basecar.BaseCar.speed" title="basecar.BaseCar.speed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">speed</span></code></a></dt><dd><p>Gibt die aktuelle Geschwindigkeit des Fahrzeugs zurück.</p>
+</dd>
+<dt><a class="reference internal" href="index.html#basecar.BaseCar.steering_angle" title="basecar.BaseCar.steering_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">steering_angle</span></code></a></dt><dd><p>Gibt den aktuellen Lenkwinkel des Fahrzeugs zurück.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="index.html#basecar.BaseCar.drive" title="basecar.BaseCar.drive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drive</span></code></a>([speed, steering_angle])</p></td>
+<td><p>Steuert das Fahrzeug mit der angegebenen Geschwindigkeit und dem Lenkwinkel.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="index.html#basecar.BaseCar.fahrmodus_1" title="basecar.BaseCar.fahrmodus_1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_1</span></code></a>([speed])</p></td>
+<td><p>Definiert Fahrmodus 1: Vorwärts, Stoppen, Rückwärts.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="index.html#basecar.BaseCar.fahrmodus_2" title="basecar.BaseCar.fahrmodus_2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fahrmodus_2</span></code></a>([speed])</p></td>
+<td><p>Definiert Fahrmodus 2: Vorwärts, Kurvenfahrt, Rückwärts.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="index.html#basecar.BaseCar.loggen" title="basecar.BaseCar.loggen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loggen</span></code></a>([time, speed, direction, ...])</p></td>
+<td><p>Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="index.html#basecar.BaseCar.set_fahren_und_warten" title="basecar.BaseCar.set_fahren_und_warten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fahren_und_warten</span></code></a>(speed, steering_angle, ...)</p></td>
+<td><p>Setzt die Geschwindigkeit und den Lenkwinkel und wartet für eine bestimmte Zeit.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="index.html#basecar.BaseCar.stop" title="basecar.BaseCar.stop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code></a>()</p></td>
+<td><p>Stoppt das Fahrzeug vollständig.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="basecar.BaseCar.__dict__">
+<span class="sig-name descname"><span class="pre">__dict__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">mappingproxy({'__module__':</span> <span class="pre">'basecar',</span> <span class="pre">'__doc__':</span> <span class="pre">'\n</span>&#160;&#160;&#160; <span class="pre">Basisklasse</span> <span class="pre">für</span> <span class="pre">ein</span> <span class="pre">ferngesteuertes</span> <span class="pre">Fahrzeug,</span> <span class="pre">das</span> <span class="pre">Vorder-</span> <span class="pre">und</span> <span class="pre">Hinterräder</span> <span class="pre">steuern</span> <span class="pre">kann.\n</span>&#160;&#160;&#160; <span class="pre">Die</span> <span class="pre">Konfiguration</span> <span class="pre">wird</span> <span class="pre">aus</span> <span class="pre">einer</span> <span class="pre">JSON-Datei</span> <span class="pre">geladen,</span> <span class="pre">mit</span> <span class="pre">Fallback</span> <span class="pre">auf</span> <span class="pre">Standardwerte.\n</span>&#160;&#160;&#160; <span class="pre">',</span> <span class="pre">'__init__':</span> <span class="pre">&lt;function</span> <span class="pre">BaseCar.__init__&gt;,</span> <span class="pre">'steering_angle':</span> <span class="pre">&lt;property</span> <span class="pre">object&gt;,</span> <span class="pre">'speed':</span> <span class="pre">&lt;property</span> <span class="pre">object&gt;,</span> <span class="pre">'direction':</span> <span class="pre">&lt;property</span> <span class="pre">object&gt;,</span> <span class="pre">'drive':</span> <span class="pre">&lt;function</span> <span class="pre">BaseCar.drive&gt;,</span> <span class="pre">'stop':</span> <span class="pre">&lt;function</span> <span class="pre">BaseCar.stop&gt;,</span> <span class="pre">'loggen':</span> <span class="pre">&lt;function</span> <span class="pre">BaseCar.loggen&gt;,</span> <span class="pre">'set_fahren_und_warten':</span> <span class="pre">&lt;function</span> <span class="pre">BaseCar.set_fahren_und_warten&gt;,</span> <span class="pre">'fahrmodus_1':</span> <span class="pre">&lt;function</span> <span class="pre">BaseCar.fahrmodus_1&gt;,</span> <span class="pre">'fahrmodus_2':</span> <span class="pre">&lt;function</span> <span class="pre">BaseCar.fahrmodus_2&gt;,</span> <span class="pre">'__dict__':</span> <span class="pre">&lt;attribute</span> <span class="pre">'__dict__'</span> <span class="pre">of</span> <span class="pre">'BaseCar'</span> <span class="pre">objects&gt;,</span> <span class="pre">'__weakref__':</span> <span class="pre">&lt;attribute</span> <span class="pre">'__weakref__'</span> <span class="pre">of</span> <span class="pre">'BaseCar'</span> <span class="pre">objects&gt;,</span> <span class="pre">'__annotations__':</span> <span class="pre">{}})</span></em><a class="headerlink" href="#basecar.BaseCar.__dict__" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="basecar.BaseCar.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/basecar.html#BaseCar.__init__"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#basecar.BaseCar.__init__" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Initialisiert das Fahrzeug, indem es Konfigurationsdaten lädt und die Räder initialisiert.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="basecar.BaseCar.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'basecar'</span></em><a class="headerlink" href="#basecar.BaseCar.__module__" title="Link zu dieser Definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="basecar.BaseCar.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#basecar.BaseCar.__weakref__" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="basecar.BaseCar.direction">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">direction</span></span><a class="headerlink" href="#basecar.BaseCar.direction" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Gibt die aktuelle Fahrtrichtung des Fahrzeugs zurück:
+1 = Vorwärts, -1 = Rückwärts, 0 = Stillstand.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="basecar.BaseCar.drive">
+<span class="sig-name descname"><span class="pre">drive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steering_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/basecar.html#BaseCar.drive"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#basecar.BaseCar.drive" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Steuert das Fahrzeug mit der angegebenen Geschwindigkeit und dem Lenkwinkel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>speed</strong> (<em>int</em><em>, </em><em>optional</em>) – Die gewünschte Geschwindigkeit.</p></li>
+<li><p><strong>steering_angle</strong> (<em>int</em><em>, </em><em>optional</em>) – Der gewünschte Lenkwinkel.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="basecar.BaseCar.fahrmodus_1">
+<span class="sig-name descname"><span class="pre">fahrmodus_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/basecar.html#BaseCar.fahrmodus_1"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#basecar.BaseCar.fahrmodus_1" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Definiert Fahrmodus 1: Vorwärts, Stoppen, Rückwärts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><p><strong>speed</strong> (<em>int</em><em>, </em><em>optional</em>) – Geschwindigkeit des Fahrzeugs. Standard ist 50.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="basecar.BaseCar.fahrmodus_2">
+<span class="sig-name descname"><span class="pre">fahrmodus_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/basecar.html#BaseCar.fahrmodus_2"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#basecar.BaseCar.fahrmodus_2" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Definiert Fahrmodus 2: Vorwärts, Kurvenfahrt, Rückwärts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><p><strong>speed</strong> (<em>int</em><em>, </em><em>optional</em>) – Geschwindigkeit des Fahrzeugs. Standard ist 50.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="basecar.BaseCar.loggen">
+<span class="sig-name descname"><span class="pre">loggen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steering_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ir_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_modus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/basecar.html#BaseCar.loggen"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#basecar.BaseCar.loggen" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Fügt die aktuellen Fahrzeugdaten einem Log hinzu und gibt diese aus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>float</em>) – Zeit seit Start in Sekunden.</p></li>
+<li><p><strong>speed</strong> (<em>int</em>) – Geschwindigkeit des Fahrzeugs.</p></li>
+<li><p><strong>direction</strong> (<em>int</em>) – Fahrtrichtung.</p></li>
+<li><p><strong>steering_angle</strong> (<em>int</em>) – Aktueller Lenkwinkel.</p></li>
+<li><p><strong>distance</strong> (<em>int</em>) – Gemessener Abstand.</p></li>
+<li><p><strong>ir_value</strong> (<em>list</em>) – Status der IR-LEDs.</p></li>
+<li><p><strong>f_modus</strong> (<em>int</em>) – Fahrmodusauswahl.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="basecar.BaseCar.set_fahren_und_warten">
+<span class="sig-name descname"><span class="pre">set_fahren_und_warten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steering_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_modus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/basecar.html#BaseCar.set_fahren_und_warten"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#basecar.BaseCar.set_fahren_und_warten" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Setzt die Geschwindigkeit und den Lenkwinkel und wartet für eine bestimmte Zeit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameter</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>speed</strong> (<em>int</em>) – Geschwindigkeit des Fahrzeugs.</p></li>
+<li><p><strong>steering_angle</strong> (<em>int</em>) – Lenkwinkel des Fahrzeugs.</p></li>
+<li><p><strong>wait_time</strong> (<em>float</em>) – Wartezeit in Sekunden.</p></li>
+<li><p><strong>f_modus</strong> (<em>int</em>) – Fahrmodus.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="basecar.BaseCar.speed">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">speed</span></span><a class="headerlink" href="#basecar.BaseCar.speed" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Gibt die aktuelle Geschwindigkeit des Fahrzeugs zurück.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="basecar.BaseCar.steering_angle">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">steering_angle</span></span><a class="headerlink" href="#basecar.BaseCar.steering_angle" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Gibt den aktuellen Lenkwinkel des Fahrzeugs zurück.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="basecar.BaseCar.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/basecar.html#BaseCar.stop"><span class="viewcode-link"><span class="pre">[Quellcode]</span></span></a><a class="headerlink" href="#basecar.BaseCar.stop" title="Link zu dieser Definition">¶</a></dt>
+<dd><p>Stoppt das Fahrzeug vollständig.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Inhaltsverzeichnis</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">basecar.py</a><ul>
+<li><a class="reference internal" href="#basecar.BaseCar"><code class="docutils literal notranslate"><span class="pre">BaseCar</span></code></a><ul>
+<li><a class="reference internal" href="#basecar.BaseCar.__dict__"><code class="docutils literal notranslate"><span class="pre">BaseCar.__dict__</span></code></a></li>
+<li><a class="reference internal" href="#basecar.BaseCar.__init__"><code class="docutils literal notranslate"><span class="pre">BaseCar.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#basecar.BaseCar.__module__"><code class="docutils literal notranslate"><span class="pre">BaseCar.__module__</span></code></a></li>
+<li><a class="reference internal" href="#basecar.BaseCar.__weakref__"><code class="docutils literal notranslate"><span class="pre">BaseCar.__weakref__</span></code></a></li>
+<li><a class="reference internal" href="#basecar.BaseCar.direction"><code class="docutils literal notranslate"><span class="pre">BaseCar.direction</span></code></a></li>
+<li><a class="reference internal" href="#basecar.BaseCar.drive"><code class="docutils literal notranslate"><span class="pre">BaseCar.drive()</span></code></a></li>
+<li><a class="reference internal" href="#basecar.BaseCar.fahrmodus_1"><code class="docutils literal notranslate"><span class="pre">BaseCar.fahrmodus_1()</span></code></a></li>
+<li><a class="reference internal" href="#basecar.BaseCar.fahrmodus_2"><code class="docutils literal notranslate"><span class="pre">BaseCar.fahrmodus_2()</span></code></a></li>
+<li><a class="reference internal" href="#basecar.BaseCar.loggen"><code class="docutils literal notranslate"><span class="pre">BaseCar.loggen()</span></code></a></li>
+<li><a class="reference internal" href="#basecar.BaseCar.set_fahren_und_warten"><code class="docutils literal notranslate"><span class="pre">BaseCar.set_fahren_und_warten()</span></code></a></li>
+<li><a class="reference internal" href="#basecar.BaseCar.speed"><code class="docutils literal notranslate"><span class="pre">BaseCar.speed</span></code></a></li>
+<li><a class="reference internal" href="#basecar.BaseCar.steering_angle"><code class="docutils literal notranslate"><span class="pre">BaseCar.steering_angle</span></code></a></li>
+<li><a class="reference internal" href="#basecar.BaseCar.stop"><code class="docutils literal notranslate"><span class="pre">BaseCar.stop()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Vorheriges Thema</h4>
+    <p class="topless"><a href="index.html"
+                          title="vorheriges Kapitel">Dokumentation zur Camp2Code Projektphase 1</a></p>
+  </div>
+  <div>
+    <h4>Nächstes Thema</h4>
+    <p class="topless"><a href="sensorcar.html"
+                          title="nächstes Kapitel">sensorcar.py</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Diese Seite</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/basecar.rst.txt"
+            rel="nofollow">Quellcode anzeigen</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Schnellsuche</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Los" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Stichwortverzeichnis"
+             >Index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python-Modulindex"
+             >Module</a> |</li>
+        <li class="right" >
+          <a href="sensorcar.html" title="sensorcar.py"
+             >weiter</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Dokumentation zur Camp2Code Projektphase 1"
+             >zurück</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Camp2Code Projektphase 1 V1 Dokumentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">basecar.py</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2025, Team 1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>
