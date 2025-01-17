@@ -8,6 +8,6 @@
 ![Ablaufdiagramm](packages_Camp2Code_P1.svg)
 
 ## Detaildokumentation
-[Linktext](_build/html/index.html)
+[Linktext]((https://holger585.github.io/Camp2Code_P1/))
 
 ```
