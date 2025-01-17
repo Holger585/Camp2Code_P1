@@ -749,6 +749,7 @@ def update_output(n_clicks):
 def update_diagrams(selected_fahrt):
     filtered_df = data.df[data.df['FahrtID'] == selected_fahrt]
     filtered_df['Abstand2'] = filtered_df['Abstand'].apply(lambda x: 500 if x == -2 else (x if x >= 0 else None))
+    filtered_df['Abstand3'] = filtered_df['Abstand'].apply(lambda x: 500 if x == -2 else (x if x <= 0 else None))
 
     vmax_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmax'].iloc[0]:.1f} cm/s"
     vmin_value = f"{data.result_df[data.result_df['FahrtID'] == selected_fahrt]['Vmin'].iloc[0]:.1f} cm/s"
@@ -764,6 +765,13 @@ def update_diagrams(selected_fahrt):
                 y=filtered_df['Abstand2'].interpolate(method='linear'),
                 mode='lines',
                 name="Abstand"
+            ),
+            go.Scatter(
+                x=filtered_df['Zeit'],
+                y=filtered_df['Abstand3'],
+                mode='lines',
+                name="Unendlich",
+                line=dict(color='red')
             )
         ],
         layout=go.Layout(
