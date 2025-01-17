@@ -6,7 +6,7 @@ config:
   look: handDrawn
 ---
 flowchart TB
-    A0(("Start Skript")) --> C2["Moduswahl 5,6,7"]
+    A0(("Start Methode Fahrmodus_5_6_7")) --> C2["Moduswahl 5,6,7"]
     C2 --> C3["Erzeuge ersten Logeintrag Zeit=0"]
     C3 --> C4["Manueller Tastenbruch über Terminal (ESC) initialisieren"]
     C4 --> C5["__Losfahren__ (Geschwindigkeit, Lenkwinkel)"]
