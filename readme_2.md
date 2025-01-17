@@ -71,6 +71,8 @@ Unser Team (fünf Personen) hat an der Software in einem **agilen Ansatz** gearb
 
 Der Anforderungskatalog benennt folgende **Kernklassen** und **Ziele**:
 
+### GRafiken hinzufügen
+
 ### 3.1 Klassen
 
 1. **Verwendung der Basisklassen**  
