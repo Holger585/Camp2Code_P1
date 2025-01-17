@@ -175,6 +175,9 @@ Gemäß den Anforderungen existieren folgende Fahrmodi (klassifiziert nach *Base
 
 Während der Fahrten wird protokolliert (z. B. Zeit, Speed, Steering, Abstand, IR-Status, Fahrmodus), um die Ergebnisse auszuwerten.
 
+**Ablaufdiagramm Fahrmodus 5, 6, 7** 
+![Ablaufdiagramm](Media/Ablaufdiagramm_Fahrmodus5_6_7.svg)
+
 ---
 
 ## 6. Test und Validierung
