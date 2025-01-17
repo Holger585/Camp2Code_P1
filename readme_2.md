@@ -71,8 +71,6 @@ Unser Team (fünf Personen) hat an der Software in einem **agilen Ansatz** gearb
 
 Der Anforderungskatalog benennt folgende **Kernklassen** und **Ziele**:
 
-### GRafiken hinzufügen
-
 ### 3.1 Klassen
 
 1. **Verwendung der Basisklassen**  
@@ -116,6 +114,8 @@ Der Anforderungskatalog benennt folgende **Kernklassen** und **Ziele**:
      - *Fahrmodus 6*: Engere Kurven bis hin zu geschlossenen Rundkursen, wiederholte Runden.  
      - *Fahrmodus 7*: Linienverfolgung mit zusätzlicher Ultraschall-Hindernisserkennung; Fahrzeug stoppt, sobald Hindernis im Weg.  
    - Auch IR-Werte werden geloggt.
+
+### Grafiken hinzufügen
 
 ### 3.2 Nutzerinterface
 
