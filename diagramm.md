@@ -1,4 +1,4 @@
-'''mermaid
+```mermaid
 flowchart TB
     A0((Start Skript)) --> A1["__main__:\ncar = SensorCar()\ncar.frontwheels.turn(90)\ncar.fahrmodus(7)"]
 
