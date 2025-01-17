@@ -1,11 +1,8 @@
 ```mermaid
 flowchart TB
-    A0((Start Skript)) --> A1["__main__:\ncar = SensorCar()\ncar.frontwheels.turn(90)\ncar.fahrmodus(7)"]
+    A0((Start Skript))
 
-    A1 --> B1{"fahrmodus(fmodus=7)?"}
-    B1 -->|fmodus == 7| C0["fahrmodus_5_6_7(speed, angle, modus, mindist)"]
-
-    C0 --> C1["IR-Werte lesen:\nir_value = self.get_infrared"]
+    A0 --> C1["IR-Werte lesen:\nir_value = self.get_infrared"]
     C1 --> C2["moduswahl = modus"]
     C2 --> C3["Starte Log:\nself.loggen(...)"]
     C3 --> C4["Terminaleinstellungen\n(tty.setcbreak)"]
