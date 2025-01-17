@@ -38,8 +38,6 @@
 <span class="kn">from</span> <span class="nn">basisklassen</span> <span class="kn">import</span> <span class="n">Ultrasonic</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">import</span> <span class="nn">csv</span>
-<span class="kn">import</span> <span class="nn">os</span>
 
 <div class="viewcode-block" id="SonicCar"><a class="viewcode-back" href="../soniccar.html#soniccar.SonicCar">[Doku]</a><span class="k">class</span> <span class="nc">SonicCar</span><span class="p">(</span><span class="n">BaseCar</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -65,71 +63,83 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ultrasonic</span><span class="o">.</span><span class="n">distance</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span>
+    
+<div class="viewcode-block" id="SonicCar.set_fahren"><a class="viewcode-back" href="../soniccar.html#soniccar.SonicCar.set_fahren">[Doku]</a>    <span class="k">def</span> <span class="nf">set_fahren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">steering_angle</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">min_dist</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">f_modus</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setzt die Geschwindigkeit und den Lenkwinkel und überprüft den Abstand zu Hindernissen.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            speed (int): Geschwindigkeit des Fahrzeugs.</span>
+<span class="sd">            steering_angle (int): Lenkwinkel des Fahrzeugs.</span>
+<span class="sd">            min_dist (int): Minimaler Abstand zu Hindernissen in cm.</span>
+<span class="sd">            f_modus (int): Fahrmodus.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Setze die Geschwindigkeit und den Lenkwinkel des Fahrzeugs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed</span><span class="o">=</span><span class="n">speed</span><span class="p">,</span> <span class="n">steering_angle</span><span class="o">=</span><span class="n">steering_angle</span><span class="p">)</span>
+        <span class="c1"># Logge den aktuellen Zustand des Fahrzeugs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">f_modus</span><span class="p">)</span>
+        
+        <span class="c1"># Schleife um ein Unterbrechen während der Fahrt durch Tastendruck zu ermöglichen</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ismanually_stopped</span><span class="p">:</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span>
+            <span class="c1"># Fahrzeug stoppen, wenn der Abstand zu einem Hindernis kleiner als min_dist ist</span>
+            <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="n">min_dist</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="k">break</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ismanually_stopped</span><span class="p">:</span>
+            <span class="c1"># Fahrzeug stoppen, wenn manuell gestoppt</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        
+        <span class="c1"># Logge den aktuellen Zustand des Fahrzeugs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">f_modus</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SonicCar.fahrmodus_3"><a class="viewcode-back" href="../soniccar.html#soniccar.SonicCar.fahrmodus_3">[Doku]</a>    <span class="k">def</span> <span class="nf">fahrmodus_3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Fahrmodus 3: Fährt vorwärts, bis ein Hindernis erkannt wird.</span>
+<span class="sd">        Fahrmodus 3: Fährt mit einer bestimmten Geschwindigkeit und Lenkwinkel, bis ein Hindernis erkannt wird.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            min_dist (int): Mindestabstand zum Stoppen (in cm).</span>
+<span class="sd">            min_dist (int): Minimaler Abstand zu Hindernissen in cm.</span>
 <span class="sd">            speed (int): Geschwindigkeit des Fahrzeugs.</span>
-<span class="sd">            angle (int): Lenkwinkel (in Grad).</span>
+<span class="sd">            angle (int): Lenkwinkel des Fahrzeugs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span><span class="p">,</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span>
-            <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="n">min_dist</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span>
-                <span class="k">break</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+        <span class="c1"># Setzen der Startzeit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> 
+        <span class="c1"># Erster Eintrag im Log auf Null setzen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="c1"># Fahrzeug fahren lassen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren</span><span class="p">(</span><span class="n">speed</span><span class="o">=</span><span class="n">speed</span><span class="p">,</span> <span class="n">steering_angle</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="n">min_dist</span><span class="p">,</span> <span class="n">f_modus</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SonicCar.fahrmodus_4"><a class="viewcode-back" href="../soniccar.html#soniccar.SonicCar.fahrmodus_4">[Doku]</a>    <span class="k">def</span> <span class="nf">fahrmodus_4</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">lenken</span><span class="o">=</span><span class="mi">135</span><span class="p">):</span>
+<div class="viewcode-block" id="SonicCar.fahrmodus_4"><a class="viewcode-back" href="../soniccar.html#soniccar.SonicCar.fahrmodus_4">[Doku]</a>    <span class="k">def</span> <span class="nf">fahrmodus_4</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">135</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Fahrmodus 4: Erkundungstour mit zufälligem Lenkwinkel und Rückwärtsfahrt bei Hindernissen.</span>
+<span class="sd">        Fahrmodus 4: Fährt für 30 Sekunden mit zufälligem Lenkwinkel und überprüft den Abstand zu Hindernissen.</span>
 
 <span class="sd">        Args:</span>
+<span class="sd">            min_dist (int): Minimaler Abstand zu Hindernissen in cm.</span>
 <span class="sd">            speed (int): Geschwindigkeit des Fahrzeugs.</span>
-<span class="sd">            lenken (int): Lenkwinkel für Richtungsänderungen.</span>
+<span class="sd">            angle (int): Lenkwinkel des Fahrzeugs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>  <span class="c1"># Schleife endet nach 30 Sekunden</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fahrmodus_3</span><span class="p">(</span><span class="n">speed</span><span class="o">=</span><span class="n">speed</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mi">135</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lenken</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span><span class="p">,</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="o">-</span><span class="n">speed</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span>
+        <span class="c1"># Setzen der Startzeit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> 
+        <span class="c1"># Erster Eintrag im Log auf Null setzen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+        
+        <span class="c1"># Schleife endet nach 30 Sekunden</span>
+        <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_fahren</span><span class="p">(</span><span class="n">speed</span><span class="o">=</span><span class="n">speed</span><span class="p">,</span> <span class="n">steering_angle</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mi">135</span><span class="p">),</span> <span class="n">min_dist</span><span class="o">=</span><span class="n">min_dist</span><span class="p">,</span> <span class="n">f_modus</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drive</span><span class="p">(</span><span class="n">speed</span><span class="o">=-</span><span class="n">speed</span><span class="p">,</span> <span class="n">steering_angle</span><span class="o">=</span><span class="n">angle</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">f_modus</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fahrmodus 4 beendet&quot;</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frontwheels</span><span class="o">.</span><span class="n">turn</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loggen</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steering_angle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">f_modus</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">car</span> <span class="o">=</span> <span class="n">SonicCar</span><span class="p">()</span>
     <span class="n">log</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Liste zum Speichern der Log-Daten</span>
     <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>  <span class="c1"># Startzeitpunkt speichern</span>
 
-    <span class="n">car</span><span class="o">.</span><span class="n">fahrmodus_4</span><span class="p">()</span>  <span class="c1"># Fahrmodus 4 starten</span>
-
-    <span class="c1"># Schreiben der Log-Daten in eine CSV-Datei</span>
-    <span class="n">file_name</span> <span class="o">=</span> <span class="s2">&quot;fahrmodus_log.csv&quot;</span>
-    <span class="n">file_exists</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>  <span class="c1"># Prüfen, ob die Datei existiert</span>
-
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csv_file</span><span class="p">:</span>
-        <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Zeit&quot;</span><span class="p">,</span> <span class="s2">&quot;Geschwindigkeit&quot;</span><span class="p">,</span> <span class="s2">&quot;Fahrtrichtung&quot;</span><span class="p">,</span> <span class="s2">&quot;Lenkwinkel&quot;</span><span class="p">,</span> <span class="s2">&quot;Abstand&quot;</span><span class="p">]</span>
-        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">csv_file</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="n">fieldnames</span><span class="p">)</span>
-
-        <span class="c1"># Schreibe die Kopfzeile, falls die Datei neu erstellt wurde</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">file_exists</span><span class="p">:</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
-
-        <span class="n">writer</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>  <span class="c1"># Log-Daten in die Datei schreiben</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Log-Daten wurden in &#39;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&#39; gespeichert.&quot;</span><span class="p">)</span>
+    <span class="n">car</span><span class="o">.</span><span class="n">fahrmodus_1</span><span class="p">()</span>  <span class="c1"># Fahrmodus 1 starten</span>
 
 </pre></div>
 
@@ -152,7 +162,7 @@
 <p class="caption" role="heading"><span class="caption-text">Inhaltsverzeichnis</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../basecar.html">basecar.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sensorcar.html">sonsorcar.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sensorcar.html">sensorcar.py</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../soniccar.html">soniccar.py</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_data.html">app_data.py</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_gui.html">app_gui.py</a></li>

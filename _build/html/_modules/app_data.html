@@ -36,11 +36,21 @@
   <h1>Quellcode für app_data</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<div class="viewcode-block" id="Data"><a class="viewcode-back" href="../app_data.html#app_data.Data">[Doku]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">():</span>
-<div class="viewcode-block" id="Data.__init__"><a class="viewcode-back" href="../app_data.html#app_data.Data.__init__">[Doku]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Data"><a class="viewcode-back" href="../index.html#app_data.Data">[Doku]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Klasse zum Verarbeiten und Analysieren von Fahrtdaten aus einer CSV-Datei.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Data.__init__"><a class="viewcode-back" href="../index.html#app_data.Data.__init__">[Doku]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialisiert die Data-Klasse und liest die Daten aus der CSV-Datei ein.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">read_data</span><span class="p">()</span>     </div>
 
-<div class="viewcode-block" id="Data.read_data"><a class="viewcode-back" href="../app_data.html#app_data.Data.read_data">[Doku]</a>    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.read_data"><a class="viewcode-back" href="../index.html#app_data.Data.read_data">[Doku]</a>    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Liest die Fahrtdaten aus der CSV-Datei ein, berechnet zusätzliche Spalten und erstellt eine Zusammenfassung.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># CSV-Datei einlesen</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;fahrmodus_log.csv&#39;</span><span class="p">)</span>
         <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Diff_Zeit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Zeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -58,54 +68,66 @@
 
         <span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fahrt_ids</span>
 
-
         <span class="c1"># Berechnung der Fahrstrecke mit stetigem Anstieg</span>
         <span class="n">fahrstrecke</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ir_status2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ir_status</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">current_distance</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Geschwindigkeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># Reset wenn vorherige Geschwindigkeit 0 war</span>
-                    <span class="n">current_distance</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">time_diff</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Zeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Zeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="n">current_distance</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Geschwindigkeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">time_diff</span>
+                <span class="n">time_diff</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Zeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Zeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">current_distance</span> <span class="o">+=</span> <span class="p">((</span><span class="nb">abs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Geschwindigkeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">time_diff</span><span class="p">)</span><span class="o">/</span><span class="mi">100</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">current_distance</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">fahrstrecke</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_distance</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;IR_Status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;[1, 0, 0, 0, 0]&#39;</span><span class="p">:</span>
+                <span class="n">ir_status</span> <span class="o">=</span> <span class="o">-</span><span class="mi">4</span>
+            <span class="k">elif</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;IR_Status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;[1, 1 0, 0, 0]&#39;</span><span class="p">:</span>
+                <span class="n">ir_status</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span>
+            <span class="k">elif</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;IR_Status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;[0, 1, 0, 0, 0]&#39;</span><span class="p">:</span>
+                <span class="n">ir_status</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>       
+            <span class="k">elif</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;IR_Status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;[0, 1, 1, 0, 0]&#39;</span><span class="p">:</span>
+                <span class="n">ir_status</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> 
+            <span class="k">elif</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;IR_Status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;[0, 0, 1, 0, 0]&#39;</span><span class="p">:</span>
+                <span class="n">ir_status</span> <span class="o">=</span> <span class="mi">0</span>                                        
+            <span class="k">elif</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;IR_Status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;[0, 0, 1, 1, 0]&#39;</span><span class="p">:</span>
+                <span class="n">ir_status</span> <span class="o">=</span> <span class="mi">1</span>                                        
+            <span class="k">elif</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;IR_Status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;[0, 0, 0, 1, 0]&#39;</span><span class="p">:</span>
+                <span class="n">ir_status</span> <span class="o">=</span> <span class="mi">2</span>                                        
+            <span class="k">elif</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;IR_Status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;[0, 0, 0, 1, 1]&#39;</span><span class="p">:</span>
+                <span class="n">ir_status</span> <span class="o">=</span> <span class="mi">3</span>     
+            <span class="k">elif</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;IR_Status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;[0, 0, 0, 0, 1]&#39;</span><span class="p">:</span>
+                <span class="n">ir_status</span> <span class="o">=</span> <span class="mi">4</span>                        
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ir_status</span> <span class="o">=</span> <span class="kc">None</span> 
+            <span class="n">ir_status2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ir_status</span><span class="p">)</span>                                                                                                                           
+
         <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Fahrstrecke&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fahrstrecke</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;IR_Status2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ir_status2</span>
 
         <span class="c1"># Ermittlung der KPI für die Kopfzeile in eigenem df</span>
         <span class="n">fahrt_id_result</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">result_df</span><span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">result_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">fahrt_id_result</span><span class="p">:</span>
                 <span class="n">fahrt_id_result</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">result_df</span><span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">result_df</span><span class="p">,</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+                <span class="n">result_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">result_df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
                     <span class="s1">&#39;FahrtID&#39;</span><span class="p">:</span> <span class="n">fahrt_id_result</span><span class="p">,</span>
                     <span class="s1">&#39;Fahrzeit&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fahrt_id_result</span><span class="p">][</span><span class="s1">&#39;Zeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()],</span>
-                    <span class="s1">&#39;Vmin&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fahrt_id_result</span><span class="p">][</span><span class="s1">&#39;Geschwindigkeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()],</span>
-                    <span class="s1">&#39;Vmax&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fahrt_id_result</span><span class="p">][</span><span class="s1">&#39;Geschwindigkeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()],</span>
-                    <span class="s1">&#39;Vmean&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fahrt_id_result</span><span class="p">][</span><span class="s1">&#39;Geschwindigkeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()],</span>
+                    <span class="s1">&#39;Vmin&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fahrt_id_result</span><span class="p">][</span><span class="s1">&#39;Geschwindigkeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span>
+                    <span class="s1">&#39;Vmax&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fahrt_id_result</span><span class="p">][</span><span class="s1">&#39;Geschwindigkeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span>
+                    <span class="s1">&#39;Vmean&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fahrt_id_result</span><span class="p">][</span><span class="s1">&#39;Geschwindigkeit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span>
                     <span class="s1">&#39;Fahrstrecke&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fahrt_id_result</span><span class="p">][</span><span class="s1">&#39;Fahrstrecke&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()],</span>
                     <span class="s1">&#39;Fahrmodus&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;FahrtID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">fahrt_id_result</span><span class="p">][</span><span class="s1">&#39;Fahrmodus&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
                 <span class="p">})])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result_df</span> <span class="o">=</span> <span class="n">result_df</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span></div></div>
-        <span class="c1"># return result_df, df</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="k">pass</span>
-    <span class="c1"># result_df, df = read_data()</span>
-    <span class="c1"># print(result_df)</span>
-    <span class="c1"># print(df)</span>
-
-<span class="c1"># print(f&quot;Fahrzeit1 : {result_df[&#39;Fahrzeit&#39;]}&quot;)</span>
-<span class="c1"># print(f&quot;Geschwindigkeit min.: {df[&#39;Geschwindigkeit&#39;].min()} km/h&quot;)</span>
-<span class="c1"># print(f&quot;Geschwindigkeit max.: {df[&#39;Geschwindigkeit&#39;].max()} km/h&quot;)</span>
-<span class="c1"># print(f&quot;Geschwindigkeit mean: {df[&#39;Geschwindigkeit&#39;].mean()} km/h&quot;)</span>
-<span class="c1"># print(f&quot;Fahrstrecke gesamt: {df[&#39;Fahrstrecke&#39;].sum():.1f} mm&quot;)</span>
-<span class="c1"># print(df)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">result_df</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -127,7 +149,7 @@
 <p class="caption" role="heading"><span class="caption-text">Inhaltsverzeichnis</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../basecar.html">basecar.py</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sensorcar.html">sonsorcar.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sensorcar.html">sensorcar.py</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../soniccar.html">soniccar.py</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_data.html">app_data.py</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../app_gui.html">app_gui.py</a></li>

@@ -1,7 +1,7 @@
 sensorcar.py
 =========
 
-.. automodule:: sensor
+.. automodule:: sensorcar
    :members:
    :undoc-members:
    :private-members:
