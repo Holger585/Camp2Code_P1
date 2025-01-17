@@ -260,6 +260,3 @@ In `app_gui.py` wird eine Dash-App verwendet, um die gesammelten Daten anzuzeige
   - Präsentationsfolien als PowerPoint-Datei zur Demo.
 
 ---
-
-**Vielen Dank für das Interesse an unserem Projekt**  
-Bei weiteren Fragen oder Feedback steht unser Team gerne zur Verfügung.
